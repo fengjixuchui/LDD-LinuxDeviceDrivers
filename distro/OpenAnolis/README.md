@@ -2,6 +2,8 @@
 =====================
 
 
+# 总结
+-------
 
 - [x] [Alibaba Cloud Linux 2](https://help.aliyun.com/document_detail/154950.html)
 - [x] [Alibaba Cloud Linux 2功能和接口概述](https://help.aliyun.com/document_detail/177687.html)
@@ -13,24 +15,24 @@
 |:-------:|:----:|
 | 启用cgroup writeback功能 | Alibaba Cloud Linux 2在内核版本4.19.36-12.al7中，对内核接口cgroup v1新增了控制群组回写(cgroup writeback)功能. 该功能使您在使用内核接口cgroup v1时，可以对缓存异步I/O (Buffered I/O) 进行限速.  |
 | blk-iocost权重限速  | Alibaba Cloud Linux 2在内核版本4.19.81-17.al7.x86_64开始支持基于成本模型(cost model)的权重限速功能，即blk-iocost功能. 该功能是对内核中IO子系统(blkcg)基于权重的磁盘限速功能的进一步完善.  |
-| 在cgroup v1接口开启PSI功能 | Alibaba Cloud Linux 2在内核版本4.19.81-17.al7中为cgroup v1接口提供了PSI功能. PSI(Pressure Stall Information)是一个可以监控CPU、内存及IO性能异常的内核功能.  |
-| 修改TCP TIME-WAIT超时时间 | 在Linux的内核中，TCP/IP协议的TIME-WAIT状态持续60秒且无法修改. 但在某些场景下，例如TCP负载过高时，适当调小该值有助于提升网络性能. 因此Alibaba Cloud Linux 2在内核版本4.19.43-13.al7新增内核接口，用于修改TCP TIME-WAIT超时时间.  |
-| Block IO限流增强监控接口 | 为了更方便地监控Linux block IO限流，Alibaba Cloud Linux 2在内核版本4.19.81-17.al7增加相关接口，用于增强block IO限流的监控统计能力.  |
-| JBD2优化接口 | JBD2作为ext4文件系统的内核线程，在使用过程中常会遇到影子状态(BH_Shadow)，影响系统性能. 为解决使用JBD2过程中出现的异常，Alibaba Cloud Linux 2在内核版本4.19.81-17.al7对JBD2进行了优化.  |
+| 在 cgroup v1 接口开启 PSI 功能 | Alibaba Cloud Linux 2在内核版本4.19.81-17.al7中为cgroup v1接口提供了PSI功能. PSI(Pressure Stall Information)是一个可以监控CPU、内存及IO性能异常的内核功能.  |
+| 修改 TCP TIME-WAIT 超时时间 | 在Linux的内核中，TCP/IP协议的TIME-WAIT状态持续60秒且无法修改. 但在某些场景下，例如TCP负载过高时，适当调小该值有助于提升网络性能. 因此Alibaba Cloud Linux 2在内核版本4.19.43-13.al7新增内核接口，用于修改TCP TIME-WAIT超时时间.  |
+| Block IO 限流增强监控接口 | 为了更方便地监控Linux block IO限流，Alibaba Cloud Linux 2在内核版本4.19.81-17.al7增加相关接口，用于增强block IO限流的监控统计能力.  |
+| JBD2 优化接口 | JBD2作为ext4文件系统的内核线程，在使用过程中常会遇到影子状态(BH_Shadow)，影响系统性能. 为解决使用JBD2过程中出现的异常，Alibaba Cloud Linux 2在内核版本4.19.81-17.al7对JBD2进行了优化.  |
 | 跨目录配额创建硬链接 | 默认情况下，ext4文件系统中存在约束，不允许跨目录配额创建硬链接. 但在实际中，某些特定场景有创建硬链接的需求，因此Alibaba Cloud Linux 2提供定制接口，该接口能够绕过ext4文件系统中的约束，实现跨目录配额创建硬链接.  |
-| 追踪IO时延 | Alibaba Cloud Linux 2优化了IO时延分析工具iostat的原始数据来源/proc/diskstats接口，增加了对设备侧的读、写及特殊IO(discard)等耗时的统计，此外还提供了一个方便追踪IO时延的工具bcc. |
-| 检测文件系统和块层的IO hang | IO hang是指在系统运行过程中，因某些IO耗时过长而引起的系统不稳定甚至宕机. 为了准确检测出IO hang，Alibaba Cloud Linux 2扩展核心数据结构，增加了在较小的系统开销下，快速定位并检测IO hang的功能.  |
-| Memcg全局最低水位线分级 | Alibaba Cloud Linux 2新增了memcg全局最低水位线分级功能. 在global wmark_min的基础上，将资源消耗型任务的global wmark_min上移，使其提前进入直接内存回收. 将时延敏感型业务的global wmark_min下移，使其尽量避免直接内存回收. 这样当资源消耗型任务瞬间申请大量内存的时候，会通过上移的global wmark_min将其短时间抑制，避免时延敏感型业务发生直接内存回收. 等待全局kswapd回收一定量的内存后，再解除资源消耗型任务的短时间抑制. |
-| Memcg后台异步回收 | Alibaba Cloud Linux 2增加了memcg粒度的后台异步回收功能. 该功能的实现不同于全局kswapd内核线程的实现，并没有创建对应的memcg kswapd内核线程，而是采用了workqueue机制来实现.  |
-| cgroup v1接口支持memcg QoS功能 | 内存子系统服务质量(memcg QoS)可以用来控制内存子系统(memcg)的内存使用量的保证(锁定)与限制. Alibaba Cloud Linux 2在4.19.91-18.al7内核版本，新增cgroup v1接口支持memcg QoS的相关功能.  |
-| Memcg Exstat功能  | Alibaba Cloud Linux 2在4.19.91-18.al7内核版本开始支持的Memcg Exstat(Extend/Extra)功能.  |
-| TCP-RT功能的配置说明 | Alibaba Cloud Linux 2在内核版本kernel-4.19.91-21.al7开始支持TCP层的服务监控功能(TCP-RT). |
+| 追踪 I O时延 | Alibaba Cloud Linux 2优化了IO时延分析工具iostat的原始数据来源/proc/diskstats接口，增加了对设备侧的读、写及特殊IO(discard)等耗时的统计，此外还提供了一个方便追踪IO时延的工具bcc. |
+| 检测文件系统和块层的 IO hang | IO hang是指在系统运行过程中，因某些IO耗时过长而引起的系统不稳定甚至宕机. 为了准确检测出IO hang，Alibaba Cloud Linux 2扩展核心数据结构，增加了在较小的系统开销下，快速定位并检测IO hang的功能.  |
+| Memcg 全局最低水位线分级 | Alibaba Cloud Linux 2新增了memcg全局最低水位线分级功能. 在global wmark_min的基础上，将资源消耗型任务的global wmark_min上移，使其提前进入直接内存回收. 将时延敏感型业务的global wmark_min下移，使其尽量避免直接内存回收. 这样当资源消耗型任务瞬间申请大量内存的时候，会通过上移的global wmark_min将其短时间抑制，避免时延敏感型业务发生直接内存回收. 等待全局kswapd回收一定量的内存后，再解除资源消耗型任务的短时间抑制. |
+| Memcg 后台异步回收 | Alibaba Cloud Linux 2 增加了 memcg 粒度的后台异步回收功能. 该功能的实现不同于全局kswapd内核线程的实现，并没有创建对应的memcg kswapd内核线程，而是采用了workqueue机制来实现.  |
+| cgroup v1 接口支持memcg Qo S功能 | 内存子系统服务质量(memcg QoS)可以用来控制内存子系统(memcg)的内存使用量的保证(锁定)与限制. Alibaba Cloud Linux 2在4.19.91-18.al7内核版本，新增cgroup v1接口支持memcg QoS的相关功能.  |
+| Memcg Exstat 功能  | Alibaba Cloud Linux 2 在4.19.91-18.al7内核版本开始支持的Memcg Exstat(Extend/Extra)功能.  |
+| TCP-RT 功能的配置说明 | Alibaba Cloud Linux 2在内核版本kernel-4.19.91-21.al7开始支持TCP层的服务监控功能(TCP-RT). |
 
 
 # 1 SCHEDULER
 -------
 
-## 1 SCHED_SLI
+## 1.1 SCHED_SLI
 -------
 
 
@@ -63,6 +65,8 @@ cpuacct 中引入了一些调度相关的 latency 的统计信息, 并用 histog
 
 
 ```cpp
+252315eb68be alinux: sched: get_sched_lat_count_idx optimization
+
 ab81d2d9f745 alinux: sched: Add cpu_stress to show system-wide task waiting
 c7462cfec178 alinux: sched: Fix wrong cpuacct_update_latency declaration
 
@@ -71,13 +75,7 @@ fa418988c52e alinux: sched: Finer grain of sched latency
 6dbaddaa480a alinux: sched: Add cgroup's scheduling latency histograms
 a055ee2ce27b alinux: sched: Add cgroup-level blocked time histograms
 76d98609f832 alinux: sched: Introduce cfs scheduling latency histograms
-bcaf8afd6270 alinux: sched: Add switch for scheduler_tick load tracking
-bb48b716f496 alinux: sched: Add switch for update_blocked_averages
 ```
-
-
-
-
 
 ## 1.3 CPUACCT STAT
 -------
@@ -106,7 +104,7 @@ c75529800bf2 alinux: sched: Introduce per-cgroup steal accounting
 06d7286d7c8e alinux: sched: add kconfig SCHED_SLI
 ```
 
-## 1.5 remove cpu_load array
+## 1.4 remove cpu_load array
 -------
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
@@ -128,10 +126,10 @@ bae5297970bb sched/fair: Disable LB_BIAS by default
 
 
 
-## 1.3 PSI
+## 1.5 PSI(Tracking pressure-stall information)
 -------
 
-### 1.3.1 PSI V1
+### 1.5.1 PSI V1
 -------
 
 ```cpp
@@ -146,8 +144,12 @@ eee77c97f8c4 sched/psi: Correct overly pessimistic size calculation
 a4a4fdd978a8 sched/psi: Reduce psimon FIFO priority
 ```
 
-### 1.3.2 PSI V2
+### 1.5.2 PSI core
 -------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2019/03/19 | Johannes Weiner <hannes@cmpxchg.org> | [psi: pressure stall monitors v6](https://lore.kernel.org/patchwork/patch/1052413) | NA | v6 ☑ [5.2-rc1](https://kernelnewbies.org/Linux_5.2) | [Patchwork](https://lore.kernel.org/patchwork/patch/1052413) |
 
 ```cpp
 c1cc09981b82 psi: introduce psi monitor
@@ -159,6 +161,11 @@ a310bf88c601 psi: track changed states
 6c479dfbe22f psi: rename psi fields in preparation for psi trigger addition
 b967851710f2 psi: make psi_enable static
 529aca9e758a psi: introduce state_mask to represent stalled psi states
+```
+
+
+```cpp
+https://lore.kernel.org/patchwork/patch/1057457/
 92f5c2aec4ce psi: clarify the units used in pressure files
 2ab1c71c198d psi: avoid divide-by-zero crash inside virtual machines
 c3a04b34efeb psi: clarify the Kconfig text for the default-disable option
@@ -166,13 +173,11 @@ c3a04b34efeb psi: clarify the Kconfig text for the default-disable option
 bcc32a75cf6b psi: fix reference to kernel commandline enable
 8570f9337114 psi: make disabling/enabling easier for vendor kernels
 d09e62bab8d0 kernel/sched/psi.c: simplify cgroup_move_task()
-d26da1947f48 psi: cgroup support
-8b2bf0799111 psi: pressure stall information for CPU, memory, and IO
 ```
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2020/04/03 | Johannes Weiner <hannes@cmpxchg.org> | [psi: pressure stall information for CPU, memory, and IO v4](https://lwn.net/Articles/815342) | NA | v4 ☑ [4.20-rc1](https://kernelnewbies.org/Linux_5.9#Memory_management) | [Patchwork](https://lore.kernel.org/patchwork/patch/978495) |
+| 2018/08/28 | Johannes Weiner <hannes@cmpxchg.org> | [psi: pressure stall information for CPU, memory, and IO v4](https://lwn.net/Articles/759781) | 引入 PSI 评估系统 CPU, MEMORY, IO 等资源的压力. | v4 ☑ [4.20-rc1](https://kernelnewbies.org/Linux_5.9#Memory_management) | [Patchwork](https://lore.kernel.org/patchwork/patch/978495) |
 
 ```cpp
 d26da1947f48 psi: cgroup support
@@ -182,67 +187,11 @@ ec035638f0c2 sched: introduce this_rq_lock_irq()
 3bf93774b166 sched: loadavg: make calc_load_n() public
 4ca637b41664 sched: loadavg: consolidate LOAD_INT, LOAD_FRAC, CALC_LOAD
 2dde6f773e87 delayacct: track delays from thrashing cache pages
-e2d3e3cb0d60 mm: workingset: tell cache transitions from workingset thrashing
-b027d193c877 mm: workingset: don't drop refault information prematurely
 ```
 
 
 
-```cpp
-abd7f977069d alinux: sched: Fix a branch prediction error in static_key
-a66f5804aa67 alinux: sched: Fix compiling error without CONFIG_FAIR_GROUP_SCHED
-252315eb68be alinux: sched: get_sched_lat_count_idx optimization
-```
-
-
-```cpp
-bcaf8afd6270 alinux: sched: Add switch for scheduler_tick load tracking
-bb48b716f496 alinux: sched: Add switch for update_blocked_averages
-d2440c99979d alinux: sched/fair: use static load in wake_affine_weight
-```
-
-
-```cpp
-9b83fd88733f sched: Avoid scale real weight down to zero
-70a23044f6b4 sched/fair: Fix race between runtime distribution and assignment
-798cfa768c74 alinux: cgroup: Fix task_css_check rcu warnings
-29846134c976 alinux: config: disable CONFIG_NFS_V3_ACL and CONFIG_NFSD_V3_ACL
-ac2b5c94f26e alinux: kernel: reap zombie process by specified pid
-e483e6eb1bbe alinux: Fix an potential null pointer reference in dump_header
-```
-
-```cpp
-8d23e73fb3fa spi: Add missing error handling for CS GPIOs
-a190de9d346a spi: cadence: Fix default polarity of native chipselect
-eaf88d303c4a spi: dw: Fix default polarity of native chipselect
-0eb44b65a65b spi: Support high CS when using descriptors
-cefd01bcd2b8 spi: dw: Convert to use CS GPIO descriptors
-9d887e907728 spi: davinci: Convert to use CS GPIO descriptors
-309d178ff4c7 spi: clps711x: Convert to use CS GPIO descriptors
-0ac22fd7a6b9 spi: cadence: Convert to use CS GPIO descriptors
-a9d0ece2e4ab spi: atmel: Convert to use CS GPIO descriptors
-c9f247fa0b08 spi: ath79: Convert to use CS GPIO descriptors
-7bc17db39cdd spi: Optionally use GPIO descriptors for CS GPIOs
-fcdf0c5d409e spi: spi-davinci: Don't error when SPI_CS_WORD and cs_gpio
-a1ae41c5e26b iio: adc: ti-ads7950: use SPI_CS_WORD to reduce CPU usage
-e24e01032e26 spi: spi-davinci: Add support for SPI_CS_WORD
-78c56e85abea spi: add software implementation for SPI_CS_WORD
-66f9ad76fcd8 spi: add new SPI_CS_WORD flag
-1ee223919a15 spi: davinci: Remove chip select GPIO pdata
-```
-
-
-```cpp
-0f30856944d4 sched/deadline: Fix bandwidth accounting at all levels after offline migration
-d29c7b8be599 x86/apic: Make apic_pending_intr_clear() more robust
-f381d3d2c39c sched/core: Fix CPU controller for !RT_GROUP_SCHED
-417cf53b4b85 sched/fair: Fix imbalance due to CPU affinity
-7cebdfa62f22 time/tick-broadcast: Fix tick_broadcast_offline() lockdep complaint
-64f3fb5d751c media: i2c: ov5640: Check for devm_gpiod_get_optional() error
-```
-
-
-## 2.2 burst 等
+## 1.6 burst
 -------
 
 
@@ -259,6 +208,54 @@ d9ba6d0880e3 alinux: sched: Introduce primitives for CFS bandwidth burst
 9d168f216486 alinux: sched: Defend cfs and rt bandwidth against overflow
 ```
 
+## 1.7 性能优化
+-------
+
+### 1.7.1 optimize overhead path
+-------
+
+调度中一些比较耗时的路径, 在特殊条件下直接跳过.
+
+*   跳过 entity_tick 中负载更新流程, 通过 /proc/sys/kernel/sched_tick_update_load 开启.
+
+```cpp
+bcaf8afd6270 alinux: sched: Add switch for scheduler_tick load tracking
+```
+
+*   跳过 update_blocked_averages, 通过 /proc/sys/kernel/sched_blocked_averages 控制.
+
+```cpp
+bb48b716f496 alinux: sched: Add switch for update_blocked_averages
+```
+
+*   引入 WA_STATIC_WEIGHT, wake_affine 比较负载的时候,
+
+```cpp
+d2440c99979d alinux: sched/fair: use static load in wake_affine_weight
+```
+
+### 1.7.2 other fix
+-------
+
+```cpp
+9b83fd88733f sched: Avoid scale real weight down to zero
+70a23044f6b4 sched/fair: Fix race between runtime distribution and assignment
+798cfa768c74 alinux: cgroup: Fix task_css_check rcu warnings
+29846134c976 alinux: config: disable CONFIG_NFS_V3_ACL and CONFIG_NFSD_V3_ACL
+ac2b5c94f26e alinux: kernel: reap zombie process by specified pid
+e483e6eb1bbe alinux: Fix an potential null pointer reference in dump_header
+```
+
+
+```cpp
+0f30856944d4 sched/deadline: Fix bandwidth accounting at all levels after offline migration
+f381d3d2c39c sched/core: Fix CPU controller for !RT_GROUP_SCHED
+417cf53b4b85 sched/fair: Fix imbalance due to CPU affinity
+```
+
+
+
+
 
 
 
@@ -266,19 +263,8 @@ d9ba6d0880e3 alinux: sched: Introduce primitives for CFS bandwidth burst
 -------
 
 
-## 2.1 MEMSLI
--------
 
-
-```cpp
-echo 1 > /proc/memsli/enabled
-
-mount -t tmpfs cgroup_root /sys/fs/cgroup
-mkdir -p /sys/fs/cgroup/memory
-mount -t cgroup -o memory memory /sys/fs/cgroup/memory
-```
-
-## 2.2 fast_cow
+## 2.1 fast_cow
 -------
 
 
@@ -303,7 +289,7 @@ c6580892cdf8 mm/swap_state: fix a data race in swapin_nr_pages
 c5d5eab5e376 mm, compaction: make capture control handling safe wrt interrupts
 ```
 
-## 2.3 workingset protection/detection on the anonymous LRU list
+## 2.2 task #30476868(workingset protection/detection on the anonymous LRU list)
 -------
 
 
@@ -313,6 +299,9 @@ c5d5eab5e376 mm, compaction: make capture control handling safe wrt interrupts
 
 
 ```cpp
+start_commit : 0d39b86c486699cc032ceb20be15aff3722dfccd
+end_commit   : bb09ee6c675d19a5b16bb90b1e62ec67933fa58d
+
 0d39b86c4866 mm/memcontrol.c: fix memory.stat item ordering
 92cd0e289a6b mm: memcontrol: fix missing suffix of workingset_restore
 4f4e3a58d84d mm: remove activate_page() from unuse_pte()
@@ -325,21 +314,23 @@ c3ade74e23bb mm/vmscan: protect the workingset on anonymous LRU
 75f61106fbd1 mm, memcg: add workingset_restore in memory.stat
 ```
 
-##
-
-
 ```cpp
 c3f32f75ac28 mm/memory: fix IO cost for anonymous page
 ```
 
-## mm: balance LRU lists based on relative thrashing v2
+## 2.3 task #31256938(mm: balance LRU lists based on relative thrashing v2)
 -------
+
+
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:---:|:----------:|:----:|
 | 2020/05/20 | Johannes Weiner <hannes@cmpxchg.org> | [mm: balance LRU lists based on relative thrashing v2](https://lore.kernel.org/patchwork/cover/1245255) | 基于相对抖动平衡 LRU 列表(重新实现了页面缓存和匿名页面之间的 LRU 平衡, 以便更好地与快速随机 IO 交换设备一起工作). : 在交换和缓存回收之间平衡的回收代码试图仅基于内存引用模式预测可能的重用. 随着时间的推移, 平衡代码已经被调优到一个点, 即它主要用于页面缓存, 并推迟交换, 直到 VM 处于显著的内存压力之下. 因为 commit a528910e12ec Linux 有精确的故障 IO 跟踪-回收错误页面的最终代价. 这允许我们使用基于 IO 成本的平衡模型, 当缓存发生抖动时, 这种模型更积极地扫描匿名内存, 同时能够避免不必要的交换风暴. | v1 ☑ [5.8-rc1](https://kernelnewbies.org/Linux_5.8#Memory_management) | [PatchWork v1](https://lore.kernel.org/patchwork/cover/685701)<br>*-*-*-*-*-*-*-* <br>[PatchWork v2](https://lore.kernel.org/patchwork/cover/1245255) |
 
 ```cpp
+start_commit : c3f32f75ac28d063d185a641e2f4aacb6db36dd5
+end_commit   : 59cec5300f4d8fe7498bf85ab53211b8bedf9b2c
+
 2c43e0162ddb mm/swap: fix for "mm: workingset: age nonresident information alongside anonymous pages"
 6f4e186fae1a mm: workingset: age nonresident information alongside anonymous pages
 
@@ -360,11 +351,11 @@ c9fe54195999 mm: fix LRU balancing effect of new transparent huge pages
 ```
 
 
+## 2.4 task #30476527
+-------
 
 
-
-
-## mm: fix page aging across multiple cgroups
+### 2.4.1 mm: fix page aging across multiple cgroups
 -------
 
 
@@ -378,12 +369,10 @@ af77f2589a48 mm: vmscan: enforce inactive:active ratio at the reclaim root
 0f68ac9a7339 mm: vmscan: move file exhaustion detection to the node level
 ```
 
-## mm: vmscan: cgroup-related cleanups
+### 2.4.2 mm: vmscan: cgroup-related cleanups
 -------
 
 一组 cleanup 也合入了, 我表示深刻的不理解. cleanup 没改变逻辑, 只是上代码更清晰. 合入的原因是啥
-
-
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:---:|:----------:|:----:|
@@ -391,8 +380,6 @@ af77f2589a48 mm: vmscan: enforce inactive:active ratio at the reclaim root
 
 
 ```cpp
-#30476527
-
 9f124d740916 mm: vmscan: harmonize writeback congestion tracking for nodes & memcgs
 47b5bb94e110 mm: vmscan: turn shrink_node_memcg() into shrink_lruvec()
 d144427dbe3d mm: vmscan: split shrink_node() into node part and memcgs part
@@ -403,9 +390,11 @@ c5e78e07aaa1 mm: vmscan: move inactive_list_is_low() swap check to the caller
 385269e8de19 mm: vmscan: simplify lruvec_lru_size()
 ```
 
+### 2.4.5 cleanup
+-------
+
 
 又一组 cleanup, 但是只合入了其中的 2 个补丁.
-
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:---:|:----------:|:----:|
@@ -417,16 +406,25 @@ f2116b7f9274 mm/workingset: remove unused @mapping argument in workingset_evicti
 4f466c091b62 mm/vmscan: remove unused lru_pages argument
 ```
 
-## enhance & fix memcg
+### 2.4.6 fix
 -------
-
-
-*   task #3047633
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:---:|:----------:|:----:|
-| 2019/02/28 | Johannes Weiner <hannes@cmpxchg.org> | [mm: memcontrol: memory.stat cost & correctness](https://lore.kernel.org/patchwork/cover/1046756) | NA | v1 ☑ [5.2-rc1](https://kernelnewbies.org/Linux_5.2#Memory_management) | [PatchWork v2](https://lore.kernel.org/patchwork/cover/1046756) |
-| 2019/04/12 | Andrey Ryabinin <aryabinin@virtuozzo.com> | [mm: memcontrol: memory.stat cost & correctness](https://lore.kernel.org/patchwork/cover/1061078) | NA | v1 ☑ [5.2-rc1](https://kernelnewbies.org/Linux_5.2#Memory_management) | [PatchWork v2](https://lore.kernel.org/patchwork/cover/1061078) |
+| 2019/01/29 | Johannes Weiner <hannes@cmpxchg.org> | [ mm: vmscan: do not iterate all mem cgroups for global direct reclaim](https://lore.kernel.org/patchwork/cover/1036823) | NA | v1 ☑ [5.5-rc1](https://kernelnewbies.org/Linux_5.5#Memory_management) | [PatchWork v1](https://lore.kernel.org/patchwork/cover/1036823) |
+| 2019/08/12 | Johannes Weiner <hannes@cmpxchg.org> | [mm: vmscan: do not share cgroup iteration between reclaimers](https://lore.kernel.org/patchwork/cover/1114038) | NA | v1 ☑ [5.5-rc1](https://kernelnewbies.org/Linux_5.5#Memory_management) | [PatchWork v1](https://lore.kernel.org/patchwork/cover/1114038) |
+
+```cpp
+91ae8e0cd768 mm: vmscan: do not share cgroup iteration between reclaimers
+1a8869efe950 mm: vmscan: do not iterate all mem cgroups for global direct reclaim
+54c1b36ed43a mm/memcontrol: update lruvec counters in mem_cgroup_move_account
+```
+
+## 2.5 task #3047633(enhance memcg statistic)
+-------
+
+### 2.5.1 fix
+-------
 
 
 ```cpp
@@ -439,14 +437,32 @@ bc0030faffe9 mm: memcontrol: flush percpu vmevents before releasing memcg
 2ddc019313c5 mm: memcontrol: flush percpu vmstats before releasing memcg
 7f75ebe21937 mm/memcontrol: fix wrong statistics in memory.stat
 e7643c241159 mm: memcontrol: don't batch updates of local VM stats and events
+```
 
-https://lore.kernel.org/patchwork/cover/1061078
+### 2.5.2 mm: memcontrol: memory.stat cost & correctness
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2019/04/12 | Andrey Ryabinin <aryabinin@virtuozzo.com> | [mm: memcontrol: memory.stat cost & correctness](https://lore.kernel.org/patchwork/cover/1061078) | NA | v1 ☑ [5.2-rc1](https://kernelnewbies.org/Linux_5.2#Memory_management) | [PatchWork v2](https://lore.kernel.org/patchwork/cover/1061078) |
+
+
+```cpp
 97276f710344 mm: memcontrol: fix NUMA round-robin reclaim at intermediate level
 d9d834314371 mm: memcontrol: fix recursive statistics correctness & scalabilty
 b82ffa7c06b9 mm: memcontrol: move stat/event counting functions out-of-line
 c24d85c9806d mm: memcontrol: make cgroup stats and events query API explicitly local
 98ab53a614a mm, memcg: rename ambiguously named memory.stat counters and functions
+```
 
+### 2.5.3 mm: memcontrol: clean up the LRU counts tracking
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2019/02/28 | Johannes Weiner <hannes@cmpxchg.org> | [mm: memcontrol: clean up the LRU counts tracking](https://lore.kernel.org/patchwork/cover/1046756) | NA | v1 ☑ [5.2-rc1](https://kernelnewbies.org/Linux_5.2#Memory_management) | [PatchWork v2](https://lore.kernel.org/patchwork/cover/1046756) |
+
+```cpp
 https://lore.kernel.org/patchwork/patch/1046756
 1009eea36499 mm: memcontrol: quarantine the mem_cgroup_[node_]nr_lru_pages() API
 b254f736aa06 mm: memcontrol: push down mem_cgroup_nr_lru_pages()
@@ -457,12 +473,11 @@ af2a43b06ab6 mm: memcontrol: track LRU counts in the vmstats array
 ```
 
 
-*   task #30476868
+## 2.6 task #30476868(mm: memcontrol: charge swapin pages on instantiation)
+-------
 
-| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:----:|:----:|:---:|:---:|:----------:|:----:|
-| 2020/05/08 | Johannes Weiner <hannes@cmpxchg.org> | [mm: memcontrol: charge swapin pages on instantiation1239175mboxseries](https://lore.kernel.org/patchwork/cover/1239175) | NA | v1 ☑ [5.8-rc1](https://kernelnewbies.org/Linux_5.8#Memory_management) | [PatchWork v2](https://lore.kernel.org/patchwork/cover/1239175) |
-
+### 2.6.1 NA
+-------
 
 ```cpp
 8d6fc8aaccf4 mm/memcontrol: fix OOPS inside mem_cgroup_get_nr_swap_pages()
@@ -472,6 +487,9 @@ fd3832463ad1 mm: do_swap_page(): fix up the error code
 b41e5c93ed50 mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg
 ```
 
+### 2.6.2 task #30476868(mm: memcontrol: charge swapin pages on instantiation)
+-------
+
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:---:|:----------:|:----:|
@@ -479,6 +497,9 @@ b41e5c93ed50 mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical me
 
 
 ```cpp
+start_commit : 653bf0ec41271db8a1d12db7d7d519f08028c10d
+end_commit   : a7edd50a319ad70ac5b4f7a9dc35a85eb8c23790
+
 4f9bab4b3a47 mm: memcontrol: update page->mem_cgroup stability rules
 5ff14606ff7e mm: memcontrol: delete unused lrucare handling
 f8fed034b2fe mm: memcontrol: document the new swap control behavior
@@ -500,69 +521,94 @@ d57c8cd555f8 mm: memcontrol: drop @compound parameter from memcg charging API
 c5cfeb3e2b18 mm: memcontrol: fix stat-corrupting race in charge moving
 ```
 
-*   task #30476527
+## 2.7 task #31315199
+-------
 
-```cpp
-https://lore.kernel.org/patchwork/patch/1114038
-91ae8e0cd768 mm: vmscan: do not share cgroup iteration between reclaimers
-1a8869efe950 mm: vmscan: do not iterate all mem cgroups for global direct reclaim
-54c1b36ed43a mm/memcontrol: update lruvec counters in mem_cgroup_move_account
-```
 
+### 2.7.1 swap.high cgroup v1
+-------
 
 ```cpp
 737b01dfdb63 alinux: mm: fix an global-out-of-bounds in __do_proc_doulongvec_minmax
 f5ac90f84be8 alinux: mm: add an interface to adjust the penalty time dynamically
 f8a6ae902811 alinux: mm: support swap.high for cgroup v1
+```
+
+
+### 2.7.2 memcg: Slow down swap allocation as the available space gets depleted
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2020/05/27 | Jakub Kicinski <kuba@kernel.org> | [memcg: Slow down swap allocation as the available space gets depleted](https://patchwork.kernel.org/project/linux-mm/cover/20200527195846.102707-1-kuba@kernel.org/) | NA | v6 ☑ [5.8-rc1](https://kernelnewbies.org/Linux_5.8#Memory_management) | [PatchWork v6](https://patchwork.kernel.org/project/linux-mm/cover/20200527195846.102707-1-kuba@kernel.org) |
+
+
+```CPP
 ad06f811534b mm/memcg: automatically penalize tasks with high swap use
 e1a2c040dcd7 mm/memcg: move cgroup high memory limit setting into struct page_counter
 49b0d8d106e8 mm/memcg: move penalty delay clamping out of calculate_high_delay()
 408975905823 mm/memcg: prepare for swap over-high accounting and penalty calculation
+```
+
+### 2.7.3 mm, memcg: cgroup v2 tunable load/store tearing fixes
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2020/03/12 | Jakub Kicinski <kuba@kernel.org> | [memcg: Slow down swap allocation as the available space gets depleted](https://lore.kernel.org/patchwork/cover/1208947) | NA | v1 ☑ [5.8-rc1](https://kernelnewbies.org/Linux_5.8#Memory_management) | [PatchWork v1](https://lore.kernel.org/patchwork/cover/1208947) |
+
+
+```cpp
 e8144debf849 mm, memcg: prevent memory.swap.max load tearing
 8ef892f0023b mm, memcg: prevent memory.min load/store tearing
 1793bc1dd739 mm, memcg: prevent memory.low load/store tearing
 4b9fe46dcedf mm, memcg: prevent memory.max load tearing
 e0a3c6cf7328 mm, memcg: prevent memory.high load/store tearing
+```
+
+### 2.7.4 fix
+-------
+
+```cpp
+https://lore.kernel.org/patchwork/patch/1218448
 1e005f35c32f mm, memcg: do not high throttle allocators based on wraparound
+
+https://lore.kernel.org/patchwork/patch/1208907
 b7671aa6d7ef mm, memcg: bypass high reclaim iteration for cgroup hierarchy root
+
+https://lore.kernel.org/patchwork/patch/1208954/
 044b9665cf59 mm, memcg: throttle allocators based on ancestral memory.high
 efe4ee97dd8f mm, memcg: fix corruption on 64-bit divisor in memory.high throttling
 
 ```
 
 
+
+
+
+## 2.8 MEMSLI(to #26424368)
+-------
+
 ```cpp
-b91b37989d2f alinux: mm: make the swap throttle more accurate
-9ff7293e6dc7 io_uring: add IORING_CQ_EVENTFD_DISABLED to the CQ ring flags
-1b6d35612c87 io_uring: add 'cq_flags' field for the CQ ring
-dc535ede525f KVM: x86: Expose fast short REP MOV for supported cpuid
-f61f407663fa x86/cpufeatures: Add support for fast short REP; MOVSB
-362c19f4f21d mm: proactive compaction
+echo 1 > /proc/memsli/enabled
+
+mount -t tmpfs cgroup_root /sys/fs/cgroup
+mkdir -p /sys/fs/cgroup/memory
+mount -t cgroup -o memory memory /sys/fs/cgroup/memory
 ```
 
-```cpp
-acfc4d580d12 mm: add kiocb_wait_page_queue_init() helper
-20076b974a61 btrfs: flag files as supporting buffered async reads
-4001914fbf5d xfs: flag files as supporting buffered async reads
-337bc770492d block: flag block devices as supporting IOCB_WAITQ
-8512e751229e fs: add FMODE_BUF_RASYNC
-079458e82cae mm: support async buffered reads in generic_file_buffered_read()
-006b5f9cbd87 mm: add support for async page locking
-9660b59fb7f5 mm: abstract out wake_page_match() from wake_page_function()
-f0e3c8506f52 mm: allow read-ahead with IOCB_NOWAIT set
-```
+
+
+
+cpuacct 中引入了一些调度相关的 latency 的统计信息, 并用 histograms 的方式输出.
+
+| 接口 | 描述 |  实现思路 | commit |
+|:---:|:----:|:-------:|:-------:|
+| memory.{direct_reclaim_global_latency,direct_reclaim_memcg_latency} | 全局直接回收 和 memcg直接回收的延迟 | 统计方式同 psi_memstall 等计数器. enqueue_entity 入队时开始计时, 出队时结束计时(set_next_entity 准备投入运行时, 也会出队.) | [83058e75601e alinux: mm, memcg: record latency of direct reclaim in every memcg](https://github.com/alibaba/cloud-kernel/commit/83058e75601ebc28df0f4ddfd344b8926bf5c178)  |
 
 ```cpp
-63de663eb5b9 mm, page_alloc: skip ->waternark_boost for atomic order-0 allocations
-
-b893a7d56134 alinux: mm: completely disable swapout with negative swappiness
-```
-
-```cpp
-7e6914774bc8 mm: do not allow MADV_PAGEOUT for CoW pages
-7d6cb94f148e alinux: mm: Pin code section of process in memory
-f579b6f96a5d alinux: kidled: make kidled_inc_page_age return latest page age
-3049621727e9 mm, vmstat: reduce zone->lock holding time by /proc/pagetypeinfo
+start_commit : 3d5ca29dd634b4628d7dc82423b2680718e6eb2a
+end_commit   : a5f32c14829c2cf52ffe8a2c25fd5e089c254d9c
 3d5ca29dd634 alinux: mm, memcg: optimize division operation with memsli counters
 055ed63be9b6 alinux: mm, memcg: rework memsli interfaces
 a2feb0da9d27 alinux: config: enable CONFIG_MEMSLI
@@ -578,19 +624,19 @@ fe673ccf92aa alinux: mm, memcg: adjust the latency probe point for memcg direct 
 83058e75601e alinux: mm, memcg: record latency of direct reclaim in every memcg
 ```
 
+## 2.9 to #28825456(Fragmentation avoidance improvements v5)
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/11/23 | Mel Gorman | [Fragmentation avoidance improvements v5](https://lore.kernel.org/patchwork/cover/1016503) | 伙伴系统页面分配时的反碎片化 | v5 ☑ 5.0-rc1 | [PatchWork v5](https://lore.kernel.org/patchwork/cover/1016503) |
+
+引入了一个 boost_watermark, 在内存分配马上出现碎片化的时候, 临时提高水线, 来触发内存回收. 该特性可以通过 /proc/sys/vm/watermark_boost_factor 来控制.
 
 ```cpp
-0c6a9eb5c0d9 mm/memory_hotplug: export generic_online_page()
-bd6aced3785a mm/page_alloc.c: memory hotplug: free pages as higher order
-5eee472829ec mm, memory_hotplug: deobfuscate migration part of offlining
-a6785cdc8d2b mm, memory_hotplug: __offline_pages fix wrong locking
-86f9a7e38183 mm, memory_hotplug: print reason for the offlining failure
-80aa4777f63f mm/page_isolation.c: convert SKIP_HWPOISON to MEMORY_OFFLINE
-5316eb6eaeb8 mm: only report isolation failures when offlining memory
-59df23d6178e mm: convert PG_balloon to PG_offline
-```
+start_commit : bd231c594ccec48ceb14a3e60cb7a98cd4607485
+end_commit   : 0b74ae7085010c785b521673f54c2ee87888834c
 
-```cpp
 bd231c594cce mm, page_alloc: reset the zone->watermark_boost early
 ab70cdb0d416 mm: limit boost_watermark on small zones
 fb4da0edd612 mm, vmscan: do not special-case slab reclaim when watermarks are boosted
@@ -602,6 +648,19 @@ ba16c9c89a82 mm, page_alloc: do not wake kswapd with zone lock held
 9bcadc70ec1c mm: reclaim small amounts of memory when an external fragmentation event occurs
 fd98e14a7fb4 mm: use alloc_flags to record if kswapd can wake
 039531d219fb mm, page_alloc: spread allocations across zones before introducing fragmentation
+```
+
+## 2.10 to #28718400(mm: zap pages with read mmap_sem in munmap for large mapping)
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/09/19 | Yang Shi <yang.shi@linux.alibaba.com> | [mm: zap pages with read mmap_sem in munmap for large mapping](https://lore.kernel.org/patchwork/cover/988505) | 伙伴系统页面分配时的反碎片化 | v11 ☑ 4.20-rc1 | [PatchWork v5](https://lore.kernel.org/patchwork/cover/988505) |
+
+```cpp
+start_commit : 0b74ae7085010c785b521673f54c2ee87888834c
+end_commit   : 6299dc1ee6eea0b0cf33eab9244d3e7c12529c4f
+
 0b74ae708501 mm/filemap.c: don't bother dropping mmap_sem for zero size readahead
 1d42b185abd1 mm: mmu_gather: remove __tlb_reset_range() for force flush
 2841653a229c filemap: drop the mmap_sem for all blocking operations
@@ -612,8 +671,19 @@ d33d61675b4d filemap: kill page_cache_read usage in filemap_fault
 7027c30559b9 mm: mmap: zap pages with read mmap_sem in munmap
 ```
 
+## 2.11 task #27327988(thp/khugepaged improvements and CoW semantics)
+-------
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/11/23 | Mel Gorman | [thp/khugepaged improvements and CoW semantics](https://lore.kernel.org/patchwork/cover/1225969) | NA | v4 ☑ 5.8-rc1 | [PatchWork v4](https://lore.kernel.org/patchwork/cover/1225969) |
+
 
 ```cpp
+start_commit : 56a432f556a5ee87668a1e100403414040ea49d9
+end_commit   : e7f3612bcbbd3d5a285aa0598cc6c44b6f597eaf
+
 56a432f556a5 alinux: mm: thp: add fast_cow switch
 e5b2cc5d25ee khugepaged: introduce 'max_ptes_shared' tunable
 33b1aabe69fb thp: change CoW semantics for anon-THP
@@ -626,18 +696,20 @@ ed3a7ca76842 khugepaged: do not stop collapse if less than half PTEs are referen
 ```
 
 
-```cpp
-f84e8fa05d0b alinux: add tcprt framework to kernel
-4dc24f040d81 alinux: quota: fix unused label warning in dquot_load_quota_inode()
-587136851af8 alinux: mm: fix undefined reference to printk_ratelimit_state
-79e7c57a1833 alinux: mm: fix undefined reference to mlock_fixup
-9ed6dd628860 configs: enable multipath for kernel selftests
-b68e287533d2 mm: return zero_resv_unavail optimization
-f85218310ce6 mm: zero remaining unavailable struct pages
-```
+
+## 2.12 to #26255339(Increase success rates and reduce latency of compaction v3)
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/11/23 | Mel Gorman | [Increase success rates and reduce latency of compaction v3](https://lore.kernel.org/patchwork/cover/1033508) | 提升内存规整的成功率, 同时降低其延迟. | v5 ☑ 5.0-rc1 | [PatchWork v5](https://lore.kernel.org/patchwork/cover/1033508) |
 
 
+
 ```cpp
+start_commit : 087f53fc12cc2176da2d744de8349307c42b73c3
+end_commit   : 9002dc1ac50f07a29a645c9f59745b6dd870a9c1
+
 087f53fc12cc mm, compaction: fully assume capture is not NULL in compact_zone_order()
 61d6ab62ef24 mm/compaction: add missing annotation for compact_lock_irqsave
 a5c295c0d816 mm, compaction: fix wrong pfn handling in __reset_isolation_pfn()
@@ -650,6 +722,8 @@ a5c295c0d816 mm, compaction: fix wrong pfn handling in __reset_isolation_pfn()
 7f458a1c7a1f mm/compaction.c: abort search if isolation fails
 19a4cd3c3a68 mm, page_alloc: always use a captured page regardless of compaction result
 99d1c41066f5 mm/compaction.c: correct zone boundary handling when resetting pageblock skip hints
+
+
 35d915bef612 mm, compaction: capture a page under direct compaction
 1edbee6126fb mm, compaction: be selective about what pageblocks to clear skip hints
 2de4a76844c6 mm, compaction: sample pageblocks for free pages
@@ -677,78 +751,66 @@ b725e2580207 alinux: Revert "mm/compaction.c: clear total_{migrate,free}_scanned
 ```
 
 
-```cpp
-fc0a63d8314c mm/page_reporting: add free page reporting documentation
-d2932bdb681c mm/page_reporting: add budget limit on how many pages can be reported per pass
-05c415bcf6f1 mm/page_reporting: rotate reported pages to the tail of the list
-671b4f344c85 virtio-balloon: add support for providing free page reports to host
-8256460e42d7 virtio-balloon: pull page poisoning config out of free page hinting
-2b197730c24f mm: introduce Reported pages
-06df03eda8de mm: add function __putback_isolated_page
-999c6c60ed70 mm: use zone and order instead of free area in free_list manipulators
-54c14b30a5e6 mm: move buddy list manipulations into helpers
-```
+## 2.13 memcg QoS
+-------
+
+OOM 优先级以及水线控制
 
 ```cpp
-bdfadacea5f2 mm: fix tick timer stall during deferred page init
-27393b9b965a alinux: mm, memcg: export workingset counters on memcg v1
-350f8ab8b835 bpf/sockmap: Read psock ingress_msg before sk_receive_queue
-4a5d2b59c6eb alinux: pci/iohub-sriov: Support for Alibaba PCIe IOHub SRIOV
 ec661706b1c9 alinux: mm, memcg: abort priority oom if with oom victim
 2061acd6c236 alinux: mm, memcg: account number of processes in the css
 7bf04cbb80f0 mm: memcontrol: use CSS_TASK_ITER_PROCS at mem_cgroup_scan_tasks()
 fb4c5ea64934 alinux: mm, memcg: fix soft lockup in priority oom
-```
 
 40969475355a alinux: mm, memcg: record latency of memcg wmark reclaim
-
-```cpp
-5c1675fcd785 tools headers uapi: Sync asm-generic/mman-common.h with the kernel
-88ec97eca1f9 mm: fix trying to reclaim unevictable lru page when calling madvise_pageout
-b6a18a3c8d9f mm: factor out common parts between MADV_COLD and MADV_PAGEOUT
-23757dccf53d mm: introduce MADV_PAGEOUT
-1af766e81e59 mm: introduce MADV_COLD
-a0747c913cc3 mm: change PAGEREF_RECLAIM_CLEAN with PAGE_REFRECLAIM
-27a374d1d293 tools build: Check if gettid() is available before providing helper
-2e38a0f2950e alinux: mm: add proc interface to control context readahead
 ```
 
+
 ```cpp
+a60721b9211a alinux: doc: use unified official project name Cloud Kernel
 5028e358bcd4 alinux: mm: oom_kill: show killed task's cgroup info in global oom
 7d41295cc97f alinux: mm: memcontrol: enable oom.group on cgroup-v1
 0c8648d9554d alinux: doc: alibaba: Add priority oom descriptions
 52e375fcb7a7 alinux: mm: memcontrol: introduce memcg priority oom
+
 1e91d392d9e8 alinux: kernel: cgroup: account number of tasks in the css and its descendants
+
 279df2ffcc1d alinux: doc: Add Documentation/alibaba/interfaces.rst
 ef467b9ddbc0 alinux: memcg: Account throttled time due to memory.wmark_min_adj
 60be0f545fac alinux: memcg: Introduce memory.wmark_min_adj
 63442ea9f838 alinux: memcg: Provide users the ability to reap zombie memcgs
 ```
 
+## 2.14 Introduce MADV_COLD and MADV_PAGEOUT
+-------
 
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2019/07/26 | Mel Gorman | [Introduce MADV_COLD and MADV_PAGEOUT](https://lore.kernel.org/patchwork/cover/1105783) |  | v7 ☑ 5.4-rc1 | [PatchWork v7](https://lore.kernel.org/patchwork/cover/1105783) |
 
 ```cpp
-ef467b9ddbc0 alinux: memcg: Account throttled time due to memory.wmark_min_adj
-60be0f545fac alinux: memcg: Introduce memory.wmark_min_adj
-63442ea9f838 alinux: memcg: Provide users the ability to reap zombie memcgs
-9ea9e641c56a alinux: mm: remove unused variable
-25f9e572a7da alinux: mm: kidled: fix frame-larger-than build warning
+88ec97eca1f9 mm: fix trying to reclaim unevictable lru page when calling madvise_pageout
+b6a18a3c8d9f mm: factor out common parts between MADV_COLD and MADV_PAGEOUT
+23757dccf53d mm: introduce MADV_PAGEOUT
+1af766e81e59 mm: introduce MADV_COLD
+a0747c913cc3 mm: change PAGEREF_RECLAIM_CLEAN with PAGE_REFRECLAIM
 ```
 
-83cd9d23197d alinux: jbd2: track slow handle which is preventing transaction committing
+
+
+## 2.15 Deferred page init improvements
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/11/05 | Alexander Duyck <alexander.h.duyck@linux.intel.com> | [Deferred page init improvements](https://lore.kernel.org/patchwork/cover/1007158) |  | v5 ☑ 5.2-rc1 | [PatchWork v5](https://lore.kernel.org/patchwork/cover/1007158) |
 
 
 ```cpp
-2e38a0f2950e alinux: mm: add proc interface to control context readahead
-10be0b372cac readahead: introduce context readahead algorithm
-```
+bdfadacea5f2 mm: fix tick timer stall during deferred page init
 
-```cpp
-9ea9e641c56a alinux: mm: remove unused variable
-a5c7cdabdd39 mm: thp: don't need care deferred split queue in memcg charge move path
-```
-
-```cpp
 f8502f809fbe mm/hotplug: make remove_memory() interface usable
 d2097173c4bd mm/memory_hotplug: make remove_memory() take the device_hotplug_lock
 25f9e572a7da alinux: mm: kidled: fix frame-larger-than build warning
@@ -758,6 +820,18 @@ b065ceca86fb mm: drop meminit_pfn_in_nid as it is redundant
 e23b0cb5fbb8 mm: use mm_zero_struct_page from SPARC on all 64b architectures
 ```
 
+
+## 2.16 CGROUP V1 ENHANCE
+-------
+
+引入 workingset 统计
+
+```cpp
+27393b9b965a alinux: mm, memcg: export workingset counters on memcg v1
+```
+
+引入 memory.{min,low,events,events.local}
+
 ```cpp
 3e655c51650c alinux: mm,memcg: export memory.{min,low} to cgroup v1
 942855175c77 alinux: mm,memcg: export memory.{events,events.local} to v1
@@ -765,10 +839,50 @@ e23b0cb5fbb8 mm: use mm_zero_struct_page from SPARC on all 64b architectures
 de7ca7468c5d mm, memcg: introduce memory.events.local
 0a198bb99132 mm, memcg: consider subtrees in memory.events
 7d36553bd29d alinux: mm,memcg: export memory.high to v1
+
+6202ab24c966 mm, memcg: throttle allocators when failing reclaim over memory.high
+```
+
+
+## 2.17 Devmap cleanups + arm64 support
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2019/05/23 | Alexander Duyck <alexander.h.duyck@linux.intel.com> | [Devmap cleanups + arm64 support](https://lore.kernel.org/patchwork/cover/1077792) | NA | v5 ☑ 5.3-rc1 | [PatchWork v5](https://lore.kernel.org/patchwork/cover/1077792) |
+
+
+```cpp
 f72a099beb96 arm64: mm: add missing PTE_SPECIAL in pte_mkdevmap on arm64
 1820ca632ed4 arm64: mm: implement pte_devmap support
 d7066a918302 mm: introduce ARCH_HAS_PTE_DEVMAP
 ```
+
+
+## 2.18 Make deferred split shrinker memcg aware
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2019/06/12 | Yang Shi <yang.shi@linux.alibaba.com> | [Make deferred split shrinker memcg aware](https://lore.kernel.org/patchwork/cover/1088698) | NA | v3 ☑ 5.4-rc1 | [PatchWork v3](https://lore.kernel.org/patchwork/cover/1088698) |
+
+
+```cpp
+dff2d64b00bc alinux: mm/thp: remove unused variable 'pgdata' in split_huge_page_to_list()
+e6ca020bc338 alinux: mm: thp: move deferred split queue to memcg's nodeinfo
+d651fcbb412a mm: thp: make deferred split shrinker memcg aware
+bd5596b4a854 mm: shrinker: make shrinker not depend on memcg kmem
+9b78918c7450 mm: move mem_cgroup_uncharge out of __page_cache_release()
+e65b696142fc mm: thp: extract split_queue_* into a struct
+```
+
+## 2.19 background reclaim
+-------
+
+
+| 文档链接 | 说明 |
+|:-------:|:----:|
+| Memcg后台异步回收 | Alibaba Cloud Linux 2 增加了 memcg 粒度的后台异步回收功能. 该功能的实现不同于全局kswapd内核线程的实现，并没有创建对应的 memcg kswapd 内核线程，而是采用了 workqueue机制来实现.  |
 
 ```cpp
 a29243e2e890 alinux: mm: Support kidled
@@ -780,26 +894,56 @@ c69c12cc10ba alinux: mm: vmscan: make memcg kswapd set memcg state to dirty or w
 49a3b46525f3 alinux: mm: vmscan: make it sane reclaim if cgwb_v1 is enabled
 ```
 
+## 2.20 persistent memory
+-------
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2019/02/25 |  Dave Hansen <dave.hansen@linux.intel.com> | [Introduce a device-dax bus-based device-model](https://lore.kernel.org/patchwork/cover/1004684) | NA | v5 ☑ 5.4-rc1 | [PatchWork v5](https://lore.kernel.org/patchwork/cover/1004684) |
+| 2019/02/25 |  Dave Hansen <dave.hansen@linux.intel.com> | [Allow persistent memory to be used like normal RAM](https://patchwork.kernel.org/project/linux-nvdimm/cover/20190225185727.BCBD768C@viggo.jf.intel.com) | NA | v5 ☑ 5.4-rc1 | [PatchWork v5](https://patchwork.kernel.org/project/linux-nvdimm/cover/20190225185727.BCBD768C@viggo.jf.intel.com) |
+| 2019/02/25 |  Dave Hansen <dave.hansen@linux.intel.com> | ["Hotremove" persistent memory](https://lore.kernel.org/patchwork/cover/1099159) | NA | v7 ☑ 5.3-rc1 | [PatchWork v7](https://lore.kernel.org/patchwork/cover/1099159) |
+
+
 ```cpp
+4447e30357dc device-dax: fix memory and resource leak if hotplug fails
+16980fcaaf4b device-dax: Add a 'resource' attribute
+6686a85960ef drivers/dax: Allow to include DEV_DAX_PMEM as builtin
+55a0741b0724 device-dax: "Hotplug" persistent memory for use like normal RAM
+
 a9b17a5ef499 mm/resource: Let walk_system_ram_range() search child resources
 567bed5755f7 mm/memory-hotplug: Allow memory resources to be children
 0297fb96e113 mm/resource: Move HMM pr_debug() deeper into resource code
 88e75600f8ca mm/resource: Return real error codes from walk failures
+
+be4a8d628f32 kernel, resource: check for IORESOURCE_SYSRAM in release_mem_region_adjustable
+87e09e0a8438 resource: Clean it up a bit
+536559fe8dc6 device-dax: Add a 'modalias' attribute to DAX 'bus' devices
+e444f72fd606 device-dax: Add a 'target_node' attribute
+1e16beccb215 device-dax: Auto-bind device after successful new_id
+a0a4e71fced5 acpi/nfit, device-dax: Identify differentiated memory with a unique numa-node
+
+c827e296e0d8 device-dax: Add /sys/class/dax backwards compatibility
+3f8deff3fcdf device-dax: Add support for a dax override driver
+c2df7a3ab1e0 device-dax: Move resource pinning+mapping into the common driver
+d491ea9e5af9 device-dax: Introduce bus + driver model
+265e1089853f device-dax: Start defining a dax bus model
+9910b7e1878e device-dax: Remove multi-resource infrastructure
+4f3e3b40414a device-dax: Kill dax_region base
+dcd3a988d44d device-dax: Kill dax_region ida
 ```
+
+## 2.21 x86/mm/cpa: Improve large page preservation handling
+-------
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/09/17 | Srivatsa S. Bhat <srivatsa.bhat@linux.vnet.ibm.com> | [x86/mm/cpa: Improve large page preservation handling](https://lore.kernel.org/patchwork/cover/987147) | 优化 页面属性(CPA) 代码中的 try_preserve_large_page(), 降低 CPU 消耗. | v3 ☑ 4.20-rc1 | [PatchWork RFC v3](https://lore.kernel.org/patchwork/cover/987147) |
+
 
 
 ```cpp
-6202ab24c966 mm, memcg: throttle allocators when failing reclaim over memory.high
-a6f54bb03faa mm/zsmalloc.c: fix a -Wunused-function warning
-4797417e5c19 x86/mm: Split vmalloc_sync_all()
-```
-
-a22c50279494 mm/swap_state.c: simplify total_swapcache_pages() with get_swap_device()
-8afafd92a359 mm, swap: fix race between swapoff and some swap operations
-0c22f660c7dc mm: swap: check if swap backing device is congested or not
-
-
-
 da57ae3d8f47 x86/mm/cpa: Prevent large page split when ftrace flips RW on kernel text
 9737e3ab95f7 x86/mm: Remove unused variable 'old_pte'
 d5c07e58eb5b x86/mm/cpa: Avoid the 4k pages check completely
@@ -813,32 +957,171 @@ ea280ec727c9 x86/mm/cpa: Allow range check for static protections
 fcbec5ea6634 x86/mm/cpa: Rework static_protections()
 f6e4e6e88f6b x86/mm/cpa: Split, rename and clean up try_preserve_large_page()
 52939d0dbbea x86/mm/init32: Mark text and rodata RO in one go
+```
 
 
 
+## 2.22 SIMPLE OPTIMIZE
+-------
+
+### task #31072503
+-------
+
+
+
+```cpp
+362c19f4f21d mm: proactive compaction
+```
+
+
+
+### to #26809468
+-------
+
+```cpp
+start_commit : b68e287533d2d3e802d56c8355d8ff23647f0029
+end_commit   : 5be663e3cfcf50de91186799324ea7be49c3988b
+b68e287533d2 mm: return zero_resv_unavail optimization
+f85218310ce6 mm: zero remaining unavailable struct pages
+```
+
+
+### to #29931646
+-------
+
+```cpp
+63de663eb5b9 mm, page_alloc: skip ->waternark_boost for atomic order-0 allocations
+
+b893a7d56134 alinux: mm: completely disable swapout with negative swappiness
+```
+
+### task #25182720
+-------
+
+```cpp
+7e6914774bc8 mm: do not allow MADV_PAGEOUT for CoW pages
+```
+
+### to #26782094
+-------
+
+```cpp
+7d6cb94f148e alinux: mm: Pin code section of process in memory
+```
+
+### enable_context_readahead
+-------
+
+
+*   [自研]增加了一个 /proc/sys/vm/enable_context_readahead 来关闭 [10be0b372cac readahead: introduce context readahead algorithm]()
+
+```cpp
+2e38a0f2950e alinux: mm: add proc interface to control context readahead
+```
+
+
+
+
+### vmalloc_sync_all
+-------
+
+*   优化 vmalloc_sync_all, 降低 CPU 占用.
+
+```cpp
+4797417e5c19 x86/mm: Split vmalloc_sync_all()
+```
+
+a22c50279494 mm/swap_state.c: simplify total_swapcache_pages() with get_swap_device()
+8afafd92a359 mm, swap: fix race between swapoff and some swap operations
+0c22f660c7dc mm: swap: check if swap backing device is congested or not
+```
+
+
+
+```cpp
+https://lore.kernel.org/patchwork/patch/1143173/
+8e6bf4bc3a88 mm: memcontrol: fix network errors from failing __GFP_ATOMIC charges
+```
+
+
+```cpp
 e2d3e3cb0d60 mm: workingset: tell cache transitions from workingset thrashing
 b027d193c877 mm: workingset: don't drop refault information prematurely
+```
 
-
-
-8e358a027611 dump_stack: avoid the livelock of the dump_lock
+```cpp
+https://lore.kernel.org/patchwork/cover/1144285
 6c944fc51f0a mm, vmstat: hide /proc/pagetypeinfo from normal users
+```
+
+```cpp
+https://lore.kernel.org/patchwork/patch/1143667/
 2686f71fdcc5 mm: thp: handle page cache THP correctly in PageTransCompoundMap
+```
+
+
+```cpp
+https://lore.kernel.org/patchwork/cover/1141598/
 7dfa51beacac mm, meminit: recalculate pcpu batch and high limits after init completes
-8e6bf4bc3a88 mm: memcontrol: fix network errors from failing __GFP_ATOMIC charges
+```
 
 
+
+```cpp
+8e358a027611 dump_stack: avoid the livelock of the dump_lock
+```
+
+```cpp
+https://lore.kernel.org/patchwork/cover/1111873
 30cff8ab6ed7 mm/memory-failure: poison read receives SIGKILL instead of SIGBUS if mmaped more than once
-91eec7692b94 hugetlbfs: don't access uninitialized memmaps in pfn_range_valid_gigantic()
-f712e3066f75 mm/page_owner: don't access uninitialized memmaps when reading /proc/pagetypeinfo
-bb6932c5a473 mm/slub: fix a deadlock in show_slab_objects()
-9792afbd630b mm/memory-failure.c: don't access uninitialized memmaps in memory_failure()
-01a44055a48a mmc: cqhci: Commit descriptors before setting the doorbell
-6ea856efef9f fs/proc/page.c: don't access uninitialized memmaps in fs/proc/page.c
+```
 
+```cpp
+https://lore.kernel.org/patchwork/cover/1137389
+https://lore.kernel.org/patchwork/patch/1138644
+91eec7692b94 hugetlbfs: don't access uninitialized memmaps in pfn_range_valid_gigantic()
+https://lore.kernel.org/patchwork/patch/1139559
+f712e3066f75 mm/page_owner: don't access uninitialized memmaps when reading /proc/pagetypeinfo
+```
 
 # 3 IO
 -------
+
+## 3.1 to #29998112(block: provide plug based way of signaling forced no-wait semantics)
+-------
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/09/17 | Jens Axboe <axboe@kernel.dk> | [block: provide plug based way of signaling forced no-wait semantics](https://lore.kernel.org/patchwork/cover/1258166) | NA | v3 ☑ 5.9-rc1 | [PatchWork v1](https://lore.kernel.org/patchwork/cover/1258166) |
+
+
+```cpp
+start_commit : bcd36457603b9cc60d7cb12af33f49c26205b94d
+end_commit   : f708a4f2f70022106160e9af5ecdf0445c3a7464
+bcd36457603b ext4: flag as supporting buffered async reads
+871cd85992b8 io_uring: fix async buffered reads when readahead is disabled
+0a026341cfd2 io_uring: don't unconditionally set plug->nowait = true
+2cd661819148 io_uring: don't re-setup vecs/iter in io_resumit_prep() is already there
+bcd91b165fa1 io_uring: hold 'ctx' reference around task_work queue + execute
+9742690c0ffb io_uring: fix NULL-mm for linked reqs
+4f3438721367 io_uring: support true async buffered reads, if file provides it
+acfc4d580d12 mm: add kiocb_wait_page_queue_init() helper
+20076b974a61 btrfs: flag files as supporting buffered async reads
+4001914fbf5d xfs: flag files as supporting buffered async reads
+337bc770492d block: flag block devices as supporting IOCB_WAITQ
+8512e751229e fs: add FMODE_BUF_RASYNC
+079458e82cae mm: support async buffered reads in generic_file_buffered_read()
+006b5f9cbd87 mm: add support for async page locking
+9660b59fb7f5 mm: abstract out wake_page_match() from wake_page_function()
+f0e3c8506f52 mm: allow read-ahead with IOCB_NOWAIT set
+13e75b06830b io_uring: re-issue block requests that failed because of resources
+1d658dc411bd io_uring: catch -EIO from buffered issue request failure
+c20a670594c7 io_uring: always plug for any number of IOs
+f44268f81295 block: provide plug based way of signaling forced no-wait semantics
+3c8cefc2377c block: Disable write plugging for zoned block devices
+```
+
 
 ```cpp
 48f9a1c0d29c alinux: dm: add support for IO polling
@@ -946,6 +1229,7 @@ a7d3a2158cb5 alinux: Revert "x86/tsc: Try to adjust TSC if sync test fails"
 | 2021/01/15 | Yi Tao <escape@linux.alibaba.com> | [add CONFIG_CGROUP_CACHE](https://github.com/gatieme/linux/commit/021d0414e9c5c593431b6b448a73b465a0e9662b) | 自研特性, 加速 cgroup 的创建, 目前已经支持 memcg, cpu, cpuacct 等子 subsysten, 同时接管 cgroup kernfs node 的创建.
  | 自研 NA | [COMMIT](https://github.com/gatieme/linux/commit/021d0414e9c5c593431b6b448a73b465a0e9662b) |
 
+其中引入了 [5b71d2f57720 alinux: cgroup: introduce cgroup_limit]() 引入了一个参数 /proc/sys/kernel/cgroup_limit 来限制各个 subsystem 的 cache size.
 
 
 ```cpp
@@ -964,7 +1248,7 @@ bea1123abee6 alinux: cgroup: introduce cache struct and function
 
 
 
-## 3.2 rich container
+## 3.2 RICH CONTAINER
 -------
 
 
@@ -1035,7 +1319,19 @@ c3694064258c virtiofs: Do not end request in submission context
 ```
 
 
+
+## task #29077503(virtio-mem: paravirtualized memory)
+-------
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2019/09/09 | Jakub Kicinski <kuba@kernel.org> | [mm/memory_hotplug: Export generic_online_page()](https://lore.kernel.org/patchwork/cover/1125874) | NA | v1 ☑ [5.5-rc1](https://kernelnewbies.org/Linux_5.5#Memory_management) | [PatchWork v1](https://lore.kernel.org/patchwork/cover/1125874) |
+| 2020/05/07 | Johannes Weiner <hannes@cmpxchg.org> | [virtio-mem: paravirtualized memory](https://lore.kernel.org/patchwork/cover/1237689) | NA | v2 ☑ [5.8-rc1](https://kernelnewbies.org/Linux_5.8#Memory_management) | [PatchWork v4](https://lore.kernel.org/patchwork/cover/1237689) |
+
 ```cpp
+start_commit : 1e5d7fb5446ca564cd5be1b0f555b8f766b3aacf
+end_commit   : add0d5e477f6fe01e7ab1556590bb47fa12a13e2
 1e5d7fb5446c virtio_mem: convert device block size into 64bit
 64f827bfa426 mm/memory_hotplug: set node_start_pfn of hotadded pgdat to 0
 99d68412c05e virtio-mem: silence a static checker warning
@@ -1055,7 +1351,48 @@ c062d118b6c4 mm/memory_hotplug: Introduce offline_and_remove_memory()
 91f30ea2ed5c virtio-mem: Paravirtualized memory hotunplug part 1
 c9f36272db0c virtio-mem: Allow to specify an ACPI PXM as nid
 d3997ceb10d2 virtio-mem: Paravirtualized memory hotplug
+
+0c6a9eb5c0d9 mm/memory_hotplug: export generic_online_page()
+bd6aced3785a mm/page_alloc.c: memory hotplug: free pages as higher order
+5eee472829ec mm, memory_hotplug: deobfuscate migration part of offlining
+a6785cdc8d2b mm, memory_hotplug: __offline_pages fix wrong locking
+86f9a7e38183 mm, memory_hotplug: print reason for the offlining failure
+80aa4777f63f mm/page_isolation.c: convert SKIP_HWPOISON to MEMORY_OFFLINE
+5316eb6eaeb8 mm: only report isolation failures when offlining memory
+59df23d6178e mm: convert PG_balloon to PG_offline
 ```
+
+# to #26589565(mm / virtio: Provide support for free page reporting)
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2020/02/11 | Jakub Kicinski <kuba@kernel.org> | [mm / virtio: Provide support for free page reporting](https://lore.kernel.org/patchwork/cover/1192763) | NA | v17 ☐ 5.7-rc1 | [PatchWork v17](https://lore.kernel.org/patchwork/cover/1192763) |
+
+
+```cpp
+start_commit : 8dcc27c2fa7dd97f3fa9297333005731c45bb314
+end_commit   : 6909b2272d1f2a5e2099e819c13dccfd694a105e
+8dcc27c2fa7d virtio-pci: check name when counting MSI-X vectors
+f3018b29018b virtio-balloon: initialize all vq callbacks
+fc0a63d8314c mm/page_reporting: add free page reporting documentation
+d2932bdb681c mm/page_reporting: add budget limit on how many pages can be reported per pass
+05c415bcf6f1 mm/page_reporting: rotate reported pages to the tail of the list
+671b4f344c85 virtio-balloon: add support for providing free page reports to host
+8256460e42d7 virtio-balloon: pull page poisoning config out of free page hinting
+2b197730c24f mm: introduce Reported pages
+06df03eda8de mm: add function __putback_isolated_page
+999c6c60ed70 mm: use zone and order instead of free area in free_list manipulators
+54c14b30a5e6 mm: move buddy list manipulations into helpers
+006251135daa alinux: list: add list_is_first() and list_rotate_to_front()
+65bae25e4f1d virtio-balloon: Fix memory leak when unloading while hinting is in progress
+99cb3f49e59f virtio: don't allocate vqs when names[i] = NULL
+a98451caa561 virtio_pci: use queue idx instead of array idx to set up the vq
+67595fa8f831 virtio-balloon: VIRTIO_BALLOON_F_PAGE_POISON
+1b7f4f070910 mm/page_poison: expose page_poisoning_enabled to kernel modules
+0db17e1138de virtio-balloon: VIRTIO_BALLOON_F_FREE_PAGE_HINT
+```
+
 
 ```cpp
 414ddd93b45c namei: LOOKUP_{IN_ROOT,BENEATH}: permit limited ".." resolution
@@ -1360,4 +1697,13 @@ https://lore.kernel.org/patchwork/patch/1266592
 
 ```cpp
 8d6fc8aaccf4 mm/memcontrol: fix OOPS inside mem_cgroup_get_nr_swap_pages()
+```
+
+
+# Unixbench
+-------
+
+
+```cpp
+8f93d2cad4c4 ovl: inherit SB_NOSEC flag from upperdir
 ```
