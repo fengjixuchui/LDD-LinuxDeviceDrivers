@@ -76,10 +76,10 @@ CAS 的原理是, 将旧值与一个期望值进行比较, 如果相等, 则更�
 
 2.  等待该 spinlock 的 CPU B 不断地把 「期望的值」 1 和 「实际的值」 (1 或者 0)进行比较(compare), 当它们相等时, 说明持有 spinlock 当前未被任何人持有(持有的 CPU 已经释放了锁或者锁一直未被任何人持有), 那么试图获取 spinlock 的 CPU 就会尝试将 "new" 的值(0) 写入 "p"(swap), 以表明自己成为占有了 spinlock, 成为新的 owner.
 
-这里只用了 0 和 1 两个值来表示 spinlock 的状态, 没有充分利用 spinlock 作为整形变量的属性, 为此还有一种衍生的方法, 可以判断当前 spinlock 的争用情况. 具体规则是: 每个 CPU 在试图获取一个 spinlock 时, 都会将这个 spinlock 的值减1, 所以这个值可以是负数，而「负」的越多（负数的绝对值越大），说明当前的争抢越激烈。
+这里只用了 0 和 1 两个值来表示 spinlock 的状态, 没有充分利用 spinlock 作为整形变量的属性, 为此还有一种衍生的方法, 可以判断当前 spinlock 的争用情况. 具体规则是: 每个 CPU 在试图获取一个 spinlock 时, 都会将这个 spinlock 的值减1, 所以这个值可以是负数, 而「负」的越多(负数的绝对值越大), 说明当前的争抢越激烈.
 
 存在的问题
-基于CAS的实现速度很快，尤其是在没有真正竞态的情况下（事实上大部分时候就是这种情况）， 但这种方法存在一个缺点：它是「不公平」的。 一旦spinlock被释放，第一个能够成功执行CAS操作的CPU将成为新的owner，没有办法确保在该spinlock上等待时间最长的那个CPU优先获得锁，这将带来延迟不能确定的问题。
+基于CAS的实现速度很快, 尤其是在没有真正竞态的情况下(事实上大部分时候就是这种情况),  但这种方法存在一个缺点：它是「不公平」的.  一旦spinlock被释放, 第一个能够成功执行CAS操作的CPU将成为新的owner, 没有办法确保在该spinlock上等待时间最长的那个CPU优先获得锁, 这将带来延迟不能确定的问题.
 
 ## 1.2 ticket LOCK
 -------
@@ -138,6 +138,16 @@ spinlock 的值出现变化时, 所有试图获取这个 spinlock 的 CPU 都需
 | 2017/04/10 | Yury Norov <ynorov@caviumnetworks.com> | [arm64: queued spinlocks and rw-locks](http://patches.linaro.org/cover/98492) | ARM64 架构 qspinlocks 的实现. | RFC ☐ | [PatchWork RFC](https://patchwork.kernel.org/project/linux-arm-kernel/patch/1491860104-4103-4-git-send-email-ynorov@caviumnetworks.com)<br>*-*-*-*-*-*-*-* <br>[LORE 0/3](https://lore.kernel.org/lkml/20170503145141.4966-1-ynorov@caviumnetworks.com) |
 | 2018/04/26 | Will Deacon <will.deacon@arm.com> | [kernel/locking: qspinlock improvements](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=baa8c6ddf7be33f2b0ddeb68906d668caf646baa) | 优化并实现了 qspinlocks 的通用框架. | v3 ☑ 4.18-rc1 | [LWN](https://lwn.net/Articles/751105), [LORE v3,00/14](https://lore.kernel.org/all/1524738868-31318-1-git-send-email-will.deacon@arm.com) |
 | 2018/06/26 | Will Deacon <will.deacon@arm.com> | [Hook up qspinlock for arm64](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=5d168964aece0b4a41269839c613683c5d7e0fb2) | ARM64 架构 qspinlocks 的实现. | v1 ☑ 4.19-rc1 | [LORE 0/3](https://lore.kernel.org/linux-arm-kernel/1530010812-17161-1-git-send-email-will.deacon@arm.com) |
+
+
+### 1.4.3
+-------
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/06/21 | guoren@kernel.org <guoren@kernel.org> | [riscv: Add qspinlock support](https://lore.kernel.org/all/20220621144920.2945595-1-guoren@kernel.org) | TODO | v6 ☐☑✓ | [LORE v5](https://lore.kernel.org/lkml/20220620155404.1968739-1-guoren@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/2](https://lore.kernel.org/all/20220621144920.2945595-1-guoren@kernel.org) |
+
 
 ## 1.5 PV_SPINLOCK
 -------
@@ -233,11 +243,22 @@ PV_SPINLOCKS 的合入引起了[性能问题 Performance overhead of paravirt_op
 ## 2.2 PER-CPU RWSEM
 -------
 
+percpu rw 信号量是一种新的读写信号量设计, 针对读取锁定进行了优化.
+
+传统的读写信号量的问题在于, 当多个内核读取锁时, 包含信号量的 cache-line 在内核的 L1 缓存之间弹跳, 导致性能下降. 锁定读取速度非常快, 它使用 RCU, 并且避免了锁定和解锁路径中的任何原子指令. 另一方面, 写入锁定非常昂贵, 它调用 synchronize_rcu () 可能需要数百毫秒. 使用 RCU 优化 rw-lock 的想法是由 Eric Dumazet <eric.dumazet@gmail.com>. 代码由 Mikulas Patocka <mpatocka@redhat.com> 编写
+
+锁是用 “struct percpu_rw_semaphore” 类型声明的. 锁被初始化为 percpu_init_rwsem, 它在成功时返回 0, 在分配失败时返回 -ENOMEM. 必须使用 percpu_free_rwsem 释放锁以避免内存泄漏.
+
+使用 percpu_down_read 和 percpu_up_read 锁定读取, 使用 percpu_down_write 和 percpu_up_write 锁定写入.
+
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2015/06/22 | Peter Zijlstra <peterz@infradead.org> | [percpu rwsem -v2](https://lore.kernel.org/all/20150622121623.291363374@infradead.org) | TODO | v2 ☐☑✓ | [LORE v2,0/13](https://lore.kernel.org/all/20150622121623.291363374@infradead.org) |
 | 2012/08/31 | Mikulas Patocka <mpatocka@redhat.com> | [Fix a crash when block device is read and block size is changed at the same time](https://lore.kernel.org/patchwork/cover/323377) | NA | v2 ☑ 3.8-rc1 | [PatchWork 0/4](https://lore.kernel.org/patchwork/cover/323377) |
 | 2020/11/07 | Oleg Nesterov <oleg@redhat.com> | [percpu_rw_semaphore: reimplement to not block the readers unnecessarily](https://lore.kernel.org/patchwork/cover/1342950) | NA | v2 ☑ 3.8-rc1 | [PatchWork v2,0/5](https://lore.kernel.org/patchwork/cover/339247), [PatchWork](https://lore.kernel.org/patchwork/cover/339702)<br>*-*-*-*-*-*-*-* <br>[PatchWork](https://lore.kernel.org/patchwork/patch/339064) |
 | 2020/11/18 | Oleg Nesterov <oleg@redhat.com> | [percpu_rw_semaphore: lockdep + config](https://lore.kernel.org/patchwork/cover/1342950) | NA | v1 ☑ 3.8-rc1 | [PatchWork 0/3](https://lore.kernel.org/patchwork/cover/341521) |
+| 2020/01/31 | Peter Zijlstra <peterz@infradead.org> | [locking: Percpu-rwsem rewrite](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=41f0e29190ac9e38099a37abd1a8a4cb1dc21233) | TODO | v1 ☐☑✓ | [LORE v1,0/7](https://lore.kernel.org/all/20200131150703.194229898@infradead.org) |
+
 
 # 3 MUTEX
 -------
@@ -301,8 +322,71 @@ PV_SPINLOCKS 的合入引起了[性能问题 Performance overhead of paravirt_op
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2015/08/06 | Will Deacon <will.deacon@arm.com> | [Add generic support for relaxed atomics](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=0ca326de7aa9cb253db9c1a3eb3f0487c8dbf912) | ARM64 引入 relaxed atomics. | v5 ☑ 4.3-rc1 | [LORE 0/5](https://lore.kernel.org/lkml/1436790687-11984-1-git-send-email-will.deacon@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/7](https://lore.kernel.org/lkml/1437060758-10381-1-git-send-email-will.deacon@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/8](https://lore.kernel.org/all/1438880084-18856-1-git-send-email-will.deacon@arm.com) |
 
+# 10 LOCKDEP
+-------
 
-# 10 深入理解并行编程
+
+## 10.1 LOCKDEP
+-------
+
+Lockdep 跟踪锁的获取顺序, 以检测死锁, 以及 IRQ 和 IRQ 启用/禁用状态, 并考虑故障现场分析或获取. Lockdep 在检测到并报告死锁后应立即关闭, 因为由于设计复杂, 检测后数据结构和算法不可重用.
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2006/07/03 | Paul Mackerras <paulus@samba.org> | [Add generic support for relaxed atomics](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=829035fd709119d9def124a6d40b94d317573e6f) | LOCKDEP 死锁检测机制. | v5 ☑ 2.6.18-rc1 | [LORE 0/5](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=829035fd709119d9def124a6d40b94d317573e6f) |
+
+
+参见 [[PATCH RFC v6 00/21] DEPT(Dependency Tracker)](https://lore.kernel.org/lkml/1651652269-15342-1-git-send-email-byungchul.park@lge.com), 分析了 Lockdep 的问题以及引入 Dependency Tracker 的背景和设计思路.
+
+但是 Lockdep 依旧有太多问题
+
+1.  对于与实际锁无关的等待和事件, 比如时间等待等机制, 如果无法完成, 最终也会导致死锁. 但是 Lockdep 只能通过分析锁的获取顺序来完成思索检测, 对于与实际锁无关的等待和事件, 无法识别和处理, 只能通过过模拟锁来完成.
+
+2.  更糟糕的是, Lockdep 存在太多假阳性检测, 这可能阻止了本身更有价值的进一步检测.
+
+3.  此外, 通过跟踪获取顺序, 它不能正确地处理读锁和交叉事件, 例如 wait_for_completion ()/complete () 用于死锁检测. Lockdep 不再是实现这一目的的好工具.
+
+
+## 10.2 Crossrelease Feature
+-------
+
+不仅是锁操作, 而且任何导致等待或旋转的操作都可能导致死锁, 除非它最终被某人“释放”. 这里重要的一点是, 等待或旋转必须由某人"释放". 但是很明显 LOCKDEP 无法检测到此类问题.
+
+因此社区开发者 Byungchul Park 开发了交叉释放功能(Crossrelease Feature), 使得 LOCKDEP 不仅可以检查典型锁的依赖关系并检测死锁可能性, 还可以检查 lock_page()、wait_for_xxx() 等等待事件, 这些锁/等待可能在任何上下文中被释放.
+
+这个特性最终经历了 v8 之后在 v4.14 被合入主线. 一开始的时候它报告很多有价值的隐藏死锁问题, 但随后也报告了诸多假阳性的死锁. 当然, 没有人喜欢 Lockdep 的假阳性报告, 因为它使 Lockdep 停止, 阻止报告更多的真实问题.
+
+这造成越来越多地开发者直接关闭甚至不再使用 LOCKDEP 特性. 最终 Ingo 跟作者讨论后, 在 v4.15 回退了交叉释放功能. 参见 [locking/lockdep: Remove the cross-release locking checks](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e966eaeeb623f09975ef362c2866fae6f86844f9).
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2017/08/07 | Byungchul Park <byungchul.park@lge.com> | [lockdep: Implement crossrelease feature](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=ef0758dd0fd70b98b889af26e27f003656952db8) | 交叉释放功能(Crossrelease Feature). | v8 ☑✓ 4.14-rc1 | [LORE v8,0/14](https://lore.kernel.org/all/1502089981-21272-1-git-send-email-byungchul.park@lge.com) |
+| 2017/12/13 | Ingo Molnar <mingo@kernel.org> | [locking/lockdep: Remove the cross-release locking checks](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e966eaeeb623f09975ef362c2866fae6f86844f9) | 回退交叉释放功能(Crossrelease Feature) | v1 ☑✓ 4.15-rc4 | [LORE](https://lore.kernel.org/all/20171213104617.7lffucjhaa6xb7lp@gmail.com) |
+
+
+## 10.3 Dependency Tracker
+-------
+
+
+接着 2022 年, 原交叉释放功能(Crossrelease Feature)的作者 Byungchul Park 提出了新的解决方案 Dept(依赖跟踪器), 它专注于等待和事件本身, 跟踪等待和事件, 并在任何事件永远无法到达时报告它.
+
+1.  以正确的方式处理读锁.
+
+2.  适用于任何等待和事件也就是交叉事件.
+
+3.  报告多次后仍可继续工作.
+
+4.  提供简单直观的 api.
+
+5.  做了依赖检查器应该做的事情.
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/05/04 | Byungchul Park <byungchul.park@lge.com> | [DEPT(Dependency Tracker)](https://lore.kernel.org/all/1651652269-15342-1-git-send-email-byungchul.park@lge.com) | 一种死锁检测工具, 通过跟踪等待/事件而不是锁的获取顺序来检测死锁的可能性, 试图覆盖所有锁(spinlock, mutex, rwlock, seqlock, rwsem)以及同步机制(包括 wait_for_completion, PG_locked,  PG_writeback, swait/wakeup 等). | v6 ☐☑✓ | [RFC 00/14](https://lore.kernel.org/lkml/1643078204-12663-1-git-send-email-byungchul.park@lge.com)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/21](https://lore.kernel.org/all/1651652269-15342-1-git-send-email-byungchul.park@lge.com) |
+
+
+# 11 深入理解并行编程
 -------
 
 Paul McKenney's parallel programming book, [LWN](https://lwn.net/Articles/421425), [PerfBook](https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html), [cgit, perfbook](https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/perfbook.git/)

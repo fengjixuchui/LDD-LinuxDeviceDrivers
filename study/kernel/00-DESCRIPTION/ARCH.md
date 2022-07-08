@@ -65,6 +65,8 @@ blogexcerpt: 虚拟化 & KVM 子系统
 ### 1.1.1 split lock detect
 -------
 
+[字节跳动技术团队的博客--深入剖析 split locks，i++ 可能导致的灾难](https://blog.csdn.net/ByteDanceTech/article/details/124701175)
+
 拆分锁是指原子指令对跨越多个高速缓存行的数据进行操作. 由于原子性质, 在两条高速缓存行上工作时需要全局总线锁, 这反过来又会对整体系统性能造成很大的性能影响.
 
 当原子指令跨越多个 cache line, 并且需要确保原子性所需的总线锁时, 就会发生拆分总线锁. 这些拆分锁总线至少比单个 cacheline 内的原子操作多需要 1000 个 cycles. 在锁定总线期间, 其他 CPU 或 BUS 代理要求控制 BUS 的请求被阻止, 阻止其他 CPU 的 BUS 访问, 加上配置总线锁定协议的开销不仅会降低一个 CPU 的性能, 还会降低整体系统性能.
@@ -91,6 +93,7 @@ v5.7 引入了拆分锁检测的支持, 这依赖于 x86_64 intel CPU 遇到拆�
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2020/01/26 | Luck, Tony <tony.luck@intel.com> | [x86/split_lock: Enable split lock detection by kernel](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6650cdd9a8ccf00555dbbe743d58541ad8feb6a7) | 支持 拆分锁检测(split_lock_detect). | v17 ☑✓ v5.7-rc1| [LORE](https://lore.kernel.org/all/20200126200535.GB30377@agluck-desk2.amr.corp.intel.com) |
+| 2020/11/06 | Chenyi Qiang <chenyi.qiang@intel.com> | [Add bus lock VM exit support](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=c32b1b896d2ab30ac30bc39194bac47a09f7f497) | 虚拟化支持 bus lock 检测. | v5 ☑✓ 5.12-rc1 | [LORE v5,0/4](https://lore.kernel.org/all/20201106090315.18606-1-chenyi.qiang@intel.com) |
 | 2021/03/22 | Fenghua Yu <fenghua.yu@intel.com> | [x86/bus_lock: Enable bus lock detection](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=ebca17707e38f2050b188d837bd4646b29a1b0c2) | 拆分锁检测支持 Bus Lock. 参见 [Intel's Bus Lock Detection Might Be Ready For The Mainline Linux Kernel](https://www.phoronix.com/scan.php?page=news_item&px=Intel-Bus-Lock-Detection-2021) | v6 ☑✓ 5.13-rc1 | [LORE v6,0/3](https://lore.kernel.org/all/20210322135325.682257-1-fenghua.yu@intel.com) |
 | 2021/04/19 | Fenghua Yu <fenghua.yuintel.com> | [x86/bus_lock: Set rate limit for bus lock](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=d28397eaf4c27947a1ffc720d42e8b3a33ae1e2a) | 通过限制总线锁的速率而不是杀死进程来缓解拆分锁带来的问题. | v1 ☑✓ 5.14-rc1 | [Patchwork 0/4](https://lore.kernel.org/all/20210419214958.4035512-1-fenghua.yu@intel.com) |
 | 2022/03/10 | Tony Luck <tony.luck@intel.com> | [Make life miserable for split lockers](https://lore.kernel.org/all/20220310204854.31752-1-tony.luck@intel.com) | 通过强制用户空间对拆分锁进行顺序访问. 在解决问题的同时, 也确保了在这些条件下整体系统性能更好. 参见 [Linux 5.19 To "Make Life Miserable" In Slowing Down Bad Behaving Split-Lock Apps](https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.19-Split-Lock). | v2 ☐☑✓ | [LORE v2,0/2](https://lore.kernel.org/all/20220310204854.31752-1-tony.luck@intel.com) |
@@ -162,10 +165,23 @@ Intel Architecture Day 2021, 官宣了自己的服务于终端和桌面场景的
 
 [Intel Hardware Feedback Interface "HFI" Driver Submitted For Linux 5.18](https://www.phoronix.com/scan.php?page=news_item&px=Intel-HFI-Thermal-Linux-5.18)
 
-
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2021/11/06 | Ricardo Neri <ricardo.neri-calderon-AT-linux.intel.com> | [Thermal: Introduce the Hardware Feedback Interface for thermal and performance management](https://lwn.net/Articles/875296) | 支持 Intel HFI.<br>英特尔硬件反馈接口(HFI) 提供系统中每个 CPU 的性能(performance)和能效(Energy efficiency)的信息. 它使用一个在硬件和操作系统之间共享的表. 该表的内容可能由于系统运行条件的变化(如达到热极限)或外部因素的作用(如热设计功率的变化)而更新.<br>HFI 提供的信息被指定为相对于系统中其他 cpu 的数字、单元较少的能力. 这些功能的范围为 [0-255], 其中更高的数字表示更高的功能. 如果 CPU 的性能效率或能量能力效率为 0, 硬件建议分别出于性能、能量效率或热原因, 不要在该 CPU 上调度任何任务.<br>内核或用户空间可以使用来自 HFI 的信息来修改任务放置或调整功率限制. 当前这个补丁集中于用户空间. 热通知框架(thermal notification framework)被扩展以支持 CPU capacity 的更新. | v1 ☐ | [2021/11/06 LWN](https://lwn.net/Articles/875296)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/7](https://lore.kernel.org/lkml/20211220151438.1196-1-ricardo.neri-calderon@linux.intel.com), [phoronix v2](https://www.phoronix.com/scan.php?page=news_item&px=Intel-HFI-Linux-v2-2021)<br>*-*-*-*-*-*-*-* <br>[PatchWork v5,0/7](https://patchwork.kernel.org/project/linux-pm/cover/20220127193454.12814-1-ricardo.neri-calderon@linux.intel.com), [phoronix v5](https://www.phoronix.com/scan.php?page=news_item&px=Intel-HFI-For-Linux-5.18) |
+| 2021/11/06 | Ricardo Neri <ricardo.neri-calderon-AT-linux.intel.com> | [Thermal: Introduce the Hardware Feedback Interface for thermal and performance management](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=bd30cdfd9bd73b68e4977ce7c5540aa7b14c25cd) | 支持 Intel HFI.<br>英特尔硬件反馈接口(HFI) 提供系统中每个 CPU 的性能(performance)和能效(Energy efficiency)的信息. 它使用一个在硬件和操作系统之间共享的表. 该表的内容可能由于系统运行条件的变化(如达到热极限)或外部因素的作用(如热设计功率的变化)而更新.<br>HFI 提供的信息被指定为相对于系统中其他 cpu 的数字、单元较少的能力. 这些功能的范围为 [0-255], 其中更高的数字表示更高的功能. 如果 CPU 的性能效率或能量能力效率为 0, 硬件建议分别出于性能、能量效率或热原因, 不要在该 CPU 上调度任何任务.<br>内核或用户空间可以使用来自 HFI 的信息来修改任务放置或调整功率限制. 当前这个补丁集中于用户空间. 热通知框架(thermal notification framework)被扩展以支持 CPU capacity 的更新. | v1 ☐ | [2021/11/06 LWN](https://lwn.net/Articles/875296)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/7](https://lore.kernel.org/lkml/20211220151438.1196-1-ricardo.neri-calderon@linux.intel.com), [phoronix v2](https://www.phoronix.com/scan.php?page=news_item&px=Intel-HFI-Linux-v2-2021)<br>*-*-*-*-*-*-*-* <br>[PatchWork v5,0/7](https://patchwork.kernel.org/project/linux-pm/cover/20220127193454.12814-1-ricardo.neri-calderon@linux.intel.com), [phoronix v5](https://www.phoronix.com/scan.php?page=news_item&px=Intel-HFI-For-Linux-5.18) |
+
+
+HFI 中断处理, 流程如下所示:
+
+```cpp
+intel_thermal_interrupt()
+    -=> intel_hfi_process_event(msr_val & PACKAGE_THERM_STATUS_HFI_UPDATED);    // if (this_cpu_has(X86_FEATURE_HFI))
+        -=> queue_delayed_work(hfi_updates_wq, &hfi_instance->update_work, HFI_UPDATE_INTERVAL);
+```
+
+```cpp
+hfi_update_work_fn
+    -=> update_capabilities
+```
 
 
 #### 1.4.1.2 编译器支持
@@ -308,6 +324,7 @@ ARM & Linaro [Kernel versions highlights](https://developer.arm.com/tools-and-so
 
 ARM64 架构文档地址下载 [cpu-architecture](https://developer.arm.com/architectures/cpu-architecture)
 
+[ARM Processors 网站](https://developer.arm.com/Processors/Cortex-A710) 列出了 ARM 公版的所有 CPU 架构.
 
 [Memory Layout on AArch64 Linux](https://www.kernel.org/doc/html/latest/arm64/memory.html)
 
@@ -444,6 +461,9 @@ TLB entry shootdown 常常或多或少的带来一些性能问题.
 | 2019/03/29 | Mark Brown <broonie@kernel.org> | [KVM: arm64: SVE guest support](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1553864452-15080-1-git-send-email-Dave.Martin@arm.com) | KVM guest SVE 指令的支持. | v7 ☑ 5.2-rc1 | [Patchwork v7,00/27](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1553864452-15080-1-git-send-email-Dave.Martin@arm.com) |
 | 2019/04/18 | Mark Brown <broonie@kernel.org> | [KVM: arm64: SVE cleanups](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1555603631-8107-1-git-send-email-Dave.Martin@arm.com) | KVM guest SVE 指令的支持. | v2 ☑ 5.2-rc1 | [Patchwork v2,00/14](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1555603631-8107-1-git-send-email-Dave.Martin@arm.com) |
 | 2019/04/18 | Mark Brown <broonie@kernel.org> | [arm64: Expose SVE2 features for userspace](https://patchwork.kernel.org/project/linux-arm-kernel/patch/1555609298-10498-1-git-send-email-Dave.Martin@arm.com) | 支持向用户空间报告 SVE2 的存在及其可选功能. 同时为 KVM 虚拟化 guest 提供了 SVE2 的可见性. | v2 ☑ 5.2-rc1 | [Patchwork v2,00/14](https://patchwork.kernel.org/project/linux-arm-kernel/patch/1555609298-10498-1-git-send-email-Dave.Martin@arm.com) |
+
+2022 年 6 月, Arm 工程师 Wilco Dijkstra 为 Glibc 提供了 SVE 优化的 memcpy 实现, 超过 32 字节的 memcpy 使用 SVE 实现, 这显着改善了随机 memcpy 测试的性能. 参见 [glibc-commit](https://sourceware.org/git/?p=glibc.git;a=commit;h=9f298bfe1f183804bb54b54ff9071afc0494906c), 以及 phoronix 报道--[Glibc Adds Arm SVE-Optimized Memory Copy - Can "Significantly" Help Performance](https://www.phoronix.com/scan.php?page=news_item&px=Glibc-Arm-SVE-Memcpy-Optimize).
+
 
 
 ### 2.3.3 SME
@@ -705,6 +725,9 @@ Arm True Random Number Generator Firmware Interface 1.0 于去年发布, 最终�
 ## 6.3 总线
 -------
 
+### 6.3.1 Compute Express Link
+-------
+
 FireBox: Warehouse-Scale Computers
 [FireBox: A Hardware Building Block for 2020 Warehouse-Scale Computers](https://www.usenix.org/conference/fast14/technical-sessions/presentation/keynote)
 
@@ -727,10 +750,28 @@ https://blogs.vmware.com/vsphere/2021/10/introducing-project-capitola.html
 
 [Dbus-Broker 30 Released For High Performance Linux Message Bus](https://www.phoronix.com/scan.php?page=news_item&px=Dbus-Broker-30), [bus1/dbus-broker](https://github.com/bus1/dbus-broker)
 
+
+### 6.3.2 CXL
+-------
+
+[phoronix 上关于 CXL(Compute Express Link) 的所有相关报道](https://www.phoronix.com/scan.php?page=search&q=Compute%20Express%20Link)
+
+
+英特尔工程师 Ben Widawsky 已经开始发布一个关于 Linux 上 CXL 的博客文章系列, 参见 [Compute Express Link Overview](https://bwidawsk.net/blog/2022/6/compute-express-link-intro)
+
+[公众号-半导体行业观察-越来越热的 CXL](https://mp.weixin.qq.com/s/sB2bmFcEaYsH1Jg19E0-eg)
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2021/02/16 | Ben Widawsky <ben.widawsky@intel.com> | [CXL 2.0 Support](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=68a5a9a243354ed52f7b37b057bd5e98cba870c8) | TODO | v5 ☐☑✓ | [LORE v3,00/16](https://lore.kernel.org/lkml/20210111225121.820014-1-ben.widawsky@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/9](https://lore.kernel.org/all/20210217040958.1354670-1-ben.widawsky@intel.com) |
+
+
 ## 6.4 CPU IDLE(C-state)
 -------
 
 [AMD Updates Linux Patches For Lowering Idle Exit Latency](https://www.phoronix.com/scan.php?page=news_item&px=AMD-Prefer-MWAIT-v3)
+
+[Linux 5.20 With AMD Zen Will Prefer MWAIT Over HALT As An HPC Optimization](https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.20-AMD-MWAIT)
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
@@ -760,6 +801,59 @@ https://blogs.vmware.com/vsphere/2021/10/introducing-project-capitola.html
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/04/29 | Chen Zhongjin <chenzhongjin@huawei.com> | [objtool: add base support for arm64](https://patchwork.kernel.org/project/linux-arm-kernel/cover/20220429094355.122389-1-chenzhongjin@huawei.com/) | 636883 | v4 ☐☑ | [LORE v4,0/37](https://lore.kernel.org/r/20220429094355.122389-1-chenzhongjin@huawei.com) |
 
+
+## 6.7 指令转译
+-------
+
+Rosetta 是一个转译过程, 允许用户在 Apple Silicon 上运行包含 x86_64 指令的应用程序。在 macOS 中, 这允许为基于英特尔的 Mac 电脑构建的应用程序在 Apple Silicon 上无缝运行; Rosetta 可以在 ARM Linux 虚拟机中为英特尔 Linux 应用程序提供同样的功能.
+
+[macOS 13 Adding Ability To Use Rosetta In ARM Linux VMs For Speedy x86_64 Linux Binaries](https://www.phoronix.com/scan.php?page=news_item&px=macOS-13-Rosetta-Linux-Binaries)
+
+
+## 6.8 芯片设计
+-------
+
+Tachyum 宣布其设计一款完全通用的处理器 Prodigy T16128, 预计 2023 年发布, [Tachyum's Monster 128 Core 5.7GHz 'Universal Processor' Does Everything](https://www.tomshardware.com/news/tachyum-128-core-all-purpose-cpu), 号称一款芯片上可以同时运行通用计算, 高性能计算以及 AI 等业务和负载, 原生支持 x86, ARM, RISC-V 和 ISA 的二进制.
+
+Google Google 推出[芯片设计门户网站](https://developers.google.com/silicon), 计划名为 Open MPW Shuttle Program, 允许任何人利用开源 PDK 和其他开源 EDA 工具来提交开源集成电路设计, Google 会为他们免费制造, 不会收取任何费用。虽然芯片制造是在 130 纳米工艺（SKY130）上完成的, 但这一计划对资金有限的开源硬件项目具有巨大的推动作用.
+
+
+中国科学院大学("国科大")的 ["一生一芯" 计划](https://ysyx.org).
+
+
+## 6.9 预取
+-------
+
+富士通添加了 sysfs 接口来控制 CPU L2 Cache/DCU 等硬件的预取行为, 以便从用户空间对 A64FX 处理器和 x86 行性能调优.
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/06/07 | Kohei Tarumizu <tarumizu.kohei@fujitsu.com> | [Add hardware prefetch control driver for A64FX and x86](https://lore.kernel.org/all/20220607120530.2447112-1-tarumizu.kohei@fujitsu.com) | TODO | v5 ☐☑✓ | [LORE v5,0/6](https://lore.kernel.org/all/20220607120530.2447112-1-tarumizu.kohei@fujitsu.com) |
+
+
+openEuler 提供了 [openEuler/prefetch_tuning](https://gitee.com/openeuler/prefetch_tuning) 提供了鲲鹏芯片设计的渔区相关寄存器读写接口, 用于读取和配置在 CPU 的硬件层面的芯片性能调优参数. 内核中更是提供了 [CONFIG_HISILICON_ERRATUM_HIP08_RU_PREFETCH](https://gitee.com/openeuler/kernel/commit/13ab4b7fa6f92eb9819a01129c4e4a0a9c401ee8) 来在启动时配置预期.
+
+
+## 6.10 Software Branch Hinting
+-------
+
+[Software Branch Hinting](https://labs.engineering.asu.edu/mps-lab/research-themes/low-power-computing/sbh)
+
+
+## 6.9 指令集
+-------
+
+
+| 指令集架构 | 描述 | 代表架构 |
+|:--------:|:----:|:------:|
+| CISC (Complex instruction set computer) 复杂指令集计算机 | NA | HP 的 PA-RISC，IBM 的 PowerPC，Compaq（被并入 HP）的 Alpha，MIPS 公司的 MIPS，SUN 公司的 SPARC 等. |
+| RISC (Reduced instruction set computer) 精简指令集计算机 | NA | NA |
+| [MISC (Minimal instruction set computer), 最小指令集计算机](http://en.wikipedia.org/wiki/Minimal_instruction_set_computer) | [从零开始手敲自举编译器(一): MISC 概览](https://zhuanlan.zhihu.com/p/412201989) 和 [github-whoiscc/miniboot/](https://github.com/whoiscc/miniboot) |
+| [OISC (One instruction set computer, 单指令集计算机)](http://en.wikipedia.org/wiki/One_instruction_set_computer) | NA | NA |
+| [ZISC (Zero instruction set computer)](https://en.wikipedia.org/wiki/Zero_instruction_set_computer) | NA | NA |
+| VLIM (Very long instruction word) 超长指令字架构 | 通过将多条指令放入一个指令字, 有效的提高了 CPU 各个计算功能部件的利用效率, 提高了程序的性能. | NA |
+| EPIC (Explicity parallel instruction computing) 显示并行指令集计算 | NA |  Intel 的 IA-64 |
+| EDGE | 显式数据图执行 (Explicit Data Graph Execution) 的指令集体系结构, 也被称为 EDGE 架构. | [微软处理器架构是新瓶装酒 历史早已证明是死路一条](http://www.360doc.com/content/18/0623/10/22587800_764605025.shtml), [与高通联手打造全新处理器架构，微软计算芯片界的至尊魔戒终浮现](https://zhuanlan.zhihu.com/p/38340253) | Microsoft 的 E2 |
 
 <br>
 

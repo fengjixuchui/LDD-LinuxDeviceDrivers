@@ -176,6 +176,9 @@ Load Averages 是一项历史悠久的指标, 在 1973 年 8 月的 RFC 546 中�
 ## 6 PSI
 -------
 
+[知乎-兰新宇--Linux 的资源控制监测 - PSI [上]](https://zhuanlan.zhihu.com/p/523716850)
+
+[知乎-兰新宇--Linux 的资源控制监测 - PSI [下]](https://zhuanlan.zhihu.com/p/523554299)
 
 Pressure Stall Information 提供了一种评估系统资源压力的方法. 系统有三个基础资源: CPU、Memory 和 IO, 无论这些资源配置如何增加, 似乎永远无法满足软件的需求. 一旦产生资源竞争, 就有可能带来延迟增大, 使用户体验到卡顿.
 
@@ -183,12 +186,19 @@ Pressure Stall Information 提供了一种评估系统资源压力的方法. 系
 
 Facebook 在 2018 年开源了一套解决重要计算集群管理问题的 Linux 内核组件和相关工具, PSI 是其中重要的资源度量工具, 它提供了一种实时检测系统资源竞争程度的方法, 以竞争等待时间的方式呈现, 简单而准确地供用户以及资源调度者进行决策.
 
-[纯干货, PSI 原理解析与应用](https://blog.csdn.net/feelabclihu/article/details/105534140)
+内核文档参见 [Documentation/accounting/psi.rst](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/accounting/psi.rst), 翻译参见 [`Documentation/translations/zh_CN/accounting/psi.rst`](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/translations/zh_CN/accounting/psi.rst).
 
+[CSDN-内核工匠--纯干货, PSI 原理解析与应用](https://blog.csdn.net/feelabclihu/article/details/105534140)
+
+Meta(原 Facebook) 开发的 [Senpai](https://github.com/facebookincubator/senpai), 就是通过 PSI 来确定容器化应用程序的实际内存需求. 根据 PSI 提供的 Memory Pressure 信息, 不断地调整 memory.high, 从而找到指定 memcg 所承载的 workload 真正需要的内存大小. Senpai 是一个用户空间代理, 它通过施加轻微的主动式内存压力, 跨不同的工作负载和异构硬件有效地卸载内存, 对应用程序性能的影响最小.
+
+根据与压力目标的偏差, Senpai 每隔 interval 时间(默认 6s)重新确定要回收的页面数:
+
+$reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}{psi_threshold})$
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2018/08/28 | Johannes Weiner <hannes@cmpxchg.org> | [psi: pressure stall information for CPU, memory, and IO v4](https://lwn.net/Articles/759781) | 引入 PSI 评估系统 CPU, MEMORY, IO 等资源的压力. | v4 ☑ [4.20-rc1](https://kernelnewbies.org/Linux_4.20#Core_.28various.29) | [Patchwork](https://lore.kernel.org/patchwork/patch/978495), [Patchwork 0/9](https://patchwork.kernel.org/project/linux-mm/cover/20180828172258.3185-1-hannes@cmpxchg.org), [关键 commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eb414681d5a07d28d2ff90dc05f69ec6b232ebd2) |
+| 2018/08/28 | Johannes Weiner <hannes@cmpxchg.org> | [psi: pressure stall information for CPU, memory, and IO v4](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=2ce7135adc9ad081aa3c49744144376ac74fea60) | 引入 PSI 评估系统 CPU, MEMORY, IO 等资源的压力. 参见 [LWN-Tracking pressure-stall information](https://lwn.net/Articles/759781) | v4 ☑ [4.20-rc1](https://kernelnewbies.org/Linux_4.20#Core_.28various.29) | [Patchwork](https://lore.kernel.org/patchwork/patch/978495), [Patchwork 0/9](https://patchwork.kernel.org/project/linux-mm/cover/20180828172258.3185-1-hannes@cmpxchg.org), [关键 commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eb414681d5a07d28d2ff90dc05f69ec6b232ebd2) |
 | 2019/03/19 | Suren Baghdasaryan <surenb@google.com> | [psi: pressure stall monitors v6](https://lwn.net/Articles/775971/) | NA | v6 ☑ [5.2-rc1](https://kernelnewbies.org/Linux_5.2#Improved_Presure_Stall_Information_for_better_resource_monitoring) | [Patchwork](https://lore.kernel.org/patchwork/patch/1052413) |
 | 2020/03/03 | Suren Baghdasaryan <surenb@google.com> | [psi: Add PSI_CPU_FULL state and some code optimization](ttps://lore.kernel.org/patchwork/patch/1388805) | 1. 添加 PSI_CPU_FULL 状态标记 cgroup 中的所有非空闲任务在 cgroup 之外的 CPU 资源上被延迟, 或者 cgroup 被 throttle<br>2. 使用 ONCPU 状态和当前的 in_memstall 标志来检测回收, 删除 timer tick 中的钩子, 使代码更简洁和可维护.<br>4. 通过移除两个任务的每个公共cgroup祖先的psi_group_change()调用来优化自愿睡眠开关.  | v2 ☑ 5.13-rc1 | [Patchwork](https://lore.kernel.org/patchwork/patch/1388805) |
 | 2020/03/31 | Yafang Shao <laoar.shao@gmail.com> | [psi: enhance psi with the help of ebpf](https://lwn.net/Articles/1218304) | 引入 psi_memstall_type 标记 MEMSTALL 的类别, 并在 tracepoint 输出, 从而可以被 ebpf 使用来增强工具. | v4 ☑ [4.20-rc1](https://kernelnewbies.org/Linux_4.20#Core_.28various.29) | [Patchwork](https://lore.kernel.org/patchwork/patch/1218304) |
@@ -300,14 +310,22 @@ Facebook 在 2018 年开源了一套解决重要计算集群管理问题的 Linu
 | 2017/08/31 | Andi Kleen <andi@firstfloor.org> | [perf arm64 metricgroup support](https://lore.kernel.org/all/20170831194036.30146-1-andi@firstfloor.org) | 为 perf stat 添加[对 JSON 文件中指定的独立指标](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b18f3e365019de1a5b26a851e123f0aedcce881f) 的通用支持. 这些指标是一个公式, 它使用多个事件来计算更高级别的结果(例如 IPC, TOPDOWN 分析等). 添加一个新的 `-M /--metrics` 选项来添加指定的度量或度量组. 并增加了对 Intel X86 平台的支持. 通过这些 JSON 文件定义的事件组合度量, 可以很好的支持 TOPDOWN 分析. | v3 ☑ 4.15-rc1 | [PatchWork v3,00/11](https://lore.kernel.org/all/20170831194036.30146-1-andi@firstfloor.org) |
 | 2020/09/11 | Kan Liang <kan.liang@linux.intel.com> | [TopDown metrics support for Ice Lake (perf tool)](https://lore.kernel.org/lkml/20200911144808.27603-1-kan.liang@linux.intel.com) | 为 perf metrics 分析增加对 Ice Lake 的支持. 将原本 group 重命名为 topdown. | v3 ☑ 5.10-rc1 | [PatchWork v3,0/4](https://lore.kernel.org/lkml/20200911144808.27603-1-kan.liang@linux.intel.com) |
 | 2021/04/07 | John Garry <john.garry@huawei.com> | [perf arm64 metricgroup support](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1617791570-165223-1-git-send-email-john.garry@huawei.com) | perf 支持 HiSilicon hip08 平台的 topdown metric. 支持到 Level 3. 自此鲲鹏 920 的 ARM64 服务器上, 可以使用:<br>`sudo perf stat -M TopDownL1 sleeep 1`<br>来进行 TopDown 分析了. | v1 ☑ 5.13-rc1 | [PatchWork 0/5](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1614784938-27080-1-git-send-email-john.garry@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v2,0/6](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1616668398-144648-1-git-send-email-john.garry@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v3,0/6](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1617791570-165223-1-git-send-email-john.garry@huawei.com) |
+| 2022/05/28 | zhengjun <zhengjun.xing@linux.intel.com> | [perf vendor events intel: Add metrics for Sapphirerapids](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=1bcca2b1bd67f3c0e5c3a88ed16c6389f01a5b31) | TODO | v2 ☑✓ 5.19-rc1 | [LORE v2,0/2](https://lore.kernel.org/all/20220528095933.1784141-1-zhengjun.xing@linux.intel.com) |
 
 ## 11.3 Userspace counter access
 -------
 
+x86 和 arm64 都支持直接访问用户空间中的事件计数器. 访问序列并不简单，目前存在于 perf 测试代码(tools/perf/arch/x86/tests/rdpmc.c)中, 在 PAPI 和 libpfm4 等项目中有类似的用例程序.
+
+为了支持 usersapce 访问，必须首先使用 perf_evsel__mmap() 映射事件. 然后, 对 perf_evsel__read() 对 PMU 进行读取.
+
+
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2011/12/21 | Peter Zijlstra <a.p.zijlstra@chello.nl> | [perf, x86: Implement user-space RDPMC support, to allow fast, user-space access to self-monitoring counters](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe4a330885aee20f233de36085fb15c38094e635) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/tip-mwxab34dibqgzk5zywutfnha@git.kernel.org) |
 | 2021/12/08 | Rob Herring <robh@kernel.org> | [arm64 userspace counter support](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=aa1005d15d2aee10e5b93a25db076c47e05c4efa) | ARM64 的 PMU 是支持用户态直接访问的. 与 x86 上 rdpmc 机制类似, 为了防止出现安全问题, 当前只允许用户态访问 thread bound events, 在启用时, 为了防止从其他任务泄漏禁用的 PMU 数据, 还会有一些额外的开销来清除脏计数器. | v13 ☑✓ 5.17-rc1 | [LORE v13,0/5](https://lore.kernel.org/all/20211208201124.310740-1-robh@kernel.org) |
-
+| 2021/04/14 | Rob Herring <robh@kernel.org> | [libperf userspace counter access](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=47d01e7b9999b9591077a59a1ecec11c6ce570de) | libperf 支持用户态读取 PMU, 当前只支持了 X86 | v8 ☑✓ 5.13-rc1 | [LORE v8,0/4](https://lore.kernel.org/all/20210414155412.3697605-1-robh@kernel.org) |
+| 2022/02/01 | Rob Herring <robh@kernel.org> | [libperf: Add arm64 support to perf_mmap__read_self()](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=407eb43ae87c969d98746c3274ae5d0f977b102e) | libperf 支持 ARM64 用户态读取 PMU. | v9 ☑✓ 5.17-rc3 | [LORE](https://lore.kernel.org/all/20220201214056.702854-1-robh@kernel.org) |
 
 ## 11.4 分支预测
 -------
@@ -404,7 +422,7 @@ facebook 在 LPC-2021 公布了其[最新基于 BOLT 优化 Linux 内核的进�
 
 BOLT 代码在 [github 开源](https://github.com/facebookincubator/BOLT).
 
-## 13.2 Shrinking the kernel
+## 13.3 Shrinking the kernel
 -------
 
 
@@ -501,7 +519,7 @@ v2: [Fast Kernel Headers v2 Posted - Speeds Up Clang-Built Linux Kernel Build By
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/01/02 | Ingo Molnar <mingo@kernel.org> | ["Fast Kernel Headers" Tree -v1: Eliminate the Linux kernel's "Dependency Hell"](https://lore.kernel.org/lkml/YdIfz+LMewetSaEB@gmail.com) | "Fast Kernel Headers" 的补丁集, 新增 config 配置, CONFIG_FAST_HEADERS 和 CONFIG_KALLSYMS_FAST.<br>这个补丁集非常庞大, 包含了 2000+ 补丁, 这可能是内核有史以来代码量最大的一个功能. 但是效果也很不错.<br>1. 启用了 CONFIG_FAST_HEADERS 的内核每小时的内核构建次数可能比当前的库存内核多出 78%, 在支持的架构上, 绝对内核构建性能可以提高 50~80%.将许多高级标头与其他标头分离, 取消不相关的函数, 类型和 API 标头的分离, 头文件的自动依赖关系处理以及各种其他更改.<br>2. CONFIG_KALLSYMS_FAST 则实现了一个基于 objtool 的未压缩符号表功能, 它避免了 vmlinux 对象文件的通常三重链接, 这是增量内核构建的主要瓶颈. 由于即使使用 distro 配置, kallsyms 表也只有几十 MB 大, 因此在内核开发人员的桌面系统上, 内存成本是可以接受的. 不过当前只在 x86_64 下实现了此功能.<br>到目前为止, 这个庞大的补丁系列已经在 x86/x86_64, SPARC, MIPS 和 ARM64 上进行了测试. | v1 ☐ | [LORE RFC, 0000/2297](https://patchwork.kernel.org/project/kernel-hardening/patch/1495829844-69341-20-git-send-email-keescook@chromium.org)[LORE v2,](https://lore.kernel.org/lkml/Ydm7ReZWQPrbIugn@gmail.com), [LORE -v3, 0000/2300](https://lore.kernel.org/lkml/YjBr10JXLGHfEFfi@gmail.com) |
 
-由于这组补丁如此庞大, 涉及的模块也如此多, 因此它不可能在短时间内合入, 因此 Ingo 决定先从调度入手, [Merge branch 'sched/fast-headers' into sched/core](https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=sched/core&id=ccacfe56d7ecdd2922256b87e9ea46f13bb03b55), 先行合并到 TIP 分支, 这些补丁将构建内核的调度程序部分所需的 CPU 时间减少了 60.9%. 挂钟时间下降了3.9%. 参见 [Linux Scheduler Build Improvements From "Fast Kernel Headers" Queued, FKH v3 Posted](https://www.phoronix.com/scan.php?page=news_item&px=Sched-Core-Fast-Kernel-Headers).
+由于这组补丁如此庞大, 涉及的模块也如此多, 因此它不可能在短时间内合入, 因此 Ingo 决定先从调度入手, [Merge branch 'sched/fast-headers' into sched/core](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/sched?id=ccacfe56d7ecdd2922256b87e9ea46f13bb03b55), 先行合并到 TIP 分支, 这些补丁将构建内核的调度程序部分所需的 CPU 时间减少了 60.9%. 挂钟时间下降了3.9%. 参见 [Linux Scheduler Build Improvements From "Fast Kernel Headers" Queued, FKH v3 Posted](https://www.phoronix.com/scan.php?page=news_item&px=Sched-Core-Fast-Kernel-Headers). [补丁集](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=4ff8f2ca6ccd9e0cc5665d09f86d631b3ae3a14c) 于 v5.17-rc5 合入主线.
 
 
 ## 13.8 LINK
@@ -512,6 +530,19 @@ Mold 是目前 Unix 链接器的现代替代品, 已经达到了 1.0 版本. 由
 
 2021 年 12 月 [Mold 1.0 发布](https://www.phoronix.com/scan.php?page=news_item&px=Mold-1.0-Released), 作为非常有前途的高性能链接器, 是当前主流编译器等(如 GNU 的 Gold 和 LLVM 的 LLD) 首选替代方案. 随即 GCC 12 宣布增加了[对 Mold 的支持](https://www.phoronix.com/scan.php?page=news_item&px=GCC-12-Mold-Linker). 紧接着 Mold 宣布 1.0.1 将[维护 1 年](https://www.phoronix.com/scan.php?page=news_item&px=Mold-1.0.1-Released), 成为事实上的 LTS 版本.
 
+2022 年 6 月 Mold 1.3 继续对 LTO 进行了优化. 参见 phoronix 报道 [Mold 1.3 High Speed Linker Released With LTO Improvements](https://www.phoronix.com/scan.php?page=news_item&px=Mold-1.3-Released).
+
+
+## 13.9 Compiler Optimization
+-------
+
+随后 2022 年, 开发者 Miko 建议所有架构都开启 `-O3` 编译内核 [Experimental -O3 Optimizing The Linux Kernel For Better Performance Brought Up Again](https://www.phoronix.com/scan.php?page=news_item&px=O3-Optimize-Kernel-2022-Patches), 但是遭到了 Linus 的强烈反对, [Linus Torvalds' Latest Commentary Against -O3'ing The Linux Kernel](https://www.phoronix.com/scan.php?page=news_item&px=Linus-Against-O3-Kernel), [LKML 回复](https://lore.kernel.org/lkml/CA+55aFz2sNBbZyg-_i8_Ldr2e8o9dfvdSfHHuRzVtP2VMAUWPg@mail.gmail.com).
+
+随后 对内核使用 `-O3` 进行了较为详细的性能测试, 参照 phoronix 报道 [Benchmarking The Linux Kernel With An "-O3" Optimized Build](https://www.phoronix.com/scan.php?page=article&item=linux-kernel-o3&num=7).
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/06/21 | Miko Larsson <mikoxyzzz@gmail.com> | [Kconfig: -O3 enablement](https://lore.kernel.org/all/20220621133526.29662-1-mikoxyzzz@gmail.com) | 允许所有架构支持 -O3 编译. | v1 ☐☑✓ | [LORE v1,0/2](https://lore.kernel.org/all/20220621133526.29662-1-mikoxyzzz@gmail.com) |
 
 
 # 14 FTRACE
@@ -654,7 +685,7 @@ LWN 上也对此进行了[汇总报道](https://lwn.net/Kernel/Index/#Android-Ge
 
 [Android to take an “upstream first” development model for the Linux kernel](https://arstechnica.com/gadgets/2021/09/android-to-take-an-upstream-first-development-model-for-the-linux-kernel)
 
-[](https://stackoverflow.com/questions/65415511/android-kernel-build-flow-with-gki-introduced-from-android-11)
+[ANDROID GTI](https://stackoverflow.com/questions/65415511/android-kernel-build-flow-with-gki-introduced-from-android-11)
 
 [LPC 2021-Generic Kernel Image](https://linuxplumbersconf.org/event/11/contributions/1046/attachments/824/1557/2021%20LPC%20GKI.pdf)
 
@@ -668,14 +699,6 @@ LWN 上也对此进行了[汇总报道](https://lwn.net/Kernel/Index/#Android-Ge
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2020/04/24 | Todd Kjos <tkjos@google.com> | [ANDROID: add support for vendor hooks](https://lore.kernel.org/patchwork/patch/1394812) | 启动阶段异步解压 initramfs. 可以加速系统启动. | v1 ☑ [5.13-rc1](https://kernelnewbies.org/Linux_5.13) | [Patchwork 00/28](https://github.com/aosp-mirror/kernel_common/commit/67e0a3df19970176f093ff8be72f201d8c76ae81) |
-
-# OTHER
--------
-
-| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2021/03/21 | Rasmus Villemoes <linux@rasmusvillemoes.dk> | [background initramfs unpacking, and CONFIG_MODPROBE_PATH](https://lore.kernel.org/patchwork/patch/1394812) | 启动阶段异步解压 initramfs. 可以加速系统启动. | v1 ☑ [5.13-rc1](https://kernelnewbies.org/Linux_5.13) | [Patchwork](https://lore.kernel.org/patchwork/patch/1394812) |
-
 
 
 
@@ -710,6 +733,21 @@ LWN 上也对此进行了[汇总报道](https://lwn.net/Kernel/Index/#Android-Ge
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/12/18 | David Woodhouse <dwmw2@infradead.org> | [configs: introduce debug.config for CI-like setup](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0aaa8977acbf3996d351f51b3b15295943092f63) | 参见 [Linux 5.17 Making It Easier To Build A Kernel With All The Shiny Debug Features](https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.17-debug-config) | v5 ☑ 5.17-rc1 | [Patchwork v5](https://lore.kernel.org/all/20211115134754.7334-1-quic_qiancai@quicinc.com) |
+
+# 19 启动加速
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2021/03/21 | Rasmus Villemoes <linux@rasmusvillemoes.dk> | [background initramfs unpacking, and CONFIG_MODPROBE_PATH](https://lore.kernel.org/patchwork/patch/1394812) | 启动阶段异步解压 initramfs. 可以加速系统启动. | v1 ☑ [5.13-rc1](https://kernelnewbies.org/Linux_5.13) | [Patchwork](https://lore.kernel.org/patchwork/patch/1394812) |
+
+# 20 形式化验证
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/06/16 | Daniel Bristot de Oliveira <bristot@kernel.org> | [The Runtime Verification (RV) interface](https://lore.kernel.org/all/cover.1655368610.git.bristot@kernel.org) | 运行时验证 Linux 内核的行为. 运行时验证(RV) 是一种轻量级 (但严格) 的方法, 它补充了经典的穷举验证技术 (如模型检查和定理证明), 并为复杂系统提供了一种更实用的方法. RV 不依赖于系统的细粒度模型 (例如, 重新实现指令级别), 而是通过分析系统实际执行的轨迹, 并将其与系统行为的形式化规范进行比较来工作. RV 使用确定性自动机是一种成熟的方法. | v4 ☐☑✓ | [LORE v4,0/20](https://lore.kernel.org/all/cover.1655368610.git.bristot@kernel.org) |
+
 
 
 
