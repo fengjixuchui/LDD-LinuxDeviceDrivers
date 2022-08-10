@@ -6,7 +6,7 @@
 -------
 
 
-# 0.1 调度子系统概述
+## 0.1 调度子系统概述
 -------
 
 
@@ -568,11 +568,11 @@ coscheduling 协同调度是为了解决云服务场景, 为不同用户提供�
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2019/12/19 | Jan H. Schönherr | [[RFC,00/60] Coscheduling for Linux](https://lore.kernel.org/patchwork/cover/983568) | 亚马逊的协同调度方案 | RFC ☐ | [PatchWork RFC](https://lore.kernel.org/patchwork/cover/983568) |
-| 2019/12/19 | Peter & Kirill Tkhai 等 | [Core scheduling (v9)](https://lore.kernel.org/patchwork/cover/1340764) | 核调度器, 限制同一个 SMT 域内的两个 CPU 只能运行同一组进程 | v9 ☐ |[PatchWork v9](https://lore.kernel.org/patchwork/cover/1340764) |
-| 2021/03/25 | Joel Fernandes 等 | [Core scheduling remaining patches rebase](https://lore.kernel.org/patchwork/cover/1369931) | Core scheduling v9 的大部分补丁都已经在合入队列了, 部分未合入补丁的重构与适配. | v10 ☐ | [PatchWork v9](https://lore.kernel.org/patchwork/cover/1369931)<br>*-*-*-*-*-*-*-* <br>[PatchWork v9 resend](https://lore.kernel.org/patchwork/cover/1401863) |
-| 2021/04/01 | Peter Zijlstra | [sched: Core scheduling interfaces](https://lore.kernel.org/patchwork/cover/1406301) | Peter 重新设计了 Core scheduling 的接口. | v10 ☐ |[PatchWork v9](https://lore.kernel.org/patchwork/cover/1406301) |
-| 2021/04/22 | Peter Zijlstra | [sched: Core Scheduling](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=9f26990074931bbf797373e53104216059b300b1) | Peter 重构的 Core scheduling. | v10 ☑ 5.14-rc1 |[LORE v10](https://lore.kernel.org/lkml/20210422120459.447350175@infradead.org) |
+| 2019/12/19 | Jan H. Schönherr | [[RFC,00/60] Coscheduling for Linux](https://lore.kernel.org/lkml/20180907214047.26914-1-jschoenh@amazon.de) | 亚马逊的协同调度方案 | RFC ☐ | [LORE RFC,00/60](https://lore.kernel.org/lkml/20180907214047.26914-1-jschoenh@amazon.de) |
+| 2019/12/19 | Peter & Kirill Tkhai 等 | [Core scheduling](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=67692435c411e5c53a1c588ecca2037aebd81f2e) | 核调度器, 限制同一个 SMT 域内的两个 CPU 只能运行同一组进程.<br>1. v3 合入了 8 个重构的补丁.<br>2. | v9 ☑ 5.4-rc1 | [2019/02/18 LORE RFC](https://lore.kernel.org/lkml/20190218165620.383905466@infradead.org)<br>*-*-*-*-*-*-*-* <br>[2019/04/23 LORE v2,00/17](https://lore.kernel.org/lkml/cover.1556025155.git.vpillai@digitalocean.com)<br>*-*-*-*-*-*-*-* <br>[2019/05/29 LORE v3,00/16](https://lore.kernel.org/all/cover.1559129225.git.vpillai@digitalocean.com)<br>*-*-*-*-*-*-*-* <br>[2019/10/30 LORE v4,00/19](https://lore.kernel.org/lkml/cover.1572437285.git.vpillai@digitalocean.com)<br>*-*-*-*-*-*-*-* <br>[2020/03/04 LORE v5,00/13](https://lore.kernel.org/lkml/cover.1583332764.git.vpillai@digitalocean.com)<br>*-*-*-*-*-*-*-* <br>[2020/06/30 LORE v6,00/16](https://lore.kernel.org/lkml/cover.1593530334.git.vpillai@digitalocean.com)<br>*-*-*-*-*-*-*-* <br>[2020/08/28 LORE v7,00/23](https://lore.kernel.org/lkml/cover.1598643276.git.jdesfossez@digitalocean.com)<br>*-*-*-*-*-*-*-* <br>[2020/10/19 LORE v8,00/26](https://lore.kernel.org/lkml/20201020014336.2076526-1-joel@joelfernandes.org)<br>*-*-*-*-*-*-*-* <br>[2020/11/17 LORE v9,00/32](https://lore.kernel.org/lkml/20201117232003.3580179-1-joel@joelfernandes.org) |
+| 2021/03/25 | Joel Fernandes 等 | [Core scheduling remaining patches rebase](https://lore.kernel.org/patchwork/cover/1369931) | Core scheduling v9 的大部分补丁都已经在 TIP 分支了, 部分未合入补丁的重构与适配. | v10 ☐ | [2021/01/23 LORE v10,0/5](https://lore.kernel.org/lkml/20210123011704.1901835-1-joel@joelfernandes.org)<br>*-*-*-*-*-*-*-* <br>[2021/03/24 LORE v10 resend,0/8](https://lore.kernel.org/lkml/20210324214020.34142-1-joel@joelfernandes.org) |
+| 2021/04/01 | Peter Zijlstra | [sched: Core scheduling interfaces](https://lore.kernel.org/lkml/20210401131012.395311786@infradead.org/) | Peter 将 TIP 分支 core scheduling 进行了重构. 重新设计了 Core scheduling 的接口. | v11 ☐ |[2021/04/01 v11,0/9](https://lore.kernel.org/lkml/20210401131012.395311786@infradead.org) |
+| 2021/04/22 | Peter Zijlstra | [sched: Core Scheduling](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=9f26990074931bbf797373e53104216059b300b1) | Peter 重构后完整的 Core scheduling. | v12 ☑ 5.14-rc1 |[2021/04/22 LORE v12,00/19](https://lore.kernel.org/lkml/20210422120459.447350175@infradead.org) |
 | 2021/10/18 | Josh Don <joshdon@google.com> | [sched/core: forced idle accounting](https://lkml.org/lkml/2021/10/7/1187) | 增加了 "强制空闲" 时间的统计. 当 SMT 某个 CPU pick 了一个任务, 但是 sibling CPU 上找不到与其相互信任(cookie 相同)的任务时, sibling CPU 将不得不进入 force idle 状态, 即使有其他进程(互不信任的)在 RQ 中等待.<br>强制空闲时间是衡量启用 core scheduling 的一种指标. 可以估计强制闲置而导致的 CPU 容量损失. | v10 ☑ 5.14-rc1 | [2021/10/08 LKML v1](https://lkml.org/lkml/2021/10/7/1187)<br>*-*-*-*-*-*-*-* <br>[2021/10/18 LKML v2](https://lkml.org/lkml/2021/10/18/1529) |
 | 2021/11/23 | Christian Brauner | [core scheduling: add PR_SCHED_CORE_SHARE](https://lkml.org/lkml/2021/11/23/474) | NA | v10 ☑ 5.14-rc1 | [2021/10/08 LKML v1](https://lkml.org/lkml/2021/11/23/474) |
 | 2021/12/16 | Joel Fernandes <joel@joelfernandes.org> | [High latency with core scheduling](https://lore.kernel.org/all/Ybvcu5RIwV+Vko09@google.com) | Ybvcu5RIwV+Vko09@google.com | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/Ybvcu5RIwV+Vko09@google.com) |
@@ -608,12 +608,21 @@ coscheduling 协同调度是为了解决云服务场景, 为不同用户提供�
 ### 2.1.2 autogroup
 -------
 
-CFS 用户反复在社区抱怨并行 kbuild 对桌面交互性有负面影响, 因此 Linus 提出了一个想法 autogroup, 即自动创建任务组.
-[Group scheduling and alternatives](https://lwn.net/Articles/418884)
+CFS 用户反复在社区抱怨并行 kbuild 对桌面交互性有负面影响
+
+完全公平的调度程序背后的核心思想是它的完全公平性: 如果有N个进程争夺CPU, 每个进程具有相等的优先级, 那么每个进程将获得可用CPU时间的 1/N. 此策略取代了 O(1) 调度程序中发现的相当复杂的"交互性"启发式方法; 在大多数情况下, 它可以产生更好的桌面响应. 但是, 这种方法在某些地方会失败. 如果用户使用 make -j10 运行十个编译器实例以及一个视频播放应用程序, 则每个进程将获得"公平"的 9% 的 CPU. 这 9% 可能不足以提供用户所希望的视频体验. 因此, 许多用户对"公平"的看法不同也就不足为奇了. 如果编译工作作为一个整体得到50%, 而视频应用程序得到另一半, 那不是很好吗?
+
+借助组调度可能很好的解决问题, 这正是 Mike Galbraith 的 每 TTY 任务分组特性 [sched: automated per session task groups](https://lore.kernel.org/all/1290281700.28711.9.camel@maggy.simson.net) 想要完成的, 参见 [TTY-based group scheduling](https://lwn.net/Articles/415740). 其基本思想是, 会自动创建一个附加到系统中的每个 TTY 的任务组. 所有具有给定 TTY 作为其控制终端的进程都将放置在适当的分组中; 然后, 组调度代码可以在由其控制终端确定的进程组之间共享时间. 编译作业通常通过在终端仿真器窗口中键入 make 来启动. 该作业将具有与视频播放器不同的控制 TTY, 后者可能根本没有控制终端. 因此, 最终结果是, 每个 TTY 分组自动将终端中运行的任务与通过窗口系统运行的任务分开.
+
+但是社区不少人对此特性持反对态度, 一些开发者认为这种做法明明不需要内核补丁, 只需要[用户态配置](https://lore.kernel.org/all/20101116181603.GC19327@tango.0pointer.de)就可以达到同样地效果. 通过与 systemd 结合自动为登录的用户配置会话 session, 就可以解决问题. 另外一些开发者则对基于 TTY 的分组方式不太满意, 认为基于会话(session)的方式可能更合适一些. 参见 [Group scheduling and alternatives](https://lwn.net/Articles/418884).
+
+最终基于 session 的自动创建任务组方案 autogroup(CONFIG_SCHED_AUTOGROUP) 于 v2.6.38 合入主线, 并得到 Linus 的好评.
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2010/12/05 | Con Kolivas <kernel@kolivas.org> | [sched: automated per session task groups](https://lwn.net/Articles/239619) | 实现 CFS 组调度. | v4 ☑ [2.6.38-rc1](https://kernelnewbies.org/2.6.38-rc1#Automatic_process_grouping_.28a.k.a._.22the_patch_that_does_wonders.22.29) | [LWN](https://lwn.net/Articles/239619), [COMMIT](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5091faa449ee0b7d73bc296a93bca9540fc51d0a) |
+| 2010/11/20 | Mike Galbraith <efault@gmx.de> | [sched: automated per tty task groups](https://lore.kernel.org/all/1287479765.9920.9.camel@marge.simson.net) | 参见 [TTY-based group scheduling](https://lwn.net/Articles/415740) | v4 ☐☑✓ | [LORE](https://lore.kernel.org/all/1290281700.28711.9.camel@maggy.simson.net) |
+| 2010/12/05 | Mike Galbraith <efault@gmx.de> | [sched: automated per session task groups](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5091faa449ee0b7d73bc296a93bca9540fc51d0a) | 实现 CFS 组调度. | v4 ☑ [2.6.38-rc1](https://kernelnewbies.org/2.6.38-rc1#Automatic_process_grouping_.28a.k.a._.22the_patch_that_does_wonders.22.29) | [LWN](https://lwn.net/Articles/239619), [COMMIT](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5091faa449ee0b7d73bc296a93bca9540fc51d0a) |
+| 2011/01/10 | Bharata B Rao <bharata@linux.vnet.ibm.com> | [sched: Get group names back in /proc/sched_debug](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=8ecedd7a06d27a31dbb36fab88e2ba6e6edd43ca) | 在 `/proc/sched_debug` 路径下显示 group name. | v1 ☑✓ | [LORE v1,0/2](https://lore.kernel.org/all/20110110051445.GB2772@in.ibm.com) |
 
 
 ### 2.1.3 CFS BANDWIDTH 带宽控制
@@ -2036,43 +2045,7 @@ v3.3 [commit 0b005cf54eac ("sched, nohz: Implement sched group, domain aware noh
 | 2012/01/26 | Suresh Siddha <suresh.b.siddha@intel.com> | [sched/nohz: Fix nohz cpu idle load balancing state with cpu hotplug](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=71325960d16cd68ea0e22a8da15b2495b0f363f7) | 引入了 sched_ilb_notifier(). | v1☐☑✓ | [LORE](http://lkml.kernel.org/r/1327026538.16150.40.camel@sbsiddha-desk.sc.intel.com) |
 | 2017/06/19 | Frederic Weisbecker <fweisbec@gmail.com> | [sched: A few nohz_full improvements](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=387bc8b5536eeb0a92f4b4ab553539eaea2ac0ba) | 1497838322-10913-1-git-send-email-fweisbec@gmail.com | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/1497838322-10913-1-git-send-email-fweisbec@gmail.com) |
 
-### 4.5.5 nohz.next_balance for NO_HZ Idle Balancing
--------
-
-*   使用 rq->next_balance 作为执行 ILB 的必要条件
-
-之前 NO_HZ Idle Balancing 所有 空闲 CPU 都进行了负载平衡, 而不考虑负载均衡的间隔 interval, 这引入了比必要时高得多的负载平衡开销. v3.16 [commit ed61bbc69c77 ("sched/balancing: Reduce the rate of needless idle load balancing")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed61bbc69c773465782476c7e5869fa5607fa73a) 只会[在需要进行负载平衡(即 time_after_eq(jiffies, rq->next_balance))时](https://elixir.bootlin.com/linux/v3.16/source/kernel/sched/fair.c#L7204), ILB owner 才会代表空闲 CPU 进行空闲负载平衡. 至此除了 nohz.next_balance 作为触发 KICK 和 ILB 的检查条件外, ILB owner CPU 的 rq->next_balance 也作为执行 ILB 的必要条件.
-
-| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:----:|:----:|:---:|:---:|:----------:|:----:|
-| 2014/06/05 | Tim Chen <tipbot@zytor.com> | [sched/balancing: Reduce the rate of needless idle load balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed61bbc69c773465782476c7e5869fa5607fa73a) | nohz_idle_balance() 也使用 rq->next_balance 作为时间间隔来限制 ILB 的触发. | v1 ☑✓ 3.16-rc1 | [LORE v1](https://lore.kernel.org/all/1400617046.2970.270.camel@schen9-DESK)<br>*-*-*-*-*-*-*-* <br>[LORE v2](https://lore.kernel.org/all/1400621967.2970.280.camel@schen9-DESK) |
-
-*   ILB owner CPU 先执行 NO_HZ Idle Balancing 再进行 Load Balancing
-
-当一个 CPU 被 KICK 去做 NO_HZ 的 Idle Balancing 时, run_rebalance_domains() 中它会在自身上进行负载平衡 rebalance_domains(this_rq, idle), 然后代表空闲 CPU 进行负载平衡 nohz_idle_balance(this_rq, idle). 但是在尝试对自身进行负载平衡之后, 它可能会以负载结束. 这将造成 NO_HZ Idle Balancing 也被中止. 这样一来, 就会有几个空闲的 CPU 没有任务, 直到 ILB CPU 发现自己不适合拉任务. 这会延迟在空闲 CPU 上的负载分配, 更糟糕的是, 只会使少数 CPU 上的任务变得混乱.
-
-在具有 2 级 NUMA 域的 SMT8 POWER 服务器上可以观察到上述问题的影响. 启动与 CPU 核数量相等的死循环程序来进行测试. 由于不鼓励跨 NUMA 域在 fork/exec 上进行负载平衡, 所以所有死循环程序都将在其中一个 NUMA 域上启动. 然后由于 NO_HZ Idle Balancing, 预计最终每个核上都会运行一个死循环的程序. 但是可以观察到, 将所有的死循环程序分散到各个 NUMA 域需要花费 10s 的时间. 造成这个问题的原因是:
-
-1. 从第一个 NUMA 域中选择一个 ILB CPU 来触发 NO_HZ Idle Balancing [根据实验, 在这个域中, 每个核可能有 6 个 CPU 处于空闲状态].
-
-2. 然而, ILB CPU 被 KICK 后, 在执行 run_rebalance_domains() 时会在 [nohz 空闲负载均衡 nohz_idle_balance(this_rq, idle)](https://elixir.bootlin.com/linux/v4.0/source/kernel/sched/fair.c#L7672) 之前调用 [rebalance_domains(this_rq, idle)](https://elixir.bootlin.com/linux/v4.0/source/kernel/sched/fair.c#L7665).
-
-3. 如果内核是 SMT8, ILB CPU 就有足够的机会将任务从它的 Sibling CPU 中 PULL 出来, 以平衡负载.
-
-4. 现在 ILB CPU 不再空闲, 它将中止 NO_HZ Idle Balancing.
-
-因此, 在第一个 NUMA 域中的核之间有相同数量的任务时, 就失去了跨 NUMA 域分配负载的机会. 这是一个非常糟糕的场景, 因为第一个 NUMA 域中的核将有多达 4 个任务, 而邻近 NUMA 域中的核将全部保持空闲.
-
-[commit d4573c3e1c99 ("sched: Improve load balancing in the presence of idle CPUs")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4573c3e1c992668f5dcd57d1c2ced56ae9650b9) 修复了这个问题, 在它对自己进行负载平衡之前, 检查 CPU 是否被唤醒来做 NO_HZ Idle Balancing, 通过这种方式, 我们允许系统中的空闲 CPU 进行负载均衡, 从而更快地分配负载, 而不是在上述情况下单独在 ILB CPU 的本地调度域层次结构内执行负载均衡.
-
-| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:----:|:----:|:---:|:---:|:----------:|:----:|
-| 2015/03/26 | Preeti U Murthy <preeti@linux.vnet.ibm.com> | [sched: Improve load balancing in the presence of idle CPUs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4573c3e1c992668f5dcd57d1c2ced56ae9650b9) | NA | v2 ☑✓ 4.1-rc1 | [LORE](https://lore.kernel.org/all/20150326130014.21532.17158.stgit@preeti.in.ibm.com) |
-| 2015/08/03 | Vincent Guittot <vincent.guittot@linaro.org> | [sched: fix nohz.next_balance update](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c5afb6a87f2386bcf09fa051e6ca390d43e2222e) | NA | v2 ☑✓ 4.4-rc1 | [LORE](https://lore.kernel.org/all/1438595750-20455-1-git-send-email-vincent.guittot@linaro.org) |
-| 2021/08/23 | Valentin Schneider <valentin.schneider@arm.com> | [sched/fair: nohz.next_balance vs newly-idle CPUs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=7fd7a9e0caba10829b4f8db1aa7711b558681fd4) | NA | v3 ☑✓ 5.16-rc1 | [LORE v3,0/2](https://lore.kernel.org/all/20210823111700.2842997-1-valentin.schneider@arm.com) |
-
-
-### 4.5.6 Capacity Aware NO_HZ Idle Balancing
+### 4.5.5 Capacity Aware NO_HZ Idle Balancing
 -------
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
@@ -2081,10 +2054,10 @@ v3.3 [commit 0b005cf54eac ("sched, nohz: Implement sched group, domain aware noh
 | 2019/01/17 | Valentin Schneider <valentin.schneider@arm.com> | [sched/fair: NOHZ cleanups and misfit improvement](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=b9a7b8831600afc51c9ba52c05f12db2266f01c7) | 降低 ARM big.LITTLE 平台 NOHZ 下不必要的 kick 操作. | v1 ☑✓ 5.1-rc2 | [LORE v1,0/5](https://lore.kernel.org/all/20190117153411.2390-1-valentin.schneider@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/3](https://lore.kernel.org/lkml/20190211175946.4961-1-valentin.schneider@arm.com) |
 
 
-### 4.5.7  Blocked Load Update for NO_HZ
+### 4.5.6  Blocked Load Update for NO_HZ
 -------
 
-#### 4.5.7.1 Update Blocked Load When NEWLY_IDLE @4.17
+#### 4.5.6.1 Update Blocked Load When NEWLY_IDLE @4.17
 -------
 
 社区普遍认为, 借助 IDLE CPU(特别是即将陷入 IDLE 的 NEWLY_IDLE CPU) 来完成 Blocked Load 的更新(update_blocked_average) 是一件特别划算的 事情. 因为这些 CPU 并不是 busy 的, 这些不占用业务主路径, 不会对系统的吞吐量起到反作用. 于是 v4.17 [sched: Update blocked load](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=31e77c93e432dec79c7d90b888bbfc3652592741) 和 [sched: On remote stats updates..](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=31e77c93e432dec79c7d90b888bbfc3652592741) 完成了这项工作.
@@ -2238,7 +2211,7 @@ static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
 ```
 
 
-#### 4.5.7.2 Update Blocked Load Outside newidle_balance @5.13
+#### 4.5.6.2 Update Blocked Load Outside newidle_balance @5.13
 -------
 
 Blocked Load 的更新本身可能成为一项非常繁重的工作. 2021 年左右, Joel 在社区报告了 newidle_balance() 路径中长时间的关抢占和关中断所造成的延迟. 这是由于系统中存在有大量的 CPU cgroup 正在使用并且需要更新, 因此造成 update_blocked_averages() 的工作非常繁重, 这导致了 newilde_balance() 有时需要最多 500us 才能完成. Joel 尝试通过限制 update_blocked_averages() 调用的频率来规避问题, 参见 [sched/fair: Rate limit calls to update_blocked_averages() for NOHZ](https://lore.kernel.org/lkml/20210122154600.1722680-1-joel@joelfernandes.org). 但是这显然治标不治本.
@@ -2308,6 +2281,64 @@ void nohz_run_idle_balance(int cpu)
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:---:|:----------:|:----:|
 | 2014/1/28 | Mike Galbraith <mgalbraith@suse.de> | [sched, nohz: Exclude isolated cores from load balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d987fc7f3228) | isolated CPU 不再进行负载均衡. | v1 ☑ 3.15-rc1 | [LKML](https://lkml.org/lkml/2014/2/21/736) |
+
+
+### 4.5.7  NO_HZ Idle Balancing 的其他更新
+-------
+
+
+#### 4.5.7.1 nohz.next_balance for NO_HZ Idle Balancing
+-------
+
+*   使用 rq->next_balance 作为执行 ILB 的必要条件
+
+之前 NO_HZ Idle Balancing 所有 空闲 CPU 都进行了负载平衡, 而不考虑负载均衡的间隔 interval, 这引入了比必要时高得多的负载平衡开销. v3.16 [commit ed61bbc69c77 ("sched/balancing: Reduce the rate of needless idle load balancing")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed61bbc69c773465782476c7e5869fa5607fa73a) 只会[在需要进行负载平衡(即 time_after_eq(jiffies, rq->next_balance))时](https://elixir.bootlin.com/linux/v3.16/source/kernel/sched/fair.c#L7204), ILB owner 才会代表空闲 CPU 进行空闲负载平衡. 至此除了 nohz.next_balance 作为触发 KICK 和 ILB 的检查条件外, ILB owner CPU 的 rq->next_balance 也作为执行 ILB 的必要条件.
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2014/06/05 | Tim Chen <tipbot@zytor.com> | [sched/balancing: Reduce the rate of needless idle load balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed61bbc69c773465782476c7e5869fa5607fa73a) | nohz_idle_balance() 也使用 rq->next_balance 作为时间间隔来限制 ILB 的触发. | v1 ☑✓ 3.16-rc1 | [LORE v1](https://lore.kernel.org/all/1400617046.2970.270.camel@schen9-DESK)<br>*-*-*-*-*-*-*-* <br>[LORE v2](https://lore.kernel.org/all/1400621967.2970.280.camel@schen9-DESK) |
+
+*   ILB owner CPU 先执行 NO_HZ Idle Balancing 再进行 Load Balancing
+
+当一个 CPU 被 KICK 去做 NO_HZ 的 Idle Balancing 时, run_rebalance_domains() 中它会在自身上进行负载平衡 rebalance_domains(this_rq, idle), 然后代表空闲 CPU 进行负载平衡 nohz_idle_balance(this_rq, idle). 但是在尝试对自身进行负载平衡之后, 它可能会以负载结束. 这将造成 NO_HZ Idle Balancing 也被中止. 这样一来, 就会有几个空闲的 CPU 没有任务, 直到 ILB CPU 发现自己不适合拉任务. 这会延迟在空闲 CPU 上的负载分配, 更糟糕的是, 只会使少数 CPU 上的任务变得混乱.
+
+在具有 2 级 NUMA 域的 SMT8 POWER 服务器上可以观察到上述问题的影响. 启动与 CPU 核数量相等的死循环程序来进行测试. 由于不鼓励跨 NUMA 域在 fork/exec 上进行负载平衡, 所以所有死循环程序都将在其中一个 NUMA 域上启动. 然后由于 NO_HZ Idle Balancing, 预计最终每个核上都会运行一个死循环的程序. 但是可以观察到, 将所有的死循环程序分散到各个 NUMA 域需要花费 10s 的时间. 造成这个问题的原因是:
+
+1. 从第一个 NUMA 域中选择一个 ILB CPU 来触发 NO_HZ Idle Balancing [根据实验, 在这个域中, 每个核可能有 6 个 CPU 处于空闲状态].
+
+2. 然而, ILB CPU 被 KICK 后, 在执行 run_rebalance_domains() 时会在 [nohz 空闲负载均衡 nohz_idle_balance(this_rq, idle)](https://elixir.bootlin.com/linux/v4.0/source/kernel/sched/fair.c#L7672) 之前调用 [rebalance_domains(this_rq, idle)](https://elixir.bootlin.com/linux/v4.0/source/kernel/sched/fair.c#L7665).
+
+3. 如果内核是 SMT8, ILB CPU 就有足够的机会将任务从它的 Sibling CPU 中 PULL 出来, 以平衡负载.
+
+4. 现在 ILB CPU 不再空闲, 它将中止 NO_HZ Idle Balancing.
+
+因此, 在第一个 NUMA 域中的核之间有相同数量的任务时, 就失去了跨 NUMA 域分配负载的机会. 这是一个非常糟糕的场景, 因为第一个 NUMA 域中的核将有多达 4 个任务, 而邻近 NUMA 域中的核将全部保持空闲.
+
+[commit d4573c3e1c99 ("sched: Improve load balancing in the presence of idle CPUs")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4573c3e1c992668f5dcd57d1c2ced56ae9650b9) 修复了这个问题, 在它对自己进行负载平衡之前, 检查 CPU 是否被唤醒来做 NO_HZ Idle Balancing, 通过这种方式, 我们允许系统中的空闲 CPU 进行负载均衡, 从而更快地分配负载, 而不是在上述情况下单独在 ILB CPU 的本地调度域层次结构内执行负载均衡.
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:---:|:----------:|:----:|
+| 2015/03/26 | Preeti U Murthy <preeti@linux.vnet.ibm.com> | [sched: Improve load balancing in the presence of idle CPUs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d4573c3e1c992668f5dcd57d1c2ced56ae9650b9) | NA | v2 ☑✓ 4.1-rc1 | [LORE](https://lore.kernel.org/all/20150326130014.21532.17158.stgit@preeti.in.ibm.com) |
+| 2015/08/03 | Vincent Guittot <vincent.guittot@linaro.org> | [sched: fix nohz.next_balance update](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c5afb6a87f2386bcf09fa051e6ca390d43e2222e) | NA | v2 ☑✓ 4.4-rc1 | [LORE](https://lore.kernel.org/all/1438595750-20455-1-git-send-email-vincent.guittot@linaro.org) |
+| 2021/08/23 | Valentin Schneider <valentin.schneider@arm.com> | [sched/fair: nohz.next_balance vs newly-idle CPUs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=7fd7a9e0caba10829b4f8db1aa7711b558681fd4) | NA | v3 ☑✓ 5.16-rc1 | [LORE v3,0/2](https://lore.kernel.org/all/20210823111700.2842997-1-valentin.schneider@arm.com) |
+
+#### 4.5.7.2 nohz_flags for NO_HZ Idle Balancing
+-------
+
+
+由于 smp_send_reschedule/IPI_RESCHEDULE 的处理函数 scheduler_ipi(), 包含了太多无关紧要的东西, 因此, v5.8-rc1 的时候进行了重构, scheduler_ipi() 仅剩下设置 need_resched 标记的 preempt_fold_need_resched()
+
+1.  之前 got_nohz_idle_kick() 的情况下通过 raise_softirq_irqoff(SCHED_SOFTIRQ), 触发 Load Balancing 的操作被分离到了 rq->nohz_csd/nohz_csd_func() 中, kick_ilb() 中通过 smp_call_function_single_async() 异步地执行 nohz_csd_func().
+
+2.  之前 ttwu_queue_remote() 中 sched_ttwu_pending() 的操作拆解到了 wake_csd_func, 同样通过 smp_call_function_single_async() 异步执行.
+
+3.  其他真正需要设置 NEED_RESCHED 的地方, 则直接使用 smp_send_reschedule() 发送 IPI_RESCHEDULE.
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:-----:|:----:|:----:|:----:|:------------:|:----:|
+| 2020/03/27 | "Peter Zijlstra (Intel)" <peterz@infradead.org> | [sched: Clean up scheduler_ipi()](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=90b5363acd4739769c3f38c1aff16171bd133e8c) | TODO | v1 ☑✓ 5.8-rc1 | [LORE](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=90b5363acd4739769c3f38c1aff16171bd133e8c) |
+| 2020/05/26 | Peter Zijlstra <peterz@infradead.org> | [Fix the scheduler-IPI mess.](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=19a1f5ec699954d21be10f74ff71c2a7079e99ad) | TODO | v1 ☐☑✓ | [LORE v1,0/7](https://lore.kernel.org/all/20200526161057.531933155@infradead.org) |
+
 
 
 ## 4.6 自动 NUMA 均衡(Automatic NUMA balancing)
@@ -2574,10 +2605,10 @@ v3.19 期间 [sched,numa: weigh nearby nodes for task placement on complex NUMA 
 | 2018/06/20 | Srikar Dronamraju <srikar@linux.vnet.ibm.com> | [Fixes for sched/numa_balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=b6a60cf36d497e7fbde9dd5b86fabd96850249f6) | NA | v2 ☑ 4.19-rc1 | [LORE v1,00/19](https://lore.kernel.org/lkml/1528106428-19992-1-git-send-email-srikar@linux.vnet.ibm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,00/19](https://lore.kernel.org/all/1529514181-9842-1-git-send-email-srikar@linux.vnet.ibm.com) |
 
 
-### 4.6.4 处理 Numa Balancing Migration vs Load Balance 的冲突
+### 4.6.5 处理 Numa Balancing Migration vs Load Balance 的冲突
 -------
 
-#### 4.6.4.1 最早的时代-避免 NUMA Blancing 和 Load Balance 的正面交锋 @v3.13
+#### 4.6.5.1 最早的时代-避免 NUMA Blancing 和 Load Balance 的正面交锋 @v3.13
 -------
 
 *   NUMA Task Placement 策略(迁移与交换)
@@ -2611,7 +2642,7 @@ numa_preferred_nid 并不总是满足要求的(比如没有足够的 capacity �
 
 这些问题下面我们拆开来依次分析.
 
-#### 4.6.4.2 NUMA Balancing 的内部矛盾
+#### 4.6.5.2 NUMA Balancing 的内部矛盾
 -------
 
 NUMA Balancing 的内部矛盾主要是 migrate_improves/degrades_locality, task_numa_find_cpu() 以及 fbq_type 之间的决策分歧. 造成这样的分歧主要是因为大家策略上参考的信息以及决策算法的差异. 主要优化方向就是将决策的思路进行统一, 各种决策之间相互感知.
@@ -2688,12 +2719,13 @@ v3.19 通过临近 NUMA NODES 的评分机制实现了 NUMA 聚合功能, 从而
 | 2018/06/20 | Srikar Dronamraju <srikar@linux.vnet.ibm.com> | [sched/numa: Use group_weights to identify if migration degrades locality](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f35678b6a17063f3b0d391af5ab8f8c83cf31b0c) | [Fixes for sched/numa_balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=b6a60cf36d497e7fbde9dd5b86fabd96850249f6) 的其中一个补丁. | v2 ☑✓ 4.19-rc1 | [LORE v1,00/19](https://lore.kernel.org/lkml/1528106428-19992-1-git-send-email-srikar@linux.vnet.ibm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/19](https://lore.kernel.org/all/1529514181-9842-21-git-send-email-srikar@linux.vnet.ibm.com) |
 
 
-#### 4.6.4.3 NUMA Balancing 与 Load Balancing 的冲突(NUMA 聚合与不聚合的冲突)
+#### 4.6.5.3 NUMA Balancing 与 Load Balancing 的冲突(NUMA 聚合与不聚合的冲突)
 -------
 
 NUMA Balancing 与 Load Balancing 的主要矛盾比较麻烦, 因为两者虽然都是想做负载均衡, 但是所参考的信息和目标有差异. Load Balancing 更看重进程和 RQ 的短期负载, 希望系统整体越均衡越好, 整体吞吐量更高. 而 NUMA Balancing 则希望基于的长期负载, 它更看重进程长期的内存访问分布, 期望进程离自己长期经常使用的内存更近.
 
-*   早期的问题描述 @v3.13
+##### 4.6.5.3.1 早期的问题描述 @v3.13
+-------
 
 通常情况下, NUMA Balancing 总是倾向于将进程迁移到 numa_preferred_nid 上, 如果 numa_preferred_nid 也不能满足要求(比如容量不足), 那么将遍历系统的其他 NODE 去查找更合适的 NUMA node. 迁移最终由 task_numa_migrate() 完成, 这个过程中会通过 task_numa_find_cpu() 查找合适的 CPU.
 
@@ -2732,7 +2764,8 @@ v3.13 实现 NUMA Balancing 执行 Task Placement 的过程中, task_numa_find_c
 | 2014/05/22 | Rik van Riel <riel@redhat.com> | [sched/numa: Allow task switch if load imbalance improves](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e63da03639cc9e6e83b62e7ef8ffdbb92421416a) | 引入 [load_too_imbalanced()](https://elixir.bootlin.com/linux/v3.16/source/kernel/sched/fair.c#L1099), 允许两个存在细微不均衡的 NUMA NODE 之间进行 NUMA Migration/Swap. 只有 NUMA 节点之间极度不均衡的时候, 才阻止 NUMA Migration/Swap. | v1 ☑✓ 3.16-rc1 | [LORE](https://lore.kernel.org/all/tip-e63da03639cc9e6e83b62e7ef8ffdbb92421416a@git.kernel.org), [FIX 补丁](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1662867a9b2574bfdb9d4e97186aa131218d7210) |
 
 
-*  NUMA 聚合还是不聚合? 这是个问题(numa_has_capacity() 与 load_too_imbance())
+##### 4.6.5.3.2 NUMA 聚合还是不聚合? 这是个问题(numa_has_capacity() 与 load_too_imbance())
+-------
 
 最早的时候, task_numa_migrate() 进行迁移决策的时候, 如果 numa_preferred_nid 上没有剩余 capacity, 就会跳过使用 task_numa_find_cpu() 从 numa_preferred_nid 上选择 dest_cpu/dest_task 的操作, 选择遍历系统中的其他 NUMA nodes 来查找 best_cpu(), 参照 [sched/numa: Favor placing a task on the preferred node](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c8a50aa873a7e1d6cc0913362051ff9912dc6ca) 和 [sched/numa: Fix placement of workloads spread across multiple nodes](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e1dda8a797b59d7ec4b17e393152ec3273a552d5). 这直接造成了在完全过载的系统上工作负载**无法进行 NUMA 聚合**的问题.
 
@@ -2816,7 +2849,7 @@ assign:
 | 2015/02/03 | Rik van Riel <riel@redhat.com> | [sched,numa: do not move past the balance point if unbalanced](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=095bebf61a460ad7f6a45bb17ddbf3a9df2b4397) | 通过对迁移负载 move_load 流量进行校验避免出现所有的任务被迁移到一个 NUMA NODE 的情况. | v2 ☑✓ 4.1-rc1 | [LORE](https://lore.kernel.org/all/20150203165648.0e9ac692@annuminas.surriel.com) |
 | 2015/05/27 | riel@redhat.com <riel@redhat.com> | [numa,sched: resolve conflict between load balancing and NUMA balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=6f9aad0bc37286c0441b57f0ba8cffee50715426) | NA | v2 ☑✓ 4.2-rc1 | [LORE v2,0/2](https://lore.kernel.org/all/1432753468-7785-1-git-send-email-riel@redhat.com) |
 
-*   统一全局观的 task_numa_migrate() 决策 @v4.19
+##### 4.6.5.3.3 统一全局观的 task_numa_migrate() 决策 @v4.19
 
 之前的修修补补都显得过于暴力, 单点对特定的问题进行规避, 没有全局观. 而 task_numa_migrate() 作为 NUMA Balancing Task Placement 的主体流程, 从这里开始统一所有的迁移决策是非常合理的.
 
@@ -2921,7 +2954,8 @@ static int task_numa_migrate(struct task_struct *p)
 }
 ```
 
-*   Reconcile NUMA balancing decisions with the load balancer @5.7
+##### 4.6.5.3.4 Reconcile NUMA balancing decisions with the load balancer @5.7
+-------
 
 v5.5 [Reworking CFS load balancing](https://lwn.net/Articles/793427) 合入后, 有效地改善了 Load Balancing 的效果. 那么也是时候优化 NUMA Balancing 了.
 
@@ -2972,7 +3006,8 @@ static void task_numa_find_cpu(struct task_numa_env *env, long taskimp, long gro
 }
 ```
 
-*   Allow a floating imbalance @v5.11
+##### 4.6.5.3.5 Allow a floating imbalance @v5.11
+-------
 
 至此已经做了足够多的优化来处理 NUMA Balancing 和 Load Balancing 的冲突问题, 从最早的不允许在不平衡的 NUMA 之间迁移, 到引入 load_too_imbalanced() 以及后来的 numa_has_capacity() 开始, 直至 adjust_numa_imbalance() 和 load_too_imbalanced() 相辅相成的方式. 在这方面已经做了足够多的优化, NUMA Balancing 和 Load Balancing 的决策逻辑已经逐渐趋于统一. 那么是时候放开 NUMA 下不平衡迁移的限制了.
 
@@ -2996,7 +3031,9 @@ static inline long adjust_numa_imbalance(int imbalance, int nr_running)
 }
 ```
 
-因此 [commit ('sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034) 进一步放开了 adjust_numa_imbalance() 的平衡限制. 使用 allow_numa_imbalance() 来检查, 如果 NUMA 域内 BUSY CPU 的数量小于小于域内 CPU 数量的 25%, 则允许 NUMA 不平衡. 实现上直接用目标 NUMA 域上的可运行的任务数量 dst_running 近似表示了 BUSY CPU 的数量, 因此这个策略是一个模糊的策略, 因为可运行的任务的数量 numa_stat.nr_running 可能与繁忙 CPU 的数量无关.
+在低负载情况下, 贸然追求 NUMA 之间的负载均衡是非常不值得的. 因此 v5.11-rc1 通过 [commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034) 允许 NUMA 之间一直保持这种不均衡, 直到系统达到 25% 的 CPU Utilisations. 这种修改并不见得比原来的做法(限制不平衡在 imbalance_min 个任务之间)更明智. 测试结果表明并不是所有的性能测试都看到了收益. 任何希望在有限的通信范围内尽可能广泛地扩展的基准测试都将倾向于旧的行为, 因为有更多的内存带宽. 而对大量成对通信的工作负载(如 netperf 或 tbench) 会带来好处. 当然对于作者的测试, 绝大多数工作负载都看到了性能收益. 因此这(似乎)依旧是一个值得的尝试.
+
+[commit 7d2b5dd0bcc4 ('sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034) 进一步放开了 adjust_numa_imbalance() 的平衡限制. 使用 allow_numa_imbalance() 来检查, 如果 NUMA 域内 BUSY CPU 的数量小于小于域内 CPU 数量的 25%, 则允许 NUMA 不平衡. 实现上直接用目标 NUMA 域上的可运行的任务数量 dst_running 近似表示了 BUSY CPU 的数量, 因此这个策略是一个模糊的策略, 因为可运行的任务的数量 numa_stat.nr_running 可能与繁忙 CPU 的数量无关.
 
 同样 allow_numa_imbalance() 的逻辑被用[到了 find_idlest_group() 路径](https://elixir.bootlin.com/linux/v5.11/source/kernel/sched/fair.c#L8927)下, 在本 NUMA 域仍有剩余 capacity(处于 group_has_spare 状态), 将正在运行的任务数将保持在阈值以下, 这样可以保证 BALANCE_FORK/BALANCE_WAKEUP 等路径下, 任务保持在唤醒源附近. 如果后期确实需要迁移, 那么定期的 Load Balancing 将解决这个问题.
 
@@ -3034,13 +3071,61 @@ static inline long adjust_numa_imbalance(int imbalance,
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:---:|:----------:|:----:|
-| 2020/11/20 | Mel Gorman <mgorman@techsingularity.net> | [Revisit NUMA imbalance tolerance and fork balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=23e6082a522e32232f7377540b4d42d8304253b8) | 解决一个负载平衡问题<br>之前解决 NUMA Balancing 和 Load Balancing 被调和时, 尝试允许在一定程度的不平衡, 但是也引入了诸多问题. 因此当时限制不平衡只允许在几乎空闲的 NUMA 域. 现在大多数问题都已经解决掉了, 现在[允许不平衡扩大一定的范围](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034). 同时该补丁还解决了 fork 时候 balance 的问题. 性能测试发现, 这个补丁可以提升约 1.5% unixbench 的跑分, 参见 [e7f28850ea:  unixbench.score 1.5% improvement](https://lore.kernel.org/lkml/20201122150415.GJ2390@xsang-OptiPlex-9020) | v3 ☑ 5.11-rc1 | [LORE RRC,0/3](https://lore.kernel.org/lkml/20201117134222.31482-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/4](https://lore.kernel.org/all/20201120090630.3286-1-mgorman@techsingularity.net) |
+| 2020/11/20 | Mel Gorman <mgorman@techsingularity.net> | [Revisit NUMA imbalance tolerance and fork balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=23e6082a522e32232f7377540b4d42d8304253b8) | 解决一个负载平衡问题<br>之前解决 NUMA Balancing 和 Load Balancing 被调和时, 尝试允许在一定程度的不平衡, 但是也引入了诸多问题. 因此当时限制不平衡只允许在几乎空闲的 NUMA 域. 现在大多数问题都已经解决掉了, 现在[允许不平衡扩大一定的范围](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034). 同时该补丁还解决了 fork 时候 balance 的问题. 性能测试发现, 这个补丁可以提升约 1.5% unixbench 的跑分, 参见 [e7f28850ea:  unixbench.score 1.5% improvement](https://lore.kernel.org/lkml/20201122150415.GJ2390@xsang-OptiPlex-9020) | v3 ☑✓ 5.11-rc1 | [LORE RRC,0/3](https://lore.kernel.org/lkml/20201117134222.31482-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/4](https://lore.kernel.org/all/20201120090630.3286-1-mgorman@techsingularity.net) |
 | 2021/12/01 | Mel Gorman <mgorman@techsingularity.net> | [Adjust NUMA imbalance for multiple LLCs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e496132ebedd870b67f1f6d2428f9bb9d7ae27fd) | [commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc4) 允许 NUMA 节点之间的不平衡, 这样通信任务不会被 load balance 分开. 当 LLC 和 node 之间有 1:1 的关系时, 这种方法可以很好地工作, 但是对于多个 LLC, 如果独立的任务过早地使用 CPU 共享缓存, 这种方法就不太理想了. 本系列解决了两个问题:<br>1. 调度程序域权重的使用不一致, 以及当每个 NUMA 节点有许多 LLC 时性能不佳. NUMA之间允许的不均衡的进程数目不再是一个固定的值 NUMA_IMBALANCE_MIN(2), 而是在 build_sched_domains() 中实际探测 NUMA 域下辖的 LLC 的数目, 作为 sd->imb_numa_nr. | v4 ☑✓ 5.18-rc1 | [PatchWork v3,0/2](https://lore.kernel.org/lkml/20211201151844.20488-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/2](https://lore.kernel.org/lkml/20211210093307.31701-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/2](https://lore.kernel.org/all/20220208094334.16379-1-mgorman@techsingularity.net) |
-| 2022/02/17 | K Prateek Nayak <kprateek.nayak@amd.com> | [sched/fair: Consider cpu affinity when allowing NUMA imbalance in find_idlest_group](https://lore.kernel.org/all/20220217055408.28151-1-kprateek.nayak@amd.com) | 当前的调度程序代码只是检查本地组中的任务数是否小于允许的 NUMA 不平衡阈值. 该阈值以前是 NUMA 域跨度的 25%), 但在 Mel 补丁集 "Adjust NUMA imbalance for multiple LLCs" 中 commit e496132ebedd ("sched/fair: Adjust the allowed NUMA imbalance when SD_NUMA spans multiple LLCs" 现在等于 NUMA 域中的 LLC 数目, 通常情况下这种机制运行良好.<br>但是对于进程都通过 numactl/taskset PIN 到一组分散的 CPU 上的情况(比如每个 LLC 域中选一个 CPU), 任务的数量将始终在阈值内, 因此所有 8 个流线程将在第一个 SOCKET 上唤醒, 从而导致次优性能. 在最初的少量 CPU 上堆积之后, 虽然负载平衡器可以工作, 但是稳定的均衡状态, 并且需要频繁的迁移 PING PONG.<br>我们可以通过检查本地组中允许的 CPU 数量是否少于本地组中运行的任务数量来检测并避免这种堆积, 并使用此信息将本来会堆积的县城分散到下一个 SOCKET 中(毕竟, 这个慢路径的目标是在初始放置期间找到最空闲的组和最空闲的 CPU).  | v4 ☐☑✓ | [LORE](https://lore.kernel.org/all/20220217055408.28151-1-kprateek.nayak@amd.com) |
 | 2022/05/11 | Mel Gorman <mgorman@techsingularity.net> | [Mitigate inconsistent NUMA imbalance behaviour](https://lore.kernel.org/all/20220511143038.4620-1-mgorman@techsingularity.net) | [Linux Patches Aim To Mitigate An Inconsistent Performance / NUMA Imbalancing Issue](https://www.phoronix.com/scan.php?page=news_item&px=Linux-Fix-Inconsistent-NUMA) | v1 ☐☑✓ | [LORE v1,0/4](https://lore.kernel.org/all/20220511143038.4620-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/4](https://lore.kernel.org/lkml/20220520103519.1863-1-mgorman@techsingularity.net) |
 
 
-#### 4.6.4.4 NUMA Blancing VS BALANCE_WAKE 的决策分歧
+##### 4.6.5.3.6 NUMA Imbalance for Multiple LLCs
+-------
+
+前面提到 v5.11 [commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034) 的做法不再保守, 因此并不是所有平台所有负载都能看到性能收益的. 很快开发者发现: 之前都隐含 LLC 和 NUMA NODE 之间存在 1:1 的对应关系, 但是在  AMD Zen 处理器上这种情况被打破. 之前的测策略对这种平台并不友好.
+
+v5.18 通过 [Adjust NUMA imbalance for multiple LLCs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e496132ebedd870b67f1f6d2428f9bb9d7ae27fd) 通过在 NUMA Balancing 时考虑到多个 LLC 的情况, 修复了这个问题, 从有效地提升性能. 参见 [2021/12/01, New Linux Scheduler Patches Can Improve AMD Zen Performance For Some Workloads](https://www.phoronix.com/news/Linux-Sched-NUMA-Imbalance-Zen), [2022/02/18, Linux 5.18 Scheduler Change To Further Boost AMD EPYC Performance For Some Workloads](https://www.phoronix.com/scan.php?page=news_item&px=AMD-Linux-5.18-Sched-Zen-LLC).
+
+之前的逻辑:  NUMA 域内负载不超过 25% 的时候, 则允许 NUMA 域间保持这种不平衡的状态, 而不会倾向于均衡. 为了方便比较, adjust_numa_imbalance() 中直接使用 nr_running 和 NUMA 域的 CPU 数量 group_weight 比较, 判定 NUMA 域的负载是否超过 25%.
+感知了 NUMA 域内 LLC 的数量后: NUMA 之间允许的不均衡的进程数目不再是一个固定的值整个 NUMA 域 CPU 数量 group_weight 的 25%(group_weight >> 2), 而是在 build_sched_domains() 中实际探测 NUMA 域下辖的 LLC 的数目 sd->imb_numa_nr.
+
+在 AMD 平台测试, 感知了 NUMA 域内的 LLC 数量后, 性能得到了不小的优化:
+
+1.  通过 Gorman 进行的基准测试, 在 AMD Zen 3 系统上运行基于 Stream OpenMP 的内存基准测试时, 性能提升达到 `180%~268%`.
+
+2.  对于 Coremark CPU 综合基准测试, 平均值和最大性能也提高了 15%, 而最低分数也提高了近 10%.
+
+3.  对于 SPECjbb Java 工作负载, 也普遍获得了更好的性能.
+
+随后 phoronix 在 AMD 平台上进行了性能测试, 参见 [2022/02/28, Benchmarking The AMD EPYC Speed Boost Coming To Linux 5.18, Thanks To Scheduler/NUMA Improvement](https://www.phoronix.com/scan.php?page=article&item=linux-imbalance-epyc&num=1) 中在 AMD EPYC 上进行了性能测试.
+
+
+[With A Few Lines Of Code, AMD's Nice Performance Optimization For Linux 5.20](https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.20-AMD-NUMA-Imbalance), [6 行代码的补丁优化 Linux 5.20, Stream 性能提升 40%!](https://mp.weixin.qq.com/s/tOR8j_3sw4OyRFDAP32uLw)
+
+
+当前的调度程序代码只是检查本地组中的任务数是否小于允许的 NUMA 不平衡阈值. 该阈值以前是 25%, 但在 Mel 补丁集 "Adjust NUMA imbalance for multiple LLCs" 中 commit e496132ebedd ("sched/fair: Adjust the allowed NUMA imbalance when SD_NUMA spans multiple LLCs" 现在等于 NUMA 域中的 LLC 数目, 通常情况下这种机制运行良好.
+
+但是对于进程都通过 numactl/taskset PIN 到一组分散的 CPU 上的情况(比如每个 LLC 域中选一个 CPU), 任务的数量将始终在阈值内, 因此所有 8 个流线程将在第一个 SOCKET 上唤醒, 从而导致次优性能. 在最初的少量 CPU 上堆积之后, 虽然负载平衡器可以工作, 但是稳定的均衡状态, 并且需要频繁的迁移 PING PONG.<br>我们可以通过检查本地组中允许的 CPU 数量是否少于本地组中运行的任务数量来检测并避免这种堆积, 并使用此信息将本来会堆积的县城分散到下一个 SOCKET 中(毕竟, 这个慢路径的目标是在初始放置期间找到最空闲的组和最空闲的 CPU).
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:----:|:---:|:----------:|:---:|
+| 2021/12/01 | Mel Gorman <mgorman@techsingularity.net> | [Adjust NUMA imbalance for multiple LLCs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e496132ebedd870b67f1f6d2428f9bb9d7ae27fd) | [commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc4) 允许 NUMA 节点之间的不平衡, 这样通信任务不会被 load balance 分开. 当 LLC 和 node 之间有 1:1 的关系时, 这种方法可以很好地工作, 但是对于多个 LLC, 如果独立的任务过早地使用 CPU 共享缓存, 这种方法就不太理想了. 本系列解决了两个问题:<br>1. 调度程序域权重的使用不一致, 以及当每个 NUMA 节点有许多 LLC 时性能不佳. NUMA 之间允许的不均衡的进程数目不再是一个固定的值整个 NUMA 域 CPU 数量 group_weight 的 25%(group_weight >> 2), 而是在 build_sched_domains() 中实际探测 NUMA 域下辖的 LLC 的数目, 作为 sd->imb_numa_nr. | v4 ☑✓ 5.18-rc1 | [PatchWork v3,0/2](https://lore.kernel.org/lkml/20211201151844.20488-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/2](https://lore.kernel.org/lkml/20211210093307.31701-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/2](https://lore.kernel.org/all/20220208094334.16379-1-mgorman@techsingularity.net) |
+| 2022/05/20 | Mel Gorman <mgorman@techsingularity.net> | [Mitigate inconsistent NUMA imbalance behaviour](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=026b98a93bbdbefb37ab8008df84e38e2fedaf92) | TODO | v2 ☑✓ 6.0-rc1 | [LORE v1,0/4](https://lore.kernel.org/all/20220511143038.4620-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/4](https://lore.kernel.org/lkml/20220520103519.1863-1-mgorman@techsingularity.net) |
+| 2022/04/07 | K Prateek Nayak <kprateek.nayak@amd.com> | [sched/fair: Consider cpu affinity when allowing NUMA imbalance in find_idlest_group](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=f5b2eeb49991047f8f64785e7a7857d6f219d574) | 当前的调度程序代码只是检查本地组中的任务数是否小于允许的 NUMA 不平衡阈值. 该阈值以前是 NUMA 域跨度的 25%), 但在 Mel 补丁集 "Adjust NUMA imbalance for multiple LLCs" 中 commit e496132ebedd ("sched/fair: Adjust the allowed NUMA imbalance when SD_NUMA spans multiple LLCs" 现在等于 NUMA 域中的 LLC 数目, 通常情况下这种机制运行良好.<br>但是对于进程都通过 numactl/taskset PIN 到一组分散的 CPU 上的情况(比如每个 LLC 域中选一个 CPU), 任务的数量将始终在阈值内, 因此所有 8 个流线程将在第一个 SOCKET 上唤醒, 从而导致次优性能. 在最初的少量 CPU 上堆积之后, 虽然负载平衡器可以工作, 但是稳定的均衡状态, 并且需要频繁的迁移 PING PONG.<br>我们可以通过检查本地组中允许的 CPU 数量是否少于本地组中运行的任务数量来检测并避免这种堆积, 并使用此信息将本来会堆积的县城分散到下一个 SOCKET 中(毕竟, 这个慢路径的目标是在初始放置期间找到最空闲的组和最空闲的 CPU).  | v4 ☑✓ 6.0-rc1 | [LORE](https://lore.kernel.org/all/20220217055408.28151-1-kprateek.nayak@amd.com)<br>*-*-*-*-*-*-*-* <br>[LORE v7](https://lore.kernel.org/all/20220407111222.22649-1-kprateek.nayak@amd.com) |
+
+
+##### 4.6.5.3.7 Allow NUMA imbalance 总结
+-------
+
+CPU 负载均衡器在不同的调度域之间进行平衡, 以分散负载, 并努力使所有的域都达到平等的平衡. 但是由于 NUMA 级别的迁移以及负载均衡开销较大, 需谨慎小心. 之前的负载均衡器并没有考虑这点. 即使在负载较轻的 NUMA 机器上, 两个在唤醒时拉在一起的通信任务(比如 pipeline 通信)本应一直在一个 NUMA 内运行, 但是却被负载均衡器分开. 这在一定程度上造成了性能的下降.
+
+1. 因此 v5.6-rc2 [commit b396f52326de ("sched/fair: Allow a small load imbalance between low utilisation SD_NUMA domains")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b396f52326de20ec974471b7b19168867b365cbf) 在系统接近完全空闲时, 允许 NUMA 域上存在两个任务(busiest->sum_nr_running <= imbalance_min == 2)的不平衡. 此时这个逻辑只在 Load Balancing 逻辑 calculate_imbalance() 中生效, 还未扩展到 NUMA Balancing. 在大多数情况下, 这将有效地防止两个相互通信的任务因为负载均衡器被分开到两个 NUMA 域.
+
+2. 随后 v5.7-rc1 [commit fb86f5b21192 ("sched/numa: Use similar logic to the load balancer for moving between domains with spare capacity")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fb86f5b2119245afd339280099b4e9417cc0b03a) 在避免 NUMA Balancing 引入严重的不平衡问题. 将 NUMA 域之间允许的 Small Imbalance 逻辑封装成 adjust_numa_imbalance(), 并将此逻辑扩展到 NUMA Balancing 的 task_numa_compare() 中.
+
+3. 一般来说, 这种被允许的 NUMA 之前的不均衡只是仅当目标节点几乎完全空闲时才允许出现不平衡, 倾向于在不平衡很小的基本情况下, 寻求避免不必要的跨节点迁移. 对于低利用率的通信工作负载, 这个补丁通常表现得更好, 更少的 NUMA 平衡活动. 对于高使用率而言, 行为没有变化. 评估了不平衡是否应按域大小进行缩放. 至此只有当目标节点几乎完全空闲时才允许出现 imbalance_min(值为 2)个任务的不平衡. 这解决了一类基本问题(比如两个进程做 pipeline 通信, 这正是 hackbench 等测试套的一些测试方法), 是一种谨慎的做法. 接着 v5.11-rc1 重新考虑了 NUMA 节点不平衡的可能性, 不再直接通过 imbalance_min 来限制, 而是考虑 CPU Utilisations. 通过 [commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034) 和 []() 允许 NUMA 之间一直保持这种不均衡, 直到 25% 的 CPU Utilisations 被占用. 在更高的 CPU 利用率下, 系统应该倾向于保持负载平衡.
+
+
+
+#### 4.6.5.4 NUMA Blancing VS BALANCE_WAKE 的决策分歧
 -------
 
 v4.13 引入了 numa_wake_affine() 机制.
@@ -3050,7 +3135,7 @@ v4.13 引入了 numa_wake_affine() 机制.
 | 2017/06/23 | riel@redhat.com <riel@redhat.com> | [NUMA improvements with task wakeup and load balancing](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=815abf5af45f04f759f12f3172afd15226fd7f71) | TODO | v1 ☑✓ 4.13-rc1 | [LORE v1,0/4](https://lore.kernel.org/all/20170623165530.22514-1-riel@redhat.com) |
 | 2018/02/13 | Mel Gorman <mgorman@techsingularity.net> | [Reduce migrations and conflicts with automatic NUMA balancing v2](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=7347fc87dfe6b7315e74310ee1243dc222c68086) | NA | v2 ☑✓ 4.17-rc1 | [LORE v2,0/6](https://lore.kernel.org/all/20180213133730.24064-1-mgorman@techsingularity.net) |
 
-#### 4.6.4.5 NUMA Blancing VS IDLE_BALANCE 的决策分歧
+#### 4.6.5.5 NUMA Blancing VS IDLE_BALANCE 的决策分歧
 -------
 
 v4.13 引入 NUMA WAKE AFFINE 的时候测试发现, CPU 的空闲造成了 NAS 基准测试中的几个测试在启用 NUMA 平衡的情况下运行速度下降, 因此立即通过 [commit 739294fb03f5 ("sched/numa: Override part of migrate_degrades_locality() when idle balancing")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=739294fb03f590401bbd7faa6d31a507e3ffada5) 修改 migrate_degrades_locality() 如果 CPU IDLE 直接返回 -1.
@@ -3071,7 +3156,7 @@ v4.13 引入 NUMA WAKE AFFINE 的时候测试发现, CPU 的空闲造成了 NAS 
 | 2020/02/24 | Mel Gorman <mgorman@techsingularity.net> | [Prefer using an idle CPU as a migration target instead of comparing tasks](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ff7db0bf24db919f69121bf5df8f3cb6d79f49af) | [Reconcile NUMA balancing decisions with the load balancer v6](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=a0f03b617c3b2644d3d47bf7d9e60aed01bd5b10) 解决 NUMA Balancing 与 Load Balancing 冲突的其中一个补丁. | v6 ☑✓ 5.7-rc1 | [LORE RFC,v1,00/11](https://lore.kernel.org/all/20200212093654.4816-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v2,00/12](https://lore.kernel.org/all/20200214081219.26352-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v3,00/13](https://lore.kernel.org/all/20200224095223.13361-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v6,00/13](https://lore.kernel.org/all/20200224095223.13361-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[关注 COMMIT1](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ff7db0bf24db919f69121bf5df8f3cb6d79f49af), [关注 COMMIT2](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a0f03b617c3b2644d3d47bf7d9e60aed01bd5b10) |
 
 
-#### 4.6.4.6 NUMA Blancing VS BALANCE_FORK 的决策分歧
+#### 4.6.5.6 NUMA Blancing VS BALANCE_FORK 的决策分歧
 -------
 
 ## 4.7 WAKEUP
@@ -3611,10 +3696,11 @@ Oracle 数据库具有类似的虚拟化功能, 称为 Oracle Multitenant, 其�
 
 
 
-## 5.5 cluster_scheduler
+## 5.5 Cluster Scheduler
 -------
 
-
+### 5.5.1 Cluster Scheduler
+-------
 
 在最后一级缓存中, 可以有多个 cluster, 每个 cluster 下的多个 CPU 有一些共享资源.
 
@@ -3645,21 +3731,15 @@ Oracle 数据库具有类似的虚拟化功能, 称为 Oracle Multitenant, 其�
 | 2022/01/26 | Yicong Yang <yangyicong@hisilicon.com> | [sched/fair: Wake task within the cluster when possible](https://lore.kernel.org/all/20220126080947.4529-1-yangyicong@hisilicon.com) | 这个补丁集负责唤醒路径的 cluster 感知, 在扫描整个 LLC 之前, 先在同一集群中其他的 CPU 尝试一下, 以使这些任务能够相互通信.<br>1. 引入 SD_CLUSTER 标记 cluster 域, 使用 per_cpu(sd_cluster, cpu) 和 per_cpu(sd_share_id, cpu) 标记 CPU 所属的 cluster 及其 ID<br>2. 接着 select_idle_cpu() 试图在扫描整个 LLC 之前先通过 scan_cluster() 找到目标 CPU cluster 域 per_cpu(sd_cluster, target) 内空闲的 CPU, 以获得更低的延迟. | v2 ☐☑✓ | [](https://lore.kernel.org/lkml/20211215041149.73171-1-yangyicong@hisilicon.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/2](https://lore.kernel.org/all/20220126080947.4529-1-yangyicong@hisilicon.com) |
 | 2021/12/03 | Tim Chen <tim.c.chen@linux.intel.com> | [Make Cluster Scheduling Configurable](https://lkml.org/lkml/2021/12/3/891 ) | Cluster Scheduling 并不适用于所有场景, 因此这组补丁支持了在运行时和引导时可以动态配置 Cluster Scheduling. 可以通过启动参数 `sched_cluster={1|0}` 来在启动时开启和关闭, 也可以通过 `/proc/sys/kernel/sched_cluster` 接口在运行时动态开启和关闭.<br>当系统负载适中时, 值得做额外的负载平衡来平衡 cluster 之间的负载, 以减少 cluster 内资源的争用. 但是如果系统负载较大, 各个资源已经得到充分利用, cluster 之间的负载平衡不太可能有助于减少 cluster 的资源争用, 因为 cluster 内已经完全繁忙.<br>同时由于不感知性能异构的 CPU 类型, 造成了 Intel Alder Lake CPU 上性能退化, 参见 [Linux 5.16's New Cluster Scheduling Is Causing Regression, Further Hurting Alder Lake](https://www.phoronix.com/scan.php?page=article&item=linux-516-regress&num=3). 因此在 x86 hybrid 类型的 CPU 上禁用 Cluster Scheduling.<br>在一个有 24 个 Atom 内核的 Jacobsville 系统上 (每个 cluster 有 4 个 Atom CPU 核共享一个 L2), 在 24 个 CPU 的系统上运行 mcf 基准测试, 从非常低的负载 1 个基准测试副本到 24 个基准测试副本. 我们看到, 在中等负载时吞吐量得到了提高, 但当系统满负载时, Cluster Scheduling 几乎没有什么提升.<br> 不过 Peter 最终直接选择在 x86 hybrid CPUs 上禁用 cluster. 参见 commit [cabdc3a8475b ("sched,x86: Don't use cluster topology for x86 hybrid CPUs")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cabdc3a8475b918e55744f43719b26a82dc8fa6b). | v1 ☐ | [LORE 0/5](https://lkml.kernel.org/lkml/cover.1638563225.git.tim.c.chen@linux.intel.com), [Peter Zijlstra COMMIT](https://lore.kernel.org/all/163899885798.11128.4032422680527135079.tip-bot2@tip-bot2) |
 
-*   multiple LLCs
+### 5.5.2 Multiple LLCs
+-------
 
-
-[Linux 5.18 Scheduler Change To Further Boost AMD EPYC Performance For Some Workloads](https://www.phoronix.com/scan.php?page=news_item&px=AMD-Linux-5.18-Sched-Zen-LLC)
-
-[Benchmarking The AMD EPYC Speed Boost Coming To Linux 5.18, Thanks To Scheduler/NUMA Improvement](https://www.phoronix.com/scan.php?page=article&item=linux-imbalance-epyc&num=1) 中在 AMD EPYC 上进行了性能测试.
-
-[With A Few Lines Of Code, AMD's Nice Performance Optimization For Linux 5.20](https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.20-AMD-NUMA-Imbalance), [6 行代码的补丁优化 Linux 5.20, Stream 性能提升 40%!](https://mp.weixin.qq.com/s/tOR8j_3sw4OyRFDAP32uLw)
+在低负载情况下, 贸然追求 NUMA 之间的负载均衡是非常不值得的. 因此 v5.11-rc1 通过 [commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc48095651f1b85f751eef610b3e034) 允许 NUMA 之间一直保持这种不均衡, 直到系统达到 25% 的 CPU Utilisations. 但是如果 LLC 和节点之间没有 1：1 的关系, 例如 AMD Zen 处理器的情况, 这种隐含可能不是最佳的.
 
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:----:|:---:|:----------:|:---:|
 | 2021/12/01 | Mel Gorman <mgorman@techsingularity.net> | [Adjust NUMA imbalance for multiple LLCs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e496132ebedd870b67f1f6d2428f9bb9d7ae27fd) | [commit 7d2b5dd0bcc4 ("sched/numa: Allow a floating imbalance between NUMA nodes")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d2b5dd0bcc4) 允许 NUMA 节点之间的不平衡, 这样通信任务不会被 load balance 分开. 当 LLC 和 node 之间有 1:1 的关系时, 这种方法可以很好地工作, 但是对于多个 LLC, 如果独立的任务过早地使用 CPU 共享缓存, 这种方法就不太理想了. 本系列解决了两个问题:<br>1. 调度程序域权重的使用不一致, 以及当每个 NUMA 节点有许多 LLC 时性能不佳. NUMA之间允许的不均衡的进程数目不再是一个固定的值 NUMA_IMBALANCE_MIN(2), 而是在 build_sched_domains() 中实际探测 NUMA 域下辖的 LLC 的数目, 作为 sd->imb_numa_nr. | v4 ☑✓ 5.18-rc1 | [PatchWork v3,0/2](https://lore.kernel.org/lkml/20211201151844.20488-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/2](https://lore.kernel.org/lkml/20211210093307.31701-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/2](https://lore.kernel.org/all/20220208094334.16379-1-mgorman@techsingularity.net) |
-| 2022/05/20 | Mel Gorman <mgorman@techsingularity.net> | [Mitigate inconsistent NUMA imbalance behaviour](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=026b98a93bbdbefb37ab8008df84e38e2fedaf92) | TODO | v2 ☐☑✓ | [LORE v2,0/4](https://lore.kernel.org/all/20220520103519.1863-1-mgorman@techsingularity.net) |
-| 2022/02/17 | K Prateek Nayak <kprateek.nayak@amd.com> | [sched/fair: Consider cpu affinity when allowing NUMA imbalance in find_idlest_group](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=f5b2eeb49991047f8f64785e7a7857d6f219d574) | 当前的调度程序代码只是检查本地组中的任务数是否小于允许的 NUMA 不平衡阈值. 该阈值以前是 NUMA 域跨度的 25%), 但在 Mel 补丁集 "Adjust NUMA imbalance for multiple LLCs" 中 commit e496132ebedd ("sched/fair: Adjust the allowed NUMA imbalance when SD_NUMA spans multiple LLCs" 现在等于 NUMA 域中的 LLC 数目, 通常情况下这种机制运行良好.<br>但是对于进程都通过 numactl/taskset PIN 到一组分散的 CPU 上的情况(比如每个 LLC 域中选一个 CPU), 任务的数量将始终在阈值内, 因此所有 8 个流线程将在第一个 SOCKET 上唤醒, 从而导致次优性能. 在最初的少量 CPU 上堆积之后, 虽然负载平衡器可以工作, 但是稳定的均衡状态, 并且需要频繁的迁移 PING PONG.<br>我们可以通过检查本地组中允许的 CPU 数量是否少于本地组中运行的任务数量来检测并避免这种堆积, 并使用此信息将本来会堆积的县城分散到下一个 SOCKET 中(毕竟, 这个慢路径的目标是在初始放置期间找到最空闲的组和最空闲的 CPU).  | v4 ☐☑✓ | [LORE](https://lore.kernel.org/all/20220217055408.28151-1-kprateek.nayak@amd.com)<br>*-*-*-*-*-*-*-* <br>[LORE v7](https://lore.kernel.org/all/20220407111222.22649-1-kprateek.nayak@amd.com) |
 
 
 ## 5.6 相关学术研究
@@ -4388,6 +4468,34 @@ ANDROID 上很多实际应用场景, 比如说绘帧等, 往往是由多个线�
 
 3.  Busy Hysteresis 优化: 通过预制的每一个 CPU 的 capactity 的阈值, 当 CPU 的负载大于这个阈值的时候, 会迟滞一定的时间, 不让 CPU 进入 LPM 模式(low power mode).  CPU IDLE 是进入 LPM, 分多个等级, 层级越高越省电, 但是相应的睡眠跟唤醒的时延越高. 因此当一个 CPU 的负载较重的时候, 即使可以短暂的进入 LPM 模式, 大概率也会很快因为有任务需要运行而退出, 并且对于处于 RTG 的关键业务来说, 唤醒的时延过长, 则实时性得不到保证. 绘帧等场景, 对时延要求极其敏感, 特别是对于 120MHZ 的刷新率来说, 稍有不慎, 就会造成丢帧.
 
+## 7.9 Core Control Isolation
+------
+
+终端场景下, 中大核的能效比比较差, 因此必要的时候如果能提供必要的隔离功能, 对整个系统的能效的管控和优化将是非常有效地.
+
+1.  在系统负载较小的时候, 把中大核(特别是大核)给隔离出来, 不再允许线程 RUNNING ON. 保证系统的功耗.
+
+2.  在系统负载较高的时候, 按照策略逐步放开中大核, 保证系统的性能.
+
+足见这其实是小任务封包等思路另一个维度的思考和实现, 小任务封包考虑管控任务, 而核隔离则直接管控 CPU 核本身.
+
+核隔离有有几种实现方式:
+
+| 编号 | 特性 | 描述 |
+|:---:|:----:|:---:|
+| 1 | CONFIG_CPU_ISOLATION | 是一套静态地 CPU 配置, 不支持系统运行时自动化配置, 并且由于跟 cpuset 以及 nohz 的兼容性问题, 社区不建议使用. 并且隔离核, 独立于调度域之外. |
+| 2 | CONFIG_HOTPLUG_CPU | CPU 热插拔, 允许运行时动态配置, 但是每次重建调域的开销太大. |
+
+因此高通实现了一套 CONFIG_SCHED_CORE_CTL(Core Control Isolation) 的方案. 参见 [msm-4.19](https://source.codeaurora.cn/quic/la/kernel/msm-4.19/log/?id=295959371853).
+
+1.  引入 cpu_isolation_mask, 用来控制调度器不要将 isolated 的 CPU 当作 active 的 CPU 来调度进程. 参见 [commit 7a74af6396da ("cpumask: Add cpu isolation support")](https://source.codeaurora.cn/quic/la/kernel/msm-4.19/commit?id=7a74af6396da29f581ea36b924ff4fa0538c817c)
+
+2.  实现 core_ctl 控制动态地 isolation/unisolation CPU. [commit 07a16a8cc662 ("sched: Add snapshot of core_ctl")](https://source.codeaurora.cn/quic/la/kernel/msm-4.19/commit?id=07a16a8cc6623b2fd75641497b4b7df5a9219b1a).
+
+CONFIG_SCHED_CORE_CTL 的方案, 不光通过 do_isolation_work_cpu_stop() 支持迁移任务, 还通过 hrtimer_quiesce_cpu() 和 timer_quiesce_cpu() 完成了对 timer 的迁移. 一直到 MSM-5.4, CPU_ISOLATION & CORE_CTRL 的方案都运行良好.
+
+但是 msm-5.10 引入了 GKI 框架之后, CPU_ISOLATION 引入 cpu_isolation_mask 的方式, 在原生的调度等路径下需要感知 cpu_isolated(), 这种方式需要对原生内核增加较多的侵入式修改, 不被 AOSP 所接受. 因此 ARM 的开发者为 AOSP 引入了 pause_cpus/resume_cpus(), 借助 CPU_HOTPLUG 的框架实现快速地, pause_cpus 可以使 CPU 处于空闲状态, resume_cpus 则期望尽可能快地恢复, 同时对系统造成尽可能少的破坏. 由于全量的 CPU_HOTPLUG 流程太慢. 从调度器的角度来看, 暂停(pause)的 CPU 只是去激活(deactivated). 这对应于热插拔的第一步. 每个暂停操作仍然需要一些较重的同步, 因此 pause_cpus() 允许一次暂停多个 CPU 从而缓解这个问题.
+
 
 # 8 实时性 linux PREEMPT_RT
 -------
@@ -4584,16 +4692,15 @@ Tosatti 的 patch set 增加了一组新的 prctl() 命令来解决这个问题.
 
 
 
-## 8.5 更精确的调度时钟(HRTICK), 2.6.25(2008年4月发布)**
+## 8.5 更精确的调度时钟(HRTICK)
 -------
 
+2.6.25(2008年4月发布)
 
 CPU的周期性调度, 和基于时间片的调度, 是要基于时钟中断来触发的．一个典型的 1000 HZ 机器, 每秒钟产生 1000 次时间中断, 每次中断到来后, 调度器会看看是否需要调度．
 
 
-
 然而, 对于调度时间粒度为微秒(10^-6)级别的精度来说, 这每秒 1000 次的粒度就显得太粗糙了．
-
 
 
 2.6.25 引入了所谓的**高清嘀哒(High Resolution Tick)**, 以提供更精确的调度时钟中断．这个功能是基于**高精度时钟(High Resolution Timer)框架**, 这个框架让内核支持可以提供纳秒级别的精度的硬件时钟(将会在时钟子系统里讲).
@@ -4664,6 +4771,9 @@ PREEMPT-RT PATCH 的核心思想是最小化内核中不可抢占部分的代码
 
 3. 降低延迟的措施.
 
+[PREEMPT_RT Linux & Open-Source News](https://www.phoronix.com/search/PREEMPT_RT)
+
+[PREEMPT_RT Might Be Ready To Finally Land In Linux 5.20](https://www.phoronix.com/news/520-Maybe-Real-Time-PREEMPT_RT)
 
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
@@ -4686,7 +4796,7 @@ PREEMPT-RT PATCH 的核心思想是最小化内核中不可抢占部分的代码
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2020/09/17 | Thomas Gleixner | [sched: Migrate disable support for RT](https://lore.kernel.org/patchwork/cover/1307272) | 在启用 PREEMPT_RT 的内核上, 包括spin/rw锁持有部分在内的大部分代码都是可抢占的, 也使得任务可以迁移. 这违反了每个CPU的约束. 因此, PREEMPT_RT 需要一种独立于抢占的机制来控制迁移.  | v1 ☐ | [PatchWork](https://lwn.net/Articles/1307272) |
-| 2020/10/23 | Peter Zijlstra | [sched: Migrate disable support](https://lore.kernel.org/patchwork/cover/1323936) | Peter 自己实现的 Migrate disable | v4 ☑ 5.11-rc1 | [2020/09/11 preparations](https://lore.kernel.org/patchwork/cover/1304210)<br>*-*-*-*-*-*-*-* <br>[2020/09/21 v1 PatchWork](https://lore.kernel.org/patchwork/cover/1309702)<br>*-*-*-*-*-*-*-* <br>[2020/10/23 v4 PatchWork](https://lore.kernel.org/patchwork/cover/1323936) |
+| 2020/10/23 | Peter Zijlstra | [sched: Migrate disable support](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=c777d847107e80df24dae87fc9cf4b4c0bf4dfed) | Peter 自己实现的 Migrate disable | v4 ☑ 5.11-rc1 | [2020/09/11 preparations](https://lore.kernel.org/patchwork/cover/1304210)<br>*-*-*-*-*-*-*-* <br>[2020/09/21 v1 PatchWork](https://lore.kernel.org/patchwork/cover/1309702)<br>*-*-*-*-*-*-*-* <br>[2020/10/23 v4 PatchWork](https://lore.kernel.org/patchwork/cover/1323936) |
 | 2021/01/16 | Peter Zijlstra | [sched: Fix hot-unplug regressions](https://lore.kernel.org/patchwork/cover/1366383) | 修复 Migrate Disable 合入后导致的 CRASH 问题 | v3 ☑ 5.11-rc1 | [021/01/16 V1](https://lore.kernel.org/patchwork/cover/1366383)<br>*-*-*-*-*-*-*-*<br>[2021/01/21 V2](https://lore.kernel.org/patchwork/cover/1368710) |
 
 接着 Thomas Gleixner 完成了 KMAP_LOCAL API.

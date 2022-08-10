@@ -473,16 +473,24 @@ TLB entry shootdown 常常或多或少的带来一些性能问题.
 ### 2.2.4 BATCHED_UNMAP_TLB_FLUSH
 -------
 
-在 x86 上, BATCHED_UNMAP_TLB_FLUSH 用于批处理 TLB, 在解除页面映射后, 发送一个 IPI 到 TLB 刷新所有条目, 而不是发送一个 IPI 来刷新每个单独的条目.
+取消映射页时, 需要刷新 TLB. 由于该页面可能被其他 CPU 访问过, 则使用 IPI 刷新远程 CPU 的 TLB. 如果 kswapd 每秒扫描和取消映射 >100K 页面, IPI 数量非常庞大. 因此在 v4.3 s[TLB flush multiple pages per IPI v7](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=c7e1e3ccfbd153c890240a391f258efaedfa94d0) 引入了 BATCHED_UNMAP_TLB_FLUSH 用于 TLB 批处理, 在批量解除页面映射后, 发送[一个 IPI 来刷新多个 TLB range 的条目](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=72b252aed506b8f1a03f7abd29caef4cdf6a043b), 而不是每个 TLB entry 刷新都发送一个 IPI.
 
-在 arm64 TLB shootdown 是由硬件完成的. 刷新指令是内部共享的. 本地刷新限制在启动 (每个 CPU 1 次) 和任务获得新的 ASID 时. 像 ARM64 这样的平台有硬件 TLB shootdown 广播. 它们不维护 mm_cpumask, 只是发送 tlbi 和相关的同步指令用于 TLB 刷新. 在这种情况下, Task 的 mm_cpumask 通常是空的. 在这类平台上, 我们也允许延迟 TLB 刷新.
+1.  try_to_unmap_one() 批量接触页面映射后, 通过 should_defer_flush() 判断是否应该延迟刷新, 即整体触发一次批量刷新.
+
+2.  shrink_page_list() 释放页面并解除映射的时候, 则使用 try_to_unmap_flush() 刷新最近未映射页面的 TLB 条目.
+
+3.  如果在取消映射时 PTE 是脏的, 那么在页上发起任何 IO 之前刷新它以防止写操作丢失是很重要的. 类似地, 它必须在释放之前刷新, 以防止数据泄漏. 参见 [mm: defer flush of writable TLB entries](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d950c9477d51f0cefc2ed3cf76e695d46af0d9c1)
+
+但是, ARM64 架构下 TLB shootdown 是由硬件通过 tlbi 指令完成的. 刷新指令是内部共享的. 本地刷新限制在启动 (每个 CPU 1 次) 和任务获得新的 ASID 时. 像 ARM64 这样的平台有硬件 TLB shootdown 广播. 它们不维护 mm_cpumask, 只是发送 tlbi 和相关的同步指令用于 TLB 刷新. 从这个角度上讲, 可以认为 ARM64 其实是不需要 BATCHED_UNMAP_TLB_FLUSH, 因此 v5.13 [Documentation/features: mark BATCHED_UNMAP_TLB_FLUSH doesn't apply to ARM64](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6bfef171d0d74cb050112e0e49feb20bfddf7f42) 将 ARM64 架构下 BATCHED_UNMAP_TLB_FLUSH 标记为 N/A. 在这种架构下, Task 的 mm_cpumask 通常是空的.
 
 
-在 x86 上, 批处理和延迟 TLB shootdown 的解决方案使 TLB shootdown 的性能提高了 90%. 在 arm64 上, 硬件可以在没有软件 IPI 的情况下执行 TLB shootdown. 但同步 tlbi 仍然相当昂贵.
+在 x86 上, 批处理和延迟 TLB shootdown 的解决方案使 TLB shootdown 的性能提高了 90%. 在 ARM64 上, 硬件可以在没有软件 IPI 的情况下执行 TLB shootdown. 但前面讲解 TLB Shootdown 的时候, 我们已经提到了同步 tlbi 的开销同样相当昂贵. 因此这类平台上, 如果我们也允许延迟 TLB 刷新(即使用批量 TLB 刷新), 将会获得诸多好处.
 
 
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2015/07/06 | Mel Gorman <mgorman@suse.de> | [TLB flush multiple pages per IPI v7](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=c7e1e3ccfbd153c890240a391f258efaedfa94d0) | BATCHED_UNMAP_TLB_FLUSH 完成了 TLB 批处理, 在批量解除页面映射后, 发送一个 IPI 来刷新多个 TLB range 的条目, 而不是每个 TLB entry 刷新都发送一个 IPI. | v7 ☑✓ 4.3-rc1 | [LORE v5,0/3](https://lore.kernel.org/all/1433767854-24408-1-git-send-email-mgorman@suse.de)<br>*-*-*-*-*-*-*-* <br>[LORE v7,0/4](https://lore.kernel.org/all/1436189996-7220-1-git-send-email-mgorman@suse.de) |
+| 2017/05/07 | Andy Lutomirski <luto@kernel.org> | [x86 TLB flush cleanups, moving toward PCID support](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=d6e41f1151feeb118eee776c09323aceb4a415d9) | TODO | v1 ☑✓ 4.13-rc1 | [LORE v1,0/10](https://lore.kernel.org/all/cover.1494160201.git.luto@kernel.org) |
 | 2021/02/23 | Barry Song <song.bao.hua@hisilicon.com> | [Documentation/features: mark BATCHED_UNMAP_TLB_FLUSH doesn't apply to ARM64](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6bfef171d0d74cb050112e0e49feb20bfddf7f42) | 在 x86 上, BATCHED_UNMAP_TLB_FLUSH 用于批处理 TLB, 在解除页面映射后, 发送一个 IPI 到 TLB 刷新所有条目. 在 arm64 上, TLB shootdown 是由硬件完成的. 刷新指令是内部共享的. 本地刷新限制在启动(每个 CPU 1 次)和任务获得新的 ASID 时. 因此, 将该特性标记为 "TODO" 是不恰当的. 所以这个补丁对某些架构上不需要的这类功能标记为 "N/A". | v1 ☑✓ 5.13-rc1 | [LORE](https://lore.kernel.org/all/20210223003230.11976-1-song.bao.hua@hisilicon.com) |
 | 2022/07/11 | Barry Song <21cnbao@gmail.com> | [mm: arm64: bring up BATCHED_UNMAP_TLB_FLUSH](https://lore.kernel.org/all/20220711034615.482895-1-21cnbao@gmail.com) | 虽然 ARM64 有硬件来完成 TLB shootdown, 但硬件广播的开销并不小. 最简单的微基准测试表明, 即使在只有 8 核的 snapdragon 888 上, ptep_clear_flush() 的开销也是巨大的, 即使只分页一个进程映射的一个页面, perf top 显示这造成 5.36% 的 CPU 消耗. 当页面由多个进程映射或硬件有更多 CPU 时, 由于 TLB 分解的可扩展性较差, 成本应该会更高. 在这种场景下同样的基准测试可能会导致大约 100 核的 ARM64 服务器上 16.99% 的 CPU 消耗. 该补丁集利用了现有的 BATCHED_UNMAP_TLB_FLUSH 进行了优化.<br>1. 仅在第一阶段 arch_tlbbatch_add_mm() 中发送 tlbi 指令.<br>2. 等待 dsb 完成 tlbi, 同时在 arch_tlbbatch_flush() 中执行 tlbbatch sync. 在 snapdragon 上的测试表明, ptep_clear_flush() 的开销已被该补丁集优化掉. 即使在 snapdragon 888 上通过单个进程映射一个页面, 微基准也能提升 5% 的性能. | v2 ☐☑✓ | [LORE v1,0/4](https://lore.kernel.org/lkml/20220707125242.425242-1-21cnbao@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/4](https://lore.kernel.org/all/20220711034615.482895-1-21cnbao@gmail.com) |
 
@@ -779,6 +787,8 @@ Arm True Random Number Generator Firmware Interface 1.0 于去年发布, 最终�
 
 [Linux's getrandom() Sees A 8450% Improvement With Latest Code](https://www.phoronix.com/scan.php?page=news_item&px=Linux-getrandom-8450p)
 
+[Linux 6.0 To Continue Advancing Its Random Number Generator (RNG)](https://www.phoronix.com/news/Linux-6.0-RNG)
+
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/11/21 | "Stephan Müller" <smueller@chronox.de> | [/dev/random - a new approach](https://lore.kernel.org/lkml/2036923.9o76ZdvQCi@positron.chronox.de) | 随机数实现改进. | v1 ☐ | [Patchwork v43 00/15](https://lore.kernel.org/lkml/2036923.9o76ZdvQCi@positron.chronox.de) |
@@ -824,6 +834,8 @@ https://blogs.vmware.com/vsphere/2021/10/introducing-project-capitola.html
 英特尔工程师 Ben Widawsky 已经开始发布一个关于 Linux 上 CXL 的博客文章系列, 参见 [Compute Express Link Overview](https://bwidawsk.net/blog/2022/6/compute-express-link-intro)
 
 [公众号-半导体行业观察-越来越热的 CXL](https://mp.weixin.qq.com/s/sB2bmFcEaYsH1Jg19E0-eg)
+
+[CXL 3.0 Specification Released - Doubles The Data Rate Of CXL 2.0](https://www.phoronix.com/news/CXL-3.0-Specification-Released)
 
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
@@ -887,6 +899,8 @@ Rosetta 是一个转译过程, 允许用户在 Apple Silicon 上运行包含 x86
 Tachyum 宣布其设计一款完全通用的处理器 Prodigy T16128, 预计 2023 年发布, [Tachyum's Monster 128 Core 5.7GHz 'Universal Processor' Does Everything](https://www.tomshardware.com/news/tachyum-128-core-all-purpose-cpu), 号称一款芯片上可以同时运行通用计算, 高性能计算以及 AI 等业务和负载, 原生支持 x86, ARM, RISC-V 和 ISA 的二进制.
 
 Google Google 推出[芯片设计门户网站](https://developers.google.com/silicon), 计划名为 Open MPW Shuttle Program, 允许任何人利用开源 PDK 和其他开源 EDA 工具来提交开源集成电路设计, Google 会为他们免费制造, 不会收取任何费用. 虽然芯片制造是在 130 纳米工艺（SKY130）上完成的, 但这一计划对资金有限的开源硬件项目具有巨大的推动作用.
+
+[GlobalFoundries Partners With Google's Open-Source Silicon Effort To Provide 180nm Tech](https://www.phoronix.com/news/Google-GloFo-GF180MCU)
 
 
 中国科学院大学("国科大")的 ["一生一芯" 计划](https://ysyx.org).

@@ -202,6 +202,7 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 | 2019/03/19 | Suren Baghdasaryan <surenb@google.com> | [psi: pressure stall monitors v6](https://lwn.net/Articles/775971/) | NA | v6 ☑ [5.2-rc1](https://kernelnewbies.org/Linux_5.2#Improved_Presure_Stall_Information_for_better_resource_monitoring) | [Patchwork](https://lore.kernel.org/patchwork/patch/1052413) |
 | 2020/03/03 | Suren Baghdasaryan <surenb@google.com> | [psi: Add PSI_CPU_FULL state and some code optimization](ttps://lore.kernel.org/patchwork/patch/1388805) | 1. 添加 PSI_CPU_FULL 状态标记 cgroup 中的所有非空闲任务在 cgroup 之外的 CPU 资源上被延迟, 或者 cgroup 被 throttle<br>2. 使用 ONCPU 状态和当前的 in_memstall 标志来检测回收, 删除 timer tick 中的钩子, 使代码更简洁和可维护.<br>4. 通过移除两个任务的每个公共cgroup祖先的psi_group_change()调用来优化自愿睡眠开关.  | v2 ☑ 5.13-rc1 | [Patchwork](https://lore.kernel.org/patchwork/patch/1388805) |
 | 2020/03/31 | Yafang Shao <laoar.shao@gmail.com> | [psi: enhance psi with the help of ebpf](https://lwn.net/Articles/1218304) | 引入 psi_memstall_type 标记 MEMSTALL 的类别, 并在 tracepoint 输出, 从而可以被 ebpf 使用来增强工具. | v4 ☑ [4.20-rc1](https://kernelnewbies.org/Linux_4.20#Core_.28various.29) | [Patchwork](https://lore.kernel.org/patchwork/patch/1218304) |
+| 2022/07/21 | Chengming Zhou <zhouchengming@bytedance.com> | [sched/psi: some optimization and extension](https://lore.kernel.org/all/20220721040439.2651-1-zhouchengming@bytedance.com) | TODO | v1 ☐☑✓ | [LORE v1,0/9](https://lore.kernel.org/all/20220721040439.2651-1-zhouchengming@bytedance.com) |
 
 
 # 7 DYNAMIC_DEBUG
@@ -217,11 +218,27 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 # 8 VDSO
 -------
 
+## 8.1 getpid() 性能劣化
+-------
 
 [Remove cached PID/TID in clone](https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=c579f48edba88380635ab98cb612030e3ed8691e)
+
 [Bug 1469670 - glibc: Implement vDSO-based getpid](https://bugzilla.redhat.com/show_bug.cgi?id=1469670)
+
 [Bug 1469757 - kernel: Implement vDSO support for getpid](https://bugzilla.redhat.com/show_bug.cgi?id=1469757)
+
 [Why getpid() is not implemented in x86_64's vdso?](https://stackoverflow.com/questions/65454115/why-getpid-is-not-implemented-in-x86-64s-vdso)
+
+
+## 8.2 getrandom vDSO
+-------
+
+[Linux Proposal Adding getrandom() To The vDSO For Better Performance](https://www.phoronix.com/news/Linux-getrandom-vDSO)
+
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/07/29 | Jason A. Donenfeld <Jason@zx2c4.com> | [random: implement getrandom() in vDSO](https://lore.kernel.org/all/20220729145525.1729066-1-Jason@zx2c4.com) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20220729145525.1729066-1-Jason@zx2c4.com) |
 
 
 # 9 PRINTK
@@ -264,10 +281,13 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 # 10 KEXEC
 -------
 
+[ByteDance Working To Make It Faster Kexec Booting The Linux Kernel](https://www.phoronix.com/news/Bytedance-Faster-Kexec-Reboot)
+
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2020/05/07 | Anthony Yznaga <anthony.yznaga@oracle.com> | [PKRAM: Preserved-over-Kexec RAM](https://lore.kernel.org/patchwork/cover/856356) | NA | v11 ☑ 4.15-rc2 | [PatchWork RFC,00/43](https://lore.kernel.org/patchwork/cover/1237362) |
 | 2021/09/16 | Pavel Tatashin <pasha.tatashin@soleen.com> | [arm64: MMU enabled kexec relocation](https://patchwork.kernel.org/project/linux-mm/cover/20210802215408.804942-1-pasha.tatashin@soleen.com) | 在 kexec 重定位期间启用 MMU, 以提高重启性能.<br>如果 kexec 功能用于快速的系统更新, 并且停机时间最少, 那么重新定位 kernel + initramfs 将占用重新引导的很大一部分时间.<br>重定位慢的原因是它在没有 MMU 的情况下进行, 因此不能从 D-Cache 中受益. | v16 ☐ | [2021/08/02 PatchWork v16,00/15](https://patchwork.kernel.org/project/linux-mm/cover/20210802215408.804942-1-pasha.tatashin@soleen.com)<br>*-*-*-*-*-*-*-* <br>[2021/09/16 PatchWork v17,00/15](https://patchwork.kernel.org/project/linux-mm/cover/20210916231325.125533-1-pasha.tatashin@soleen.com) |
+| 2022/07/25 | Albert Huang <huangjie.albert@bytedance.com> | [faster kexec reboot](https://lore.kernel.org/all/20220725083904.56552-1-huangjie.albert@bytedance.com) | TODO | v1 ☐☑✓ | [LORE v1,0/4](https://lore.kernel.org/all/20220725083904.56552-1-huangjie.albert@bytedance.com) |
 
 
 # 11 perf
