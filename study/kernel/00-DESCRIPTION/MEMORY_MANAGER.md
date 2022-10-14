@@ -643,7 +643,7 @@ MTE 实现了锁和密钥访问内存. 这样在内存访问期间, 可以在内
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2021/02/05 | "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> | [Linear Address Masking enabling](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com) | [线性地址屏蔽(LAM)](https://software.intel.com/content/dam/develop/external/us/en/documents-tps/architecture-instruction-set-extensions-programming-reference.pdf) 修改应用于 64 位线性地址的检查, 允许软件将未翻译的地址位用于元数据. 手册参见 [ISE, Chapter 14](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com). 代码参见 [kas/linux.git](https://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git/log/?h=lam). | RFC ☐ | [PatchWork RFC,0/9](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/8](https://lore.kernel.org/r/20220610143527.22974-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/11](https://lore.kernel.org/r/20220815041803.17954-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/11](https://lore.kernel.org/r/20220830010104.1282-1-kirill.shutemov@linux.intel.com) |
+| 2021/02/05 | "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> | [Linear Address Masking enabling](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com) | [线性地址屏蔽(LAM)](https://software.intel.com/content/dam/develop/external/us/en/documents-tps/architecture-instruction-set-extensions-programming-reference.pdf) 修改应用于 64 位线性地址的检查, 允许软件将未翻译的地址位用于元数据. 手册参见 [ISE, Chapter 14](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com). 代码参见 [kas/linux.git](https://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git/log/?h=lam). | RFC ☐ | [PatchWork RFC,0/9](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/8](https://lore.kernel.org/r/20220610143527.22974-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/11](https://lore.kernel.org/r/20220815041803.17954-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/08/30 LORE v1,0/11](https://lore.kernel.org/r/20220830010104.1282-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/09/30 LORE v1,0/14](https://lore.kernel.org/r/20220930144758.30232-1-kirill.shutemov@linux.intel.com) |
 
 
 ## 1.9 page attributes
@@ -3144,6 +3144,12 @@ LRU 组织形式的变更和 LRU lock 的变更是无法割裂开的. 每次 LRU
 | 2012/02/20 | Hugh Dickins <hughd@google.com> | [mm/memcg: per-memcg per-zone lru locking](https://lore.kernel.org/patchwork/patch/288055) | per-memcg lru lock | v1 ☐ | [PatchWork v1](https://lore.kernel.org/patchwork/patch/288055) |
 | 2020/12/05 | Alex Shi <alex.shi@linux.alibaba.com> | [per memcg lru lock](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=15b447361794271f4d03c04d82276a841fe06328) | per memcg LRU lock | v21 ☑ [5.11](https://kernelnewbies.org/Linux_5.11#Memory_management) | [LORE v21,00/19](https://lore.kernel.org/all/1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com) |
 
+*   MultiThread Kswapd
+
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2018/04/02 | Buddy Lumpkin <buddy.lumpkin@oracle.com> | [mm: Support multiple kswapd threads per node](https://lore.kernel.org/all/1522661062-39745-1-git-send-email-buddy.lumpkin@oracle.com) | 内存的直接回收可能导致吞吐量大幅下降, 在执行大量文件系统 IO 的系统上, 我看到 order-0 页面的分配通常会占用 10ms 以上, 偶尔也会超过 100ms. 这是使用多线程 kswapd 的理想场景. 在 UEK4 内核上, 6 个 kswapd 线程比 1 个性能提升了 48%. | v1 ☐☑✓ | [LORE v1,0/1](https://lore.kernel.org/all/1522661062-39745-1-git-send-email-buddy.lumpkin@oracle.com) |
 
 ### 4.2.6 不同类型页面拆分管理
 -------
@@ -3316,6 +3322,8 @@ MGLRU 的开发者在 LPC-2022 上演示了 MGLRU [Multi-Gen LRU: Current Status
 
 之前 MGLRU 一直在 Andrew Morton 的 mm-unstable 分支, 2022 年 9 月中旬被 pick 到了 mm-stable, 为 v6.1 的 合入做准备. 参见 phoronix 报道 [MGLRU Patches Merged To "mm-stable" Ahead Of Linux 6.1 - New Benchmarks Look Good](https://www.phoronix.com/news/MGLRU-Reaches-mm-stable).
 
+最终 Linux v6.1 合并了 MGLRU 和 Maple Tree, 参见 [MM updates for 6.1-rc1](https://lore.kernel.org/lkml/20221008132113.919b9b894426297de78ac00f@linux-foundation.org) 以及 phoronix 报道 [MGLRU & Maple Tree Submitted For Linux 6.1](https://www.phoronix.com/news/MGLRU-Maple-Tree-Linux-6.1-PR), [MGLRU Merged For Linux 6.1](https://www.phoronix.com/news/MGLRU-In-Linux-6.1).
+
 
 *   实现
 
@@ -3324,7 +3332,7 @@ MGLRU 的开发者在 LPC-2022 上演示了 MGLRU [Multi-Gen LRU: Current Status
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2022/04/07 | Yu Zhao <yuzhao@google.com> | [Multigenerational LRU Framework(https://lwn.net/Articles/856931) | Multi-Gen LRU Framework, 将 LRU 的列表划分为多代老化. 通过 CONFIG_LRU_GEN 来控制. | v10 ☐ | [Patchwork v1,00/14](https://lore.kernel.org/patchwork/patch/1394674)<br>*-*-*-*-*-*-*-*<br>[PatchWork v2,00/16](https://lore.kernel.org/patchwork/patch/1412560)<br>*-*-*-*-*-*-*-*<br>[2021/05/20 PatchWork v3,00/14](https://patchwork.kernel.org/project/linux-mm/cover/20210520065355.2736558-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2021/08/18 PatchWork v4,00/11](https://patchwork.kernel.org/project/linux-mm/cover/20210818063107.2696454-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2021/11/11 PatchWork v5,00/10](https://patchwork.kernel.org/project/linux-mm/cover/20211111041510.402534-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/01/04 PatchWork v6,0/9](https://patchwork.kernel.org/project/linux-mm/cover/20220104202227.2903605-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/02/08 PatchWork v7,0/12](https://lore.kernel.org/all/20220208081902.3550911-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/03/08 LORE v8,0/14](https://lore.kernel.org/all/20220308234723.3834941-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/03/09 LORE v9,0/14](https://lore.kernel.org/all/20220309021230.721028-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/04/07 LORE,v10,00/14](https://lore.kernel.org/lkml/20220407031525.2368067-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v11,00/14](https://lore.kernel.org/lkml/20220518014632.922072-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v12,00/14](https://lore.kernel.org/lkml/20220614071650.206064-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v13,00/14](https://lore.kernel.org/lkml/20220706220022.968789-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v14,00/14](https://lore.kernel.org/lkml/20220815071332.627393-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v15,0/14](https://lore.kernel.org/r/20220918080010.2920238-1-yuzhao@google.com) |
+| 2022/04/07 | Yu Zhao <yuzhao@google.com> | [Multigenerational LRU Framework(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=8be976a0937a18118424dd2505925081d9192fd5) | Multi-Gen LRU Framework, 将 LRU 的列表划分为多代老化. 通过 CONFIG_LRU_GEN 来控制. | v15 ☑ v6.1 | [Patchwork v1,00/14](https://lore.kernel.org/patchwork/patch/1394674)<br>*-*-*-*-*-*-*-*<br>[PatchWork v2,00/16](https://lore.kernel.org/patchwork/patch/1412560)<br>*-*-*-*-*-*-*-*<br>[2021/05/20 PatchWork v3,00/14](https://patchwork.kernel.org/project/linux-mm/cover/20210520065355.2736558-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2021/08/18 PatchWork v4,00/11](https://patchwork.kernel.org/project/linux-mm/cover/20210818063107.2696454-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2021/11/11 PatchWork v5,00/10](https://patchwork.kernel.org/project/linux-mm/cover/20211111041510.402534-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/01/04 PatchWork v6,0/9](https://patchwork.kernel.org/project/linux-mm/cover/20220104202227.2903605-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/02/08 PatchWork v7,0/12](https://lore.kernel.org/all/20220208081902.3550911-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/03/08 LORE v8,0/14](https://lore.kernel.org/all/20220308234723.3834941-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/03/09 LORE v9,0/14](https://lore.kernel.org/all/20220309021230.721028-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/04/07 LORE,v10,00/14](https://lore.kernel.org/lkml/20220407031525.2368067-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v11,00/14](https://lore.kernel.org/lkml/20220518014632.922072-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v12,00/14](https://lore.kernel.org/lkml/20220614071650.206064-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v13,00/14](https://lore.kernel.org/lkml/20220706220022.968789-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v14,00/14](https://lore.kernel.org/lkml/20220815071332.627393-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v15,0/14](https://lore.kernel.org/r/20220918080010.2920238-1-yuzhao@google.com) |
 | 2022/09/11 | Yuanchu Xie <yuanchu@google.com> | [mm: multi-gen LRU: per-process heatmaps](https://patchwork.kernel.org/project/linux-mm/cover/20220911083418.2818369-1-yuanchu@google.com/) | 675988 | v1 ☐☑ | [LORE v1,0/2](https://lore.kernel.org/r/20220911083418.2818369-1-yuanchu@google.com) |
 | 2022/09/18 | Yu Zhao <yuzhao@google.com> | [[v14-fix,01/11] mm: multi-gen LRU: update admin guide](https://patchwork.kernel.org/project/linux-mm/patch/20220918204755.3135720-1-yuzhao@google.com/) | 677981 | v1 ☐☑ | [LORE v1,0/11](https://lore.kernel.org/r/20220918204755.3135720-1-yuzhao@google.com) |
 | 2022/09/20 | zhaoyang.huang <zhaoyang.huang@unisoc.com> | [[RFC] mm: track bad page via kmemleak](https://patchwork.kernel.org/project/linux-mm/patch/1663679468-16757-1-git-send-email-zhaoyang.huang@unisoc.com/) | 678650 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/1663679468-16757-1-git-send-email-zhaoyang.huang@unisoc.com) |
@@ -3882,7 +3890,7 @@ v2.5 的时候引入了 shrink 机制, 并提供了 API 统一了各个模块的
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/08/05 | alexlzhu@fb.com <alexlzhu@fb.com> | [mm: add thp_utilization metrics to /proc/thp_utilization](https://lore.kernel.org/all/20220805184016.2926168-1-alexlzhu@fb.com) | 由于性能的提高或降低取决于特定应用程序如何使用物理内存, THP 在历史上一直是针对每个应用程序启用的. 当 THP 被大量利用时, 由于 TLB 缓存失败的减少, 应用程序性能会得到改善. 长期以来, 人们一直怀疑启用 THP 时的性能下降是由于大量未充分利用的匿名 THP 造成的. 以前, 没有办法跟踪到底有多少 THP 被实际使用. 通过这个补丁, 帮助开发者了解 THP 的使用情况, 以便在分页方面做出更智能的决策. 这个更改引入了一个工具, 该工具扫描匿名 THP 的所有物理内存, 并根据使用率将它们分组到桶中. 它还包括一个位于 `/sys/kernel/debug/thp_utilization` 下的接口. THP 的利用率定义为 THP 中非零页面的百分比. 工作线程将扫描所有物理内存, 并获得所有匿名 THP 的利用率. 它将通过定期扫描所有物理内存来收集这些信息, 寻找匿名 THP, 根据利用率将它们分组到桶中, 并通过 `/sys/kernel/debug/thp_utilization` 下的 debugfs 报告利用率信息. | v3 ☐☑✓ | [LORE v2](https://lore.kernel.org/lkml/20220809014950.3616464-1-alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3](https://lore.kernel.org/all/20220805184016.2926168-1-alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/1](https://lore.kernel.org/r/20220818000112.2722201-1-alexlzhu@fb.com) |
-| 2022/08/25 | alexlzhu@fb.com <alexlzhu@fb.com> | [THP Shrinker](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com) | TODO | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/3](https://lore.kernel.org/r/cover.1661461643.git.alexlzhu@fb.com) |
+| 2022/08/25 | alexlzhu@fb.com <alexlzhu@fb.com> | [THP Shrinker](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com) | TODO | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/3](https://lore.kernel.org/r/cover.1661461643.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/3](https://lore.kernel.org/r/cover.1664347167.git.alexlzhu@fb.com) |
 
 
 ## 4.4 主动的页面回收(Proactive Reclaim)
@@ -4666,6 +4674,9 @@ HugeTLB CMA 在设计的时候, 已经考虑了 NUMA 的存在.
 ### 7.1.8 代码段大页
 -------
 
+#### 7.1.8.1 用户程序代码段大页
+-------
+
 由于应用程序的代码段 text 和数据段 data 都是直接映射到程序二进制文件本身的, 因此如果不通过修改程序运行时库等方式, 很难把这些段使用 HugeTLB 来映射. 但是将这些段映射成大页可以有效地减少 iTLB-miss. 网上也经常会看到相关的一些讨论. 参见 [stackoverflow: usage of hugepages for text and data segments](https://stackoverflow.com/questions/36576462/usage-of-hugepages-for-text-and-data-segments).
 
 Google 的工程师 Mina Almasry 提出了一种新的思路, 通过 [mremap 的方式重新映射程序的的 ELF 到大页上](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=550a7d60bd5e35a56942dba6d8a26752beb26c9f), 来支持代码段大页. 作者提供了一个用户态工具库 [chromium/hugepage_text](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/chromeos/hugepage_text) 来辅助完成这项工作. 可以在尽可能不修改应用程序代码的情况下完成代码段大页的映射, 可以显著提升应用程序的性能. 具体使用也可以参考作者提交的测试用例 [commit 12b613206474 ("mm, hugepages: add hugetlb vma mremap() test")](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=12b613206474cea36671d6e3a7be7d1db7eb8741).
@@ -4674,6 +4685,14 @@ Google 的工程师 Mina Almasry 提出了一种新的思路, 通过 [mremap 的
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/10/14 | Mina Almasry <almasrymina@google.com> | [mm, hugepages: add mremap() support for hugepage backed vma](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=12b613206474cea36671d6e3a7be7d1db7eb8741) | 通过简单地重新定位页表项, 使得 mremap() 支持 hugepage 的 vma 段. 页表条目被重新定位到 mremap() 上的新虚拟地址.<br>作者验证的测试场景是一个简单的 bench: 它在 hugepages 中重新加载可执行文件的 ELF 文本, 这大大提高了上述可执行文件的执行性能.<br>将 hugepages 上的 mremap 操作限制为原始映射的大小, 因为底层 hugetlb 保留还不能处理到更大的大小的重映射.<br>在 mremap () 操作期间, 我们检测 pmd_shared 的映射, 并在 mremap () 期间取消这些映射的共享. 在访问和故障时, 再次建立共享. | v1 ☑ 5.16-rc1 | [PatchWork v1](https://patchwork.kernel.org/project/linux-mm/patch/20210730221522.524256-1-almasrymina@google.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v4,1/2](https://patchwork.kernel.org/project/linux-mm/patch/20211006194515.423539-1-almasrymina@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v7,1/2](https://lore.kernel.org/all/20211013195825.3058275-1-almasrymina@google.com), [关键 COMMIT](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=550a7d60bd5e35a56942dba6d8a26752beb26c9f)<br>*-*-*-*-*-*-*-* <br>[PatchWork v8,1/2](https://patchwork.kernel.org/project/linux-mm/patch/20211014200542.4126947-1-almasrymina@google.com) |
 | 2022/02/02 | Mike Kravetz <mike.kravetz@oracle.com> | [Add hugetlb MADV_DONTNEED support](https://patchwork.kernel.org/project/linux-mm/cover/20220128222605.66828-1-mike.kravetz@oracle.com/) | 609660 | v1 ☐☑ | [PatchWork v1,0/3](https://lore.kernel.org/all/20220128222605.66828-1-mike.kravetz@oracle.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v2,0/3](https://lore.kernel.org/r/20220202014034.182008-1-mike.kravetz@oracle.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/3](https://lore.kernel.org/r/20220215002348.128823-1-mike.kravetz@oracle.com) |
+
+#### 7.1.8.1 内核代码段大页
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/08/18 | Song Liu <song@kernel.org> | [vmalloc_exec for modules and BPF programs](https://lore.kernel.org/all/20220818224218.2399791-1-song@kernel.org) | 这个补丁集允许内核动态分配的代码段 (比如模块、bpf 程序、各种 trampoline 等) 共享巨大的页面. 这个想法源自于 [Peter Zijlstra 在讨论 mm/vmalloc: introduce vmalloc_exec which allocates RO+X memory](https://lore.kernel.org/bpf/Ys6cWUMHO8XwyYgr@hirez.programming.kicks-ass.net) 中的建议. 最终目标是仅在 2MB 页面中承载内核文本(当前仅针对对于 x86_64). | v1 ☐☑✓ | [LORE v1,0/5](https://lore.kernel.org/all/20220818224218.2399791-1-song@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/4](https://lore.kernel.org/all/20221007234315.2877365-1-song@kernel.org) |
+| 2022/05/19 | Song Liu <song@kernel.org> | [module: introduce module_alloc_huge](https://lore.kernel.org/all/20220520031548.338934-5-song@kernel.org) | TODO | v3 ☐☑✓ | [LORE v3,4/8](https://lore.kernel.org/all/20220520031548.338934-5-song@kernel.org) |
 
 
 ### 7.1.9 HugeTLBFS
@@ -5309,15 +5328,36 @@ sys_fork
 执行 fork 完毕后, 原先父进程中可写的区域在父子进程中都被设置了 CoW, 即 pte 中可写的属性被清除. 那么下次对此地址进行写操作时(不管是父进程还是子进程), 都会触发 PageFault. 然后新分配一个页面出来公其使用, 同时原来 pte 的可写属性也会被重新设置.
 
 
-### 8.2.2.1 匿名页的写时拷贝
+
+#### 8.2.2.1 匿名页的写时拷贝
 -------
 
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/09/27 | David Hildenbrand <david@redhat.com> | [selftests/vm: test COW handling of anonymous memory](https://patchwork.kernel.org/project/linux-mm/cover/20220927110120.106906-1-david@redhat.com/) | 680969 | v1 ☐☑ | [LORE v1,0/7](https://lore.kernel.org/r/20220927110120.106906-1-david@redhat.com) |
 
-### 8.2.2.2 文件页的写时拷贝
+#### 8.2.2.2 文件页的写时拷贝
 -------
 
+#### 8.2.2.3 页表的写时拷贝
+-------
 
-### 8.2.2.3 写时拷贝的问题
+[Introduce Copy-On-Write to Page Table](https://patchwork.kernel.org/project/linux-mm/cover/20220927162957.270460-1-shiyn.lin@gmail.com) 这组补丁集为 PTE 级页表引入了写入时拷贝(COW).
+
+在用户需要程序副本才能在隔离环境中运行的情况下, COW PTE 提高了性能. 基于反馈的模糊器 (例如, AFL) 和微服务框架是两个主要的例子. 例如, COW PTE 在 fuzzer(AFL) 上运行 SQLite 时, 吞吐量增加了 9.3 倍.
+
+由于 COW PTE 只在特定场景下能获得性能提升, 因此作者添加了一个新的 sysctl vm.cow_pte, 带有输入进程 ID(PID), 允许用户为特定进程启用 cow pte.
+
+1. 为了处理具有共享 PTE 表的每个进程的页表状态, 该补丁引入了 COW PTE 表所有权的概念. 这个实现使用 PMD 索引的地址来跟踪 PTE 表的所有权. 这有助于维护 COW PTE 表的状态, 例如 RSS 和 pgtable_bytes. 一些 PTE 表 (例如, 驻留在表中的固定页面) 仍然需要立即复制, 以与当前的 COW 逻辑保持一致. 结果, 一个标志 COW_PTE_OWNER_EXCLUSIVE 被添加到表的所有者指针上, 它指示一个 PTE 表是否是独占的(即, 一次只有一个任务拥有它). 每次在 fork 期间复制 PTE 表时, 将检查所有者指针(以及独占标志), 以确定 PTE 表是否可以跨进程共享.
+
+2. 使用一个引用计数来跟踪共享页表的生命周期. 使用 COW PTE 调用 fork 将增加引用计数. refcount=1 表示页表目前没有与其他进程共享, 但可能会被共享. 并且, 当有人写入共享 PTE 表时, 会导致写入故障中断 COW PTE, 如果共享 PTE 表的 refcount 为 1, 触发该故障的进程将重用共享 PTE 表. 否则, 进程将减少引用计数, 将信息复制到一个新的 PTE 表, 或取消引用所有信息, 并更改所有者(如果他们拥有共享 PTE 表).
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/09/27 | Chih-En Lin <shiyn.lin@gmail.com> | [Introduce Copy-On-Write to Page Table](https://patchwork.kernel.org/project/linux-mm/cover/20220927162957.270460-1-shiyn.lin@gmail.com/) | 目前, 写入时复制仅用于映射内存; 在分叉期间, 子进程仍然需要从父进程复制整个页表. 当父进程分配了一个大页表时, 父进程可能需要花费大量时间和内存来复制页表. 这组补丁集为 PTE 级页表引入了写入时拷贝(COW). | v2 ☐☑ | [LORE v2,0/9](https://lore.kernel.org/r/20220927162957.270460-1-shiyn.lin@gmail.com) |
+
+
+#### 8.2.2.X 写时拷贝的问题
 -------
 
 
@@ -6904,6 +6944,7 @@ CSDN 宣传博客 [内存不超过5M, datop 在识别冷热内存及跨 numa 访
 | 2022/08/22 | CGEL <cgel.zte@gmail.com> | [ksm: count allocated ksm rmap_items for each process](https://patchwork.kernel.org/project/linux-mm/patch/20220822053653.204150-1-xu.xin16@zte.com.cn/) | 669627 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20220822053653.204150-1-xu.xin16@zte.com.cn) |
 | 2022/08/24 | CGEL <cgel.zte@gmail.com> | [ksm: count allocated rmap_items and update documentation](https://patchwork.kernel.org/project/linux-mm/cover/20220824040036.215002-1-xu.xin16@zte.com.cn/) | 670470 | v2 ☐☑ | [LORE v2,0/2](https://lore.kernel.org/r/20220824040036.215002-1-xu.xin16@zte.com.cn)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/2](https://lore.kernel.org/r/20220830143731.299702-1-xu.xin16@zte.com.cn) |
 | 2022/08/29 | Qi Zheng <zhengqi.arch@bytedance.com> | [add common struct mm_slot and use it in THP and KSM](https://patchwork.kernel.org/project/linux-mm/cover/20220829143055.41201-1-zhengqi.arch@bytedance.com) | 672053 | v1 ☐☑ | [LORE v1,0/7](https://lore.kernel.org/r/20220829143055.41201-1-zhengqi.arch@bytedance.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/7](https://lore.kernel.org/r/20220831031951.43152-1-zhengqi.arch@bytedance.com) |
+| 2022/10/08 | xu.xin.sc@gmail.com <xu.xin.sc@gmail.com> | [ksm: support tracking KSM-placed zero-pages](https://lore.kernel.org/all/20221008070156.308465-1-xu.xin16@zte.com.cn) | 在使能 use_zero_pages 之前, ksm 的 pages_sharing 基本是准确的. 但是当启用 use_zero_pages 时, 所有与内核零页合并的空页都不会计算在 pages_sharing 或 pages_shared 中. 这是因为这些空页面被合并为零页面, KSM 不再管理这些页面, 这至少会导致两个问题: 1. MADV_UNMERGEABLE 和其他触发取消共享的方法将不会取消 KSM 放置的共享零页(这至少是违反 MADV_UNMERGEABLE 文档的), 参见[链接](https://lore.kernel.org/lkml/4a3daba6-18f9-d252-697c-197f65578c44@redhat.com). 2. 当启用 use_zero_pages 时, 我们无法知道有多少页是 KSM 放置的零页, 这导致 KSM 对所有实际合并的页面不透明. 通过这个补丁集我们可以精确地取消共享零页 (ksm - 放置) 并计算 ksm 零页. | v1 ☐☑✓ | [2022/10/08 LORE v1,0/5](https://lore.kernel.org/all/20221008070156.308465-1-xu.xin16@zte.com.cn)<br>*-*-*-*-*-*-*-* <br>[2022/10/11 LORE v3,0/5](https://lore.kernel.org/all/20221011022006.322158-1-xu.xin16@zte.com.cn) |
 
 
 

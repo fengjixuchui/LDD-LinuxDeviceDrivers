@@ -326,6 +326,7 @@ SCHED_IDLE 跟 SCHED_BATCH 一样, 是 CFS 中的一个策略, SCHED\_IDLE 的�
 | 2022/02/17 | Abel Wu <wuyun.abel@bytedance.com> | [introduce sched-idle balancing](https://lore.kernel.org/all/20220217154403.6497-1-wuyun.abel@bytedance.com) | 当前负载平衡主要基于 cpu capacity 和 task util, 这在整体吞吐量的 POV 中是有意义的. 虽然如果存在 sched 闲置或闲置 RQ, 则可以通过减少过载 CFS RQ 的数量来完成一些改进. 当 CFS RQ 上有多个可伸缩的非闲置任务时(因为 schedidle CPU 被视为闲置 CPU), CFS RQ 被认为是过载的. 空闲任务计入 rq->cfs.idle_h_nr_running.<br>过载的 CFS RQ 可能会导致两种任务类型的性能问题:<br>1. 对于诸如 SCHED_NORMAL 之类的延迟关键任务, RQ 中的等待时间将增加并导致更高的 PCT99 延迟, 并且如果存在 SCHED_DILE, 批处理任务 SCHED_BATCH 可能无法充分利用 CPU 容量, 因此吞吐量较差.<br>所以简而言之, sched-idle balancing 的目标是让非闲置任务充分利用 CPU 资源.<br>为此, 我们主要做两件事:<br>1. 为 sched-idle 的 CPU 拉取 non-idle 的任务来运行, 或者将 overload CPU 上的任务拉取到 idle 的 CPU 上.<br>2. 防止在 RQ 中 PULL 出最后一个非闲置任务. 此外 overloaded CPUs 的掩码会周期性更新, 空闲路径在 LLC 域上. 这个 cpumask 还将在 SIS 中用作过滤器, 改善空闲的 CPU 搜索. | v1 ☐☑✓ | [LORE v1,0/5](https://lore.kernel.org/all/20220217154403.6497-1-wuyun.abel@bytedance.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/2](https://lore.kernel.org/lkml/20220409135104.3733193-1-wuyun.abel@bytedance.com) |
 | 2022/08/09 | zhangsong <zhangsong34@huawei.com> | [sched/fair: Introduce priority load balance to reduce interference from IDLE tasks](https://lore.kernel.org/all/20220809132945.3710583-1-zhangsong34@huawei.com) | 对于 NORMAL 和 IDLE 任务的共存, 当 CFS 触发负载均衡时, 将 NORMAL(Latency Sensitive) 任务从繁忙的 src CPU 迁移到 dst CPU, 最后迁移 IDLE 任务是合理的. 这对于减少 SCHED_IDLE 任务的干扰非常重要.<br>但是当前的 cfs_tasks 链表同时包含了 NORMAL 任务和 SCHED_IDLE 等任务, 且没有按照优先级进行排序, 因此无法保证能及时从 busiest 的等待队列中拉出一定数量的正常任务而不是空闲任务<br>因此需要将 cfs_tasks 分成两个不同的列表, 并确保非空闲列表中的任务能够首先迁移. 该补丁引入 cfs_idle_tasks 链表维护 SCHED_IDLE 的任务, 原来的 cfs_tasks 只维护 SCHED_NORMAL 的任务. 负载均衡时优先迁移 SCHED_NORMAL 的任务.<br>测试发现: 少量的 NORMAL 任务与大量的 IDLE 任务搭配, 通过该补丁, NORMAL 任务延迟较当前降低约 5~10%. | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20220809132945.3710583-1-zhangsong34@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2](https://lore.kernel.org/lkml/20220810015636.3865248-1-zhangsong34@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3](https://lore.kernel.org/lkml/20220810092546.3901325-1-zhangsong34@huawei.com) |
 | 2022/08/25 | Vincent Guittot <vincent.guittot@linaro.org> | [sched/fair: fixes in presence of lot of sched_idle tasks](https://lore.kernel.org/all/20220825122726.20819-1-vincent.guittot@linaro.org) | TODO | v1 ☐☑✓ | [LORE v1,0/4](https://lore.kernel.org/all/20220825122726.20819-1-vincent.guittot@linaro.org) |
+| 2022/10/03 | Vincent Guittot <vincent.guittot@linaro.org> | [sched/fair: limit sched slice duration](https://lore.kernel.org/all/20221003122111.611-1-vincent.guittot@linaro.org) | TODO | v3 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221003122111.611-1-vincent.guittot@linaro.org) |
 
 
 #### 1.1.5.4 cgroup SCHED_IDLE support
@@ -579,6 +580,7 @@ coscheduling 协同调度是为了解决云服务场景, 为不同用户提供�
 | 2021/11/23 | Christian Brauner | [core scheduling: add PR_SCHED_CORE_SHARE](https://lkml.org/lkml/2021/11/23/474) | NA | v10 ☑ 5.14-rc1 | [2021/10/08 LKML v1](https://lkml.org/lkml/2021/11/23/474) |
 | 2021/12/16 | Joel Fernandes <joel@joelfernandes.org> | [High latency with core scheduling](https://lore.kernel.org/all/Ybvcu5RIwV+Vko09@google.com) | Ybvcu5RIwV+Vko09@google.com | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/Ybvcu5RIwV+Vko09@google.com) |
 | 2022/06/28 | Cruz Zhao <CruzZhao@linux.alibaba.com> | [sched/core: Optimize load balance of core scheduling](https://lore.kernel.org/all/1656403045-100840-1-git-send-email-CruzZhao@linux.alibaba.com) | 相同 cookie 的任务被认为是相互信任的, 可以在 SMT 上的两个兄弟 CPU 上运行, 它们可以在选择下一个任务时配对, 并且可以避免强制闲置. 为了实现这个目标, 必须统计运行队列中有多少带有此 cookie 的任务. 当进行此统计时, 作者也发现一个错误, 当我们更新一个未写入 cookie 的任务的 cookie 时, 任务不会进入 core 的 rbtree, 所以作者同时也修复了这个错误. | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/1656403045-100840-1-git-send-email-CruzZhao@linux.alibaba.com) |
+| 2022/09/29 | Cruz Zhao <CruzZhao@linux.alibaba.com> | [sched/core: Optimize the process of picking the max prio task for the core](https://lore.kernel.org/all/1664435913-57227-1-git-send-email-CruzZhao@linux.alibaba.com) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/1664435913-57227-1-git-send-email-CruzZhao@linux.alibaba.com)<br>*-*-*-*-*-*-*-* <br>[LORE](https://lore.kernel.org/all/1664767168-30029-1-git-send-email-CruzZhao@linux.alibaba.com) |
 
 
 
@@ -3838,11 +3840,11 @@ Oracle 数据库具有类似的虚拟化功能, 称为 Oracle Multitenant, 其�
 ### 5.6.1 [EuroSys '22, OS scheduling with nest](https://dl.acm.org/doi/10.1145/3492321.3519585)
 -------
 
+论文参照 [EuroSys '22, OS scheduling with nest](https://dl.acm.org/doi/10.1145/3492321.3519585), 并在 LPC-2022 上做了主题演讲 [OS Scheduling with Nest: Keeping Tasks Close Together on Warm Cores](https://lpc.events/event/16/contributions/1198)
+
 为了最好地支持高度并行的应用程序, 使系统的吞吐量最高, CFS 调度器总是倾向于在任务创建和唤醒时将任务尽可能均衡的分散到系统的各个 CPU 上. 然而, 这可能总是事与愿违的. 据观察, 在服务器环境中, 这种策略会导致任务不必要地放置在运行频率较低的长时间空闲的核心上, 而这些 IDLE 的 CPU 往往需要较长的时间才能唤醒, 从而降低了业务的性能, 而导致任务不必要地分布在各个 SCOKET 上, 也导致这些 SOCKET 不能进入低功耗模式, 从而导致功耗增加. 论文 [EuroSys '22, OS scheduling with nest: keeping tasks close together on warm cores, Julia Lawall](https://hal.inria.fr/hal-03612592/document?msclkid=ef0482efd02911ecac42ed2b3d62baa7) 中, 在 Linux 内核中实现了 Nest 调度器, 提出利用 CPU 核复用的原理, 通过构造一个多级 CPU 的集合, 使用这些集合的 priority 进行任务调度, 从而获得更高的频率和使用更少的 SOCKET. 对于高度并行的应用程序, 其性能和能耗与 CFS 不相上下, 但对于使用比核心更少任务的应用程序, Nest 调度器的的性能为原生 10% ~ 2 倍, 并且可以降低能耗.
 
-
 为进程维护了一个多级(从 WARM 到 COLD)的 CPU 集合, 用来在选核时作为参考, 类似于多级 CPU Cache 一样.
-
 
 | CPU 集合 | 描述 |
 |:--------:|:---:|
@@ -4056,7 +4058,7 @@ ARM EAS 支持的主页: [Energy Aware Scheduling (EAS)](https://developer.arm.c
 
 即使在较小的系统上, 新规则在许多情况下也能有效地阻止任务移动. 在运行相对较多的小任务的情况下尤其如此, 这种情况经常出现在 Android 设备上, 其中能效是一个真正的问题. 如果它不再能够移动任务以节省能源, 则 find_energy_efficient_cpu() 完成的所有工作都将被浪费, 并且设备的运行效率低于其他方式.
 
-### 7.2.3.3 energy margin removal
+#### 7.2.3.3 energy margin removal
 -------
 
 
@@ -4078,6 +4080,14 @@ Donnefort 称: 边距删除使内核能够充分利用能量模型, 任务更有
 | 2021/05/04 | Pierre Gondois <Pierre.Gondois@arm.com> | [sched/fair: find_energy_efficient_cpu() enhancements](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=619e090c8e409e09bd3e8edcd5a73d83f689890c) | 防止 find_energy_efficient_cpu() 出现下溢. | v3 ☑✓ 5.14-rc1 | [LORE v3,0/2](https://lore.kernel.org/all/20210504090743.9688-1-Pierre.Gondois@arm.com) |
 | 2021/12/20 | Vincent Donnefort <vincent.donnefort@arm.com> | [Fix stuck overutilized](https://lkml.kernel.org/lkml/20211220114323.22811-1-vincent.donnefort@arm.com) | NA | v1 ☐ | [LORE 0/3](https://lkml.kernel.org/lkml/20211220114323.22811-1-vincent.donnefort@arm.com) |
 | 2022/06/21 | Vincent Donnefort <vdonnefort@google.com> | [feec() energy margin removal](https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?id=b812fc9768e0048582c8e18d7b66559c1758dde1) | feec() 将迁移任务以节省能源, 前提是它至少节省了系统消耗的总能源的 6%. 这种保守的方法对于终端来说是一个问题, 在这个系统中, 许多小任务会在总体上产生巨大的负载: 很少有任务可以迁移到较小的 CPU, 这会浪费大量的能量. 与其试图确定另一个裕度, 不如尝试删除它. | v11 ☐☑✓ | [LORE v11,0/7](https://lore.kernel.org/all/20220621090414.433602-1-vdonnefort@google.com) |
+
+#### 7.2.3.4 feec improvement
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/10/06 | Pierre Gondois <pierre.gondois@arm.com> | [sched/fair: feec() improvement](https://lore.kernel.org/all/20221006081052.3862167-1-pierre.gondois@arm.com) | TODO | v2 ☐☑✓ | [LORE v2,0/1](https://lore.kernel.org/all/20221006081052.3862167-1-pierre.gondois@arm.com) |
+
 
 #### 7.2.3.x EAS timeline
 -------
@@ -4343,6 +4353,10 @@ LPC-2022 [Dynamic Energy Model to handle leakage power](https://lpc.events/event
 2.	为芯片不同的工艺和集成方式, 允许提供适合的 SoC 的功率值.
 
 3.	允许在运行时根据 SoC 的当前温度修改功率值, 因为与小核和中核相比, 大核的能效对温度更敏感.
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2021/08/11 | Viresh Kumar <viresh.kumar@linaro.org> | [cpufreq: Auto-register with energy model](https://lore.kernel.org/all/cover.1628682874.git.viresh.kumar@linaro.org) | TODO | v2 ☐☑✓ | [LORE v1,0/8](https://lore.kernel.org/all/cover.1628579170.git.viresh.kumar@linaro.org)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/9](https://lore.kernel.org/all/cover.1628682874.git.viresh.kumar@linaro.org) |
 
 
 ### 7.2.6 IPA(Thermal 管控)
@@ -5580,7 +5594,7 @@ ARM & Linaro 的内核团队针对 Android/linux 等做了大量的调度的优�
 | 2021/01/06 | Vincent Guittot | [sched: Remove per rq load array](https://lore.kernel.org/patchwork/cover/1079333) | 自 LB_BIAS 被禁用之后, 调度器只使用 rq->cpu_load[0] 作为cpu负载值, 因此 cpu_load 这个数组的其他之其实没意义了, 直接去掉了. 注意这对 load_balance 的调优是有一定影响的, 之前 sched_domain 中可以通过 sysctl 接口修改比较负载使用的 index, 这些 index 对应的 cpu_load 数组的下标. 干掉了这个数组, 那么这些 sysctl 也就没必要了 | v2 ☑ 5.10-rc1 | [PatchWork](https://lore.kernel.org/patchwork/cover/1079333) |
 | 2021/04/12 | Peter Zijlstra | [sched: Clean up SCHED_DEBUG](https://lore.kernel.org/patchwork/cover/1402660) | 目前内核有 sysctl, procfs 和 debugfs SCHED_DEBUG 接口, 比较混乱.<br>1. 将 CONFIG_LATENCYTOP 以及 sched_schedstats 和 NUMA balance 的 sysctl 开关都不再依赖于 CONFIG_SCHED_DEBUG<br>2. 将 [所有接口信息都转移到 debugfs 中](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d27e9ae2f244805bbdc730d85fba28685d2471e5).<br>3. 添加 ALT_PERIOD 和 BASE_SLICE feature. 考虑 cgroup 的情况, 添加了 ALT_PERIOD 计算__sched_period 实际实际的 h_nr_running, 添加 BASE_SLICE 保证进程的 sched_slice 至少达到 sysctl_sched_min_granularity]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0c2de3f054a59f15e01804b75a04355c48de628c) | v2 ☑ 5.13-rc1 | [PatchWork](https://lore.kernel.org/patchwork/cover/1402660), [LKML](https://lkml.org/lkml/2021/3/26/395), [LORE](https://lore.kernel.org/all/20210412101421.609526370@infradead.org) |
 
-## 12.4 benchmark
+## 12.4 tools & benchmark
 -------
 
 [A survey of scheduler benchmarks](https://lwn.net/Articles/725238)
@@ -5628,6 +5642,27 @@ ECRTS 2020(32nd Euromicro Conference on Real-Time Systems) 上 Daniel 等人发�
 -------
 
 [Nefelim4ag/Ananicy](https://github.com/Nefelim4ag/Ananicy) 用于管理进程的 IO 和 CPU 优先级, 它主要用于桌面使用. 它的 github 允许开发人员贡献主流应用程序规则集.
+
+
+### 12.4.3 调度行为模拟
+-------
+
+| 日期 | LWN | 翻译 |
+|:---:|:----:|:---:|
+| 2019/07/10 | [Scheduler behavioral testing](https://lwn.net/Articles/793381) | [LWN: OSPM会议讨论如何测试scheduler行为](https://blog.csdn.net/Linux_Everything/article/details/97207472) |
+
+| 工具 | 描述 | 主页 |
+|:---:|:---:|:----:|
+| rt_app | rt-app 模拟典型的系统用例, 并跟踪其运行时的信息. | [GitHub](https://github.com/scheduler-tools/rt-app) | NA |
+| Yogini | [LPC-2022/Exercising the Linux scheduler with Yogini](https://lpc.events/event/16/contributions/1203) | NA |
+
+| 工具 | 描述 |
+|:---:|:----:|
+| [LISA](https://github.com/arm-software/lisa)   | Linux Integrated Systems Analysis |
+| [TRAPpy](https://github.com/arm-software/trappy) | Trace Analysis and Plotting in Python |
+| [BART](https://github.com/arm-software/bart)   | Behavioural Analysis and Regression Toolkit |
+
+
 
 **引用: **
 
