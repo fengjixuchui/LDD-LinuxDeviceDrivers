@@ -1,6 +1,6 @@
 ---
 
-title: ANDROID 系统
+title: OPPO ANDROID 优化
 date: 2021-02-15 00:32
 author: gatieme
 tags:
@@ -32,7 +32,7 @@ blogexcerpt: ANDROID
 
 <br>
 
-2   **ANDROID 系统**
+2   **OPPO**
 =====================
 
 
@@ -127,8 +127,34 @@ $rq_nr_load = 1000 \times ux_nr + 100 \times top_nr + 10 \times fg_nr + bg_nr$
 # 2 MM
 -------
 
+
+## 2.1 Anti Fragmentation
+-------
+
+### 2.1.1 multi_freearea CONFIG_PHYSICAL_ANTI_FRAGMENTATION
+-------
+
+
+```cpp
+#if defined(OPLUS_FEATURE_MULTI_FREEAREA)
+obj-$(CONFIG_PHYSICAL_ANTI_FRAGMENTATION) += multi_freearea.o
+#endif
+```
+
+
 # 3 ANDROID
 -------
+
+
+
+
+
+
+
+
+
+
+
 
 
 <br>
