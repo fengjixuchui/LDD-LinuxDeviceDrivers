@@ -1,6 +1,6 @@
 ---
 
-title: GOOGLE AOSP 洞察
+title: HUAWEI ANDROID 优化
 date: 2021-02-15 00:32
 author: gatieme
 tags:
@@ -32,7 +32,7 @@ blogexcerpt: ANDROID
 
 <br>
 
-1   **AOSP**
+2   **HUAWEI**
 =====================
 
 
@@ -44,53 +44,29 @@ blogexcerpt: ANDROID
 
 
 
-下文将按此目录分析 Google AOSP 内核中的重要功能和引入版本:
+下文将按此目录分析 Linux 内核中 MM 的重要功能和引入版本:
 
 
 
 
 **-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 正文 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-***
 
-
-
-# AOSP-5.15
+# 1 SCHED
 -------
 
-PELT multiplier
 
 
-| Bug NO | COMMIT | 描述 | 参考链接
-|:------:|:------:|:---:|
-| Bug: 177593580 | 889f8be857d8 ANDROID: sched: Introducing PELT multiplier<br>1b458bb3d144 ANDROID: sched: add vendor hook to PELT multiplier |  PELT multiplier 允许 PELT 使用不同的衰减速率. |
-|
-
-```cpp
-Bug: 238985916
-70a112b621e7 ANDROID: ABI: Update symbols to unisoc whitelist for the scheduler 5st
-```
-
-7cf9646c245f ANDROID: sched: Add vendor hooks for cpu affinity.
-a18836162846 ANDROID: cgroup: Add vendor hook for cpuset.
-869954e72dac ANDROID: vendor_hooks: Export the tracepoints sched_stat_sleep and sched_waking to let module probe them
-455e0a85357d ANDROID: sched: Add vendor hooks to compute new cpu freq.
+# 2 MM
+-------
 
 
-39722f310fbd BACKPORT: PM: runtime: Fix supplier device management during consumer probe
+## 2.1 Memory Leak Detect
+-------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+| 编号 | 特性 | CONFIG | 描述 | 链接 |
+|:---:|:----:|:------:|:----:|:---:|
+| 1 | mem_track | CONFIG_MM_PAGE_TRACE | 跟踪进程内存的分配, 通过 user_memory_dump() DUMP 系统的内存使用情况, 其中 mm_dump_tasks() DUMP 所有进程的 Memory 占用, mm_ion_memory_info() DUMP 系统的 ION 信息. mm_mem_stats_show() 则用于显示系统中各类内存(NR_TRACK)使用情况, mm_vmalloc_detail_show() 则显示了 vmalloc 的使用情况. | [mm/mem_track, P50_PRO](https://github.com/gatieme/MobileModels/tree/huawei/QCOM-5.4.86-JAD_AL00-HMOS2-snapdragon888-P50_PRO/mm/mem_track) |
+| 2 | reserved_memory_debug | CONFIG_MEMORY_STATIC_FOOTPRINT | NA | [mm/mem_track/reserved_memory_debug.c](https://github.com/gatieme/MobileModels/blob/huawei/QCOM-5.4.86-JAD_AL00-HMOS2-snapdragon888-P50_PRO/mm/mem_track/reserved_memory_debug.c) |
 
 
 

@@ -357,15 +357,30 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 ## 11.3 TOPDOWN
 -------
 
+[Support standalone metrics and metric groups for perf](https://lore.kernel.org/all/20170831194036.30146-1-andi@firstfloor.org)
+
+
+### 11.3.1 stat topdown
+-------
+
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2016/05/24 | Andi Kleen <andi@firstfloor.org> | [perf stat: Basic support for TopDown in perf stat](https://lore.kernel.org/all/1464119559-17203-1-git-send-email-andi@firstfloor.org) | perf stat 支持 topdown 分析. | v1 ☑ 4.8-rc1 | [PatchWork 1/4](https://lore.kernel.org/all/1464119559-17203-1-git-send-email-andi@firstfloor.org) |
 | 2021/02/02 | Kan Liang <kan.liang@linux.intel.com> | [perf stat: Support L2 Topdown events](https://lore.kernel.org/lkml/1612296553-21962-9-git-send-email-kan.liang@linux.intel.com) | perf stat 支持 Level 2 级别 topdown 分析. [perf core PMU support for Sapphire Rapids (User tools)](https://lore.kernel.org/lkml/1612296553-21962-1-git-send-email-kan.liang@linux.intel.com) 系列中的其中一个补丁. | v1 ☑ 5.12-rc1 | [PatchWork 1/4](https://lore.kernel.org/lkml/1612296553-21962-9-git-send-email-kan.liang@linux.intel.com) |
+
+
+### 11.3.2 metricsgroup topdown
+-------
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2017/08/31 | Andi Kleen <andi@firstfloor.org> | [Support standalone metrics and metric groups for perf](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=b90f1333ef08d2a497ae239798868b046f4e3a97) | 向 perf-stat 添加对 JSON 文件中指定的独立度量 metrics 的支持. 度量 metrics 使用多个事件来计算更高级别结果 (例如 IPC, TOPDOWN 等) 的公式. 对于更复杂的度量(比如 pipeline, TOPDOWN), 需要具有特定于微架构的配置, 因此将度量 metrics 与 JSON 事件列表联系起来是有意义的. 以前的度量始终与事件关联, 并随该事件自动启用. 但现在改变它, 可以有独立的指标. 它们与事件处于相同的 JSON 数据结构中, 但没有事件名称, 只有度量名称. 同时允许在度量组中组织度量, 这允许一次选择几个相关度量的快捷方式. | v3 ☑✓ 4.15-rc1 | [LORE v3,0/11](https://lore.kernel.org/all/20170831194036.30146-2-andi@firstfloor.org) |
 | 2017/08/31 | Andi Kleen <andi@firstfloor.org> | [perf arm64 metricgroup support](https://lore.kernel.org/all/20170831194036.30146-1-andi@firstfloor.org) | 为 perf stat 添加[对 JSON 文件中指定的独立指标](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b18f3e365019de1a5b26a851e123f0aedcce881f) 的通用支持. 这些指标是一个公式, 它使用多个事件来计算更高级别的结果(例如 IPC, TOPDOWN 分析等). 添加一个新的 `-M /--metrics` 选项来添加指定的度量或度量组. 并增加了对 Intel X86 平台的支持. 通过这些 JSON 文件定义的事件组合度量, 可以很好的支持 TOPDOWN 分析. | v3 ☑ 4.15-rc1 | [PatchWork v3,00/11](https://lore.kernel.org/all/20170831194036.30146-1-andi@firstfloor.org) |
-| 2020/09/11 | Kan Liang <kan.liang@linux.intel.com> | [TopDown metrics support for Ice Lake (perf tool)](https://lore.kernel.org/lkml/20200911144808.27603-1-kan.liang@linux.intel.com) | 为 perf metrics 分析增加对 Ice Lake 的支持. 将原本 group 重命名为 topdown. | v3 ☑ 5.10-rc1 | [PatchWork v3,0/4](https://lore.kernel.org/lkml/20200911144808.27603-1-kan.liang@linux.intel.com) |
-| 2021/04/07 | John Garry <john.garry@huawei.com> | [perf arm64 metricgroup support](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1617791570-165223-1-git-send-email-john.garry@huawei.com) | perf 支持 HiSilicon hip08 平台的 topdown metric. 支持到 Level 3. 自此鲲鹏 920 的 ARM64 服务器上, 可以使用:<br>`sudo perf stat -M TopDownL1 sleeep 1`<br>来进行 TopDown 分析了. | v1 ☑ 5.13-rc1 | [PatchWork 0/5](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1614784938-27080-1-git-send-email-john.garry@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v2,0/6](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1616668398-144648-1-git-send-email-john.garry@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v3,0/6](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1617791570-165223-1-git-send-email-john.garry@huawei.com) |
+| 2020/09/11 | Kan Liang <kan.liang@linux.intel.com> | [TopDown metrics support for Ice Lake (perf tool)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=328781df86fa8f9299219c74ffae876bd625c6d1) | 为 perf metrics 分析增加对 Ice Lake 的支持. 将原本 group 重命名为 topdown. | v3 ☑ 5.10-rc1 | [PatchWork v3,0/4](https://lore.kernel.org/lkml/20200911144808.27603-1-kan.liang@linux.intel.com) |
+| 2021/04/07 | John Garry <john.garry@huawei.com> | [perf arm64 metricgroup support](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=0cc177cfc95d565e1a458136a592b0bd6d487db0) | perf 支持 HiSilicon hip08 平台的 topdown metric. 支持到 Level 3. 自此鲲鹏 920 的 ARM64 服务器上, 可以使用:<br>`sudo perf stat -M TopDownL1 sleeep 1`<br>来进行 TopDown 分析了. | v1 ☑ 5.13-rc1 | [PatchWork 0/5](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1614784938-27080-1-git-send-email-john.garry@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v2,0/6](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1616668398-144648-1-git-send-email-john.garry@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PatchWork v3,0/6](https://patchwork.kernel.org/project/linux-arm-kernel/cover/1617791570-165223-1-git-send-email-john.garry@huawei.com) |
 | 2022/05/28 | zhengjun <zhengjun.xing@linux.intel.com> | [perf vendor events intel: Add metrics for Sapphirerapids](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=1bcca2b1bd67f3c0e5c3a88ed16c6389f01a5b31) | TODO | v2 ☑✓ 5.19-rc1 | [LORE v2,0/2](https://lore.kernel.org/all/20220528095933.1784141-1-zhengjun.xing@linux.intel.com) |
 | 2022/08/25 | zhengjun.xing@linux.intel.com <zhengjun.xing@linux.intel.com> | [perf stat: Capitalize topdown metricsnel.org/all/20220825015458.3252239-1-zhengjun.xing@linux.intel.com) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/9-1-zhengjun.xing@linux.intel.com) |
+| 2022/10/21 | Shang XiaoJing <shangxiaojing@huawei.com> | [perf vendor events arm64: Fix incorrect Hisi hip08 L3 metrics](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e9229d5b6254a75291536f582652c599957344d2) | TODO | v2 ☑✓ 6.1-rc3 | [LORE v2,0/3](https://lore.kernel.org/all/20221021105035.10000-1-shangxiaojing@huawei.com) |
 
 
 ## 11.3 Userspace counter access
@@ -489,6 +504,9 @@ x86 和 arm64 都支持直接访问用户空间中的事件计数器. 访问序�
 | 2021/04/07 | Bill Wendling <morbo@google.com> | [pgo: add clang's Profile Guided Optimization infrastructure](https://lore.kernel.org/all/20210407211704.367039-1-morbo@google.com) | 20210116094357.3620352-1-morbo@google.com | v9 ☐☑✓ | [LORE](https://lore.kernel.org/all/20210407211704.367039-1-morbo@google.com) |
 | 2021/4/29 | Wende Tan <twd2.me@gmail.com> | [x86: Enable clang LTO for 32-bit as well](https://patchwork.kernel.org/project/linux-riscv/cover/20210719205208.1023221-1-twd2.me@gmail.com) | CLANG LTO 支持 X86 32 位. | v1 ☑ 5.14-rc1 | [LKML](https://lkml.org/lkml/2021/4/29/873) |
 | 2021/07/19 | Wende Tan <twd2.me@gmail.com> | [RISC-V: build: Allow LTO to be selected](https://patchwork.kernel.org/project/linux-riscv/cover/20210719205208.1023221-1-twd2.me@gmail.com) | NA | v1 ☐ | [Patchwork 0/3](https://patchwork.kernel.org/project/linux-riscv/cover/20210719205208.1023221-1-twd2.me@gmail.com) |
+| 2022/11/14 | Jiri Slaby (SUSE) <jirislaby@kernel.org> | [gcc-LTO support for the kernel](https://lore.kernel.org/all/20221114114344.18650-1-jirislaby@kernel.org) | [Patches Posted For GCC LTO Optimizing The Linux Kernel](https://www.phoronix.com/news/GCC-LTO-Linux-2022) | v1 ☐☑✓ | [LORE v1,00/46](https://lore.kernel.org/all/20221114114344.18650-1-jirislaby@kernel.org) |
+
+
 
 4.  BOLT'ing
 
@@ -498,9 +516,8 @@ BOLT 是一个二进制优化和布局工具, 它是一个 Facebook 孵化器项
 
 facebook 在 LPC-2021 公布了其[最新基于 BOLT 优化 Linux 内核的进展](https://www.phoronix.com/scan.php?page=news_item&px=Facebook-BOLTing-The-Kernel), 这项工作与允许 Linux 内核的配置文件引导优化(PGO)的挑战类似, 与现有的 BOLT 专注于仅优化 ELF 应用程序可执行性相比, BOLT'ing 的 Linux 内核在正确分析/采样内核和相关优化工作负载、内核的大规模代码基数、模块与内核代码等方面面临着类似的复杂障碍. 从公布的信息上看效果不错, 在 PGO + LTO 编译器优化的基础之上仍然带来了两位数的提升(double digit speedups"). 这些提速是通过优化可执行工具的代码布局来实现更高效的硬件页面使用和指令缓存. 参见 [slides](https://linuxplumbersconf.org/event/11/contributions/974/attachments/923/1793/Optimizing%20Linux%20Kernel%20with%20BOLT.pdf).
 
-[BOLT Close To Merging Into LLVM For Optimizing Performance Of Binaries](https://www.phoronix.com/scan.php?page=news_item&px=BOLT-Inches-To-LLVM)
+BOLT 之前代码在 [github 开源](https://github.com/facebookincubator/BOLT), 随后在 2022 合并到[主线 LLVM](https://github.com/llvm/llvm-project/tree/main/bolt), 参见 [BOLT Close To Merging Into LLVM For Optimizing Performance Of Binaries](https://www.phoronix.com/scan.php?page=news_item&px=BOLT-Inches-To-LLVM). 并默认情况下在 Linux x86_64 和 AArch64 测试版本中被打开, [LLVM's BOLT Flipped On By Default For Linux x86/AArch64 Test Releases](https://www.phoronix.com/news/LLVM-BOLT-Default-Test-Releases).
 
-BOLT 代码在 [github 开源](https://github.com/facebookincubator/BOLT).
 
 ## 13.3 Shrinking the kernel
 -------
@@ -644,6 +661,18 @@ Intel 编译器随后也切到 LLVM 框架, 参见 [Intel Fully Embracing LLVM F
 由于 ICC 编译 linux 缺乏维护, 随后内核有人提议删除 ICC 编译器编译内核的支持.
 
 | 2022/10/17 | Masahiro Yamada <masahiroy@kernel.org> | [Remove Intel compiler support](https://lore.kernel.org/all/20221016182349.49308-1-masahiroy@kernel.org) | TODO | v3 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221016182349.49308-1-masahiroy@kernel.org) |
+
+
+## 13.10 编译选项
+-------
+
+
+### 13.10.1 -funsigned-char
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2022/10/19 | Jason A. Donenfeld <Jason@zx2c4.com> | [kbuild: treat char as always unsigned](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3bc753c06dd02a3517c9b498e3846ebfc94ac3ee) | [Linux 6.2 Looks To Enable "-funsigned-char" To Better Deal With Buggy Code](https://www.phoronix.com/news/Linux-6.2-funsigned-char) | v2 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221019203034.3795710-1-Jason@zx2c4.com) |
 
 
 
@@ -814,7 +843,10 @@ LWN 上也对此进行了[汇总报道](https://lwn.net/Kernel/Index/#Android-Ge
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2021/03/21 | Rasmus Villemoes <linux@rasmusvillemoes.dk> | [background initramfs unpacking, and CONFIG_MODPROBE_PATH](https://lore.kernel.org/patchwork/patch/1394812) | 启动阶段异步解压 initramfs. 可以加速系统启动. | v1 ☑ [5.13-rc1](https://kernelnewbies.org/Linux_5.13) | [Patchwork](https://lore.kernel.org/patchwork/patch/1394812) |
 | 2021/11/21 | David Woodhouse <dwmw2@infradead.org> | [Parallel CPU bringup for x86_64](https://lkml.org/lkml/2021/12/9/664) | 随着核数的增多, 内核的启动速度越来越慢. 这组补丁能够并行启动辅助 (x86_64) CPU 内核. | v1 ☐ | [LWN ](https://lwn.net/Articles/878161), [LKML](https://lkml.org/lkml/2021/12/9/664), [LORE 00/11](https://lkml.kernel.org/lkml/20211209150938.3518-1-dwmw2@infradead.org),  [Phoronix 报道 v1](https://www.phoronix.com/scan.php?page=news_item&px=Linux-x86_64-Parallel-CPU-Boot)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/9](https://lore.kernel.org/lkml/20211215145633.5238-1-dwmw2@infradead.org), [Phoronix 报道 v3](https://www.phoronix.com/scan.php?page=news_item&px=Parallel-CPU-Bringup-AMD-Snag) |
+| 2022/11/02 | Stuart Hayes <stuart.w.hayes@gmail.com> | [cpufreq: acpi: Defer setting boost MSRs](https://lore.kernel.org/all/20221102195957.82871-1-stuart.w.hayes@gmail.com) | [Deferred Enabling Of ACPI CPUFreq Boost Support Can Help Boot Times For Large Servers](https://www.phoronix.com/news/CPUFreq-Defer-Boost-MSRs) | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221102195957.82871-1-stuart.w.hayes@gmail.com) |
+
 
 # 18 LIB
 -------
@@ -848,7 +880,7 @@ LWN 上也对此进行了[汇总报道](https://lwn.net/Kernel/Index/#Android-Ge
 
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
-| 2022/06/16 | Daniel Bristot de Oliveira <bristot@kernel.org> | [The Runtime Verification (RV) interface](https://lore.kernel.org/all/cover.1655368610.git.bristot@kernel.org) | 运行时验证 Linux 内核的行为. 运行时验证(RV) 是一种轻量级 (但严格) 的方法, 它补充了经典的穷举验证技术 (如模型检查和定理证明), 并为复杂系统提供了一种更实用的方法. RV 不依赖于系统的细粒度模型 (例如, 重新实现指令级别), 而是通过分析系统实际执行的轨迹, 并将其与系统行为的形式化规范进行比较来工作. RV 使用确定性自动机是一种成熟的方法. | v4 ☐☑✓ | [LORE v4,0/20](https://lore.kernel.org/all/cover.1655368610.git.bristot@kernel.org) |
+| 2022/06/16 | Daniel Bristot de Oliveira <bristot@kernel.org> | [The Runtime Verification (RV) interface](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=e88043c0ac16f19960048372dcffc6df7c05c5b8) | 运行时验证 Linux 内核的行为. 运行时验证(RV) 是一种轻量级 (但严格) 的方法, 它补充了经典的穷举验证技术 (如模型检查和定理证明), 并为复杂系统提供了一种更实用的方法. RV 不依赖于系统的细粒度模型 (例如, 重新实现指令级别), 而是通过分析系统实际执行的轨迹, 并将其与系统行为的形式化规范进行比较来工作. RV 使用确定性自动机是一种成熟的方法. | v4 ☐☑✓ 6.0-rc1 | [LORE v4,0/20](https://lore.kernel.org/all/cover.1655368610.git.bristot@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v9,00/16](https://lore.kernel.org/all/cover.1659052063.git.bristot@kernel.org) |
 
 # 21 RUST 支持
 -------

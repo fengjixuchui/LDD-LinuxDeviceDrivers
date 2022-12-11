@@ -641,6 +641,8 @@ MTE 实现了锁和密钥访问内存. 这样在内存访问期间, 可以在内
 
 [Intel Revs Its Linear Address Masking Patches For Linux](https://www.phoronix.com/scan.php?page=news_item&px=Intel-LAM-Linux-v5)
 
+[Intel Linear Address Masking "LAM" Ready For Linux 6.2](https://www.phoronix.com/news/Intel-LAM-Linux-6.2)
+
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/02/05 | "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> | [Linear Address Masking enabling](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com) | [线性地址屏蔽(LAM)](https://software.intel.com/content/dam/develop/external/us/en/documents-tps/architecture-instruction-set-extensions-programming-reference.pdf) 修改应用于 64 位线性地址的检查, 允许软件将未翻译的地址位用于元数据. 手册参见 [ISE, Chapter 14](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com). 代码参见 [kas/linux.git](https://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git/log/?h=lam). | RFC ☐ | [PatchWork RFC,0/9](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/8](https://lore.kernel.org/r/20220610143527.22974-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/11](https://lore.kernel.org/r/20220815041803.17954-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/08/30 LORE v1,0/11](https://lore.kernel.org/r/20220830010104.1282-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/09/30 LORE v1,0/14](https://lore.kernel.org/r/20220930144758.30232-1-kirill.shutemov@linux.intel.com) |
@@ -3325,6 +3327,8 @@ MGLRU 的开发者在 LPC-2022 上演示了 MGLRU [Multi-Gen LRU: Current Status
 最终 Linux v6.1 合并了 MGLRU 和 Maple Tree, 参见 [MM updates for 6.1-rc1](https://lore.kernel.org/lkml/20221008132113.919b9b894426297de78ac00f@linux-foundation.org) 以及 phoronix 报道 [MGLRU & Maple Tree Submitted For Linux 6.1](https://www.phoronix.com/news/MGLRU-Maple-Tree-Linux-6.1-PR), [MGLRU Merged For Linux 6.1](https://www.phoronix.com/news/MGLRU-In-Linux-6.1).
 
 
+[OpenWrt / MIPS benchmark with MGLRU](https://lore.kernel.org/all/20220831041731.3836322-1-yuzhao@google.com).
+
 *   实现
 
 传统的 LRU 页面回收仅仅通过 ACTIVE/INACTIVE 划分页面的冷热和老化程度, 这是一锤子买卖, 粒度非常粗, 对页面也机器不友好, 一个页面要么热页, 可以被宣判延刑, 要么是冷页, 可以立即被回收. 而 MGLRU 将页面的冷热程度做了更细粒度的划分.
@@ -3333,9 +3337,10 @@ MGLRU 的开发者在 LPC-2022 上演示了 MGLRU [Multi-Gen LRU: Current Status
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/04/07 | Yu Zhao <yuzhao@google.com> | [Multigenerational LRU Framework(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=8be976a0937a18118424dd2505925081d9192fd5) | Multi-Gen LRU Framework, 将 LRU 的列表划分为多代老化. 通过 CONFIG_LRU_GEN 来控制. | v15 ☑ v6.1 | [Patchwork v1,00/14](https://lore.kernel.org/patchwork/patch/1394674)<br>*-*-*-*-*-*-*-*<br>[PatchWork v2,00/16](https://lore.kernel.org/patchwork/patch/1412560)<br>*-*-*-*-*-*-*-*<br>[2021/05/20 PatchWork v3,00/14](https://patchwork.kernel.org/project/linux-mm/cover/20210520065355.2736558-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2021/08/18 PatchWork v4,00/11](https://patchwork.kernel.org/project/linux-mm/cover/20210818063107.2696454-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2021/11/11 PatchWork v5,00/10](https://patchwork.kernel.org/project/linux-mm/cover/20211111041510.402534-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/01/04 PatchWork v6,0/9](https://patchwork.kernel.org/project/linux-mm/cover/20220104202227.2903605-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/02/08 PatchWork v7,0/12](https://lore.kernel.org/all/20220208081902.3550911-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/03/08 LORE v8,0/14](https://lore.kernel.org/all/20220308234723.3834941-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/03/09 LORE v9,0/14](https://lore.kernel.org/all/20220309021230.721028-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[2022/04/07 LORE,v10,00/14](https://lore.kernel.org/lkml/20220407031525.2368067-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v11,00/14](https://lore.kernel.org/lkml/20220518014632.922072-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v12,00/14](https://lore.kernel.org/lkml/20220614071650.206064-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v13,00/14](https://lore.kernel.org/lkml/20220706220022.968789-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v14,00/14](https://lore.kernel.org/lkml/20220815071332.627393-1-yuzhao@google.com)<br>*-*-*-*-*-*-*-*<br>[LORE v15,0/14](https://lore.kernel.org/r/20220918080010.2920238-1-yuzhao@google.com) |
-| 2022/09/11 | Yuanchu Xie <yuanchu@google.com> | [mm: multi-gen LRU: per-process heatmaps](https://patchwork.kernel.org/project/linux-mm/cover/20220911083418.2818369-1-yuanchu@google.com/) | 675988 | v1 ☐☑ | [LORE v1,0/2](https://lore.kernel.org/r/20220911083418.2818369-1-yuanchu@google.com) |
+| 2022/09/11 | Yuanchu Xie <yuanchu@google.com> | [mm: multi-gen LRU: per-process heatmaps](https://patchwork.kernel.org/project/linux-mm/cover/20220911083418.2818369-1-yuanchu@google.com/) | MGLRU debugfs 接口(`/sys/kernel/debug/lru_gen`) 提供了一个统计属于每一代的页面数量的直方图, 提供了一些内存冷量数据, 但我们实际上不知道内存实际在哪里, 通过 BPF 程序连接到 MGLRU 页表访问位获取, 以收集有关相对 HOT 和 COLD、NUMA 节点以及页是否为 anon/file 等的信息. 使用 BPF 程序收集和聚合页面访问信息允许用户空间代理自定义收集什么以及如何聚合. 它可以关注特定的兴趣区域, 并计算移动平均访问频率, 或者找到从未访问过的分配, 这些分配可以一起消除. 目前, MGLRU 依赖于关于页面被分配到哪一代的启发式方法, 例如, 通过页面表访问的页面总是被分配给最年轻的一代. 公开页面访问数据可以允许未来的工作自定义页面生成分配(使用更多 BPF). | v1 ☐☑ | [LORE v1,0/2](https://lore.kernel.org/all/20220911083418.2818369-1-yuanchu@google.com) |
 | 2022/09/18 | Yu Zhao <yuzhao@google.com> | [[v14-fix,01/11] mm: multi-gen LRU: update admin guide](https://patchwork.kernel.org/project/linux-mm/patch/20220918204755.3135720-1-yuzhao@google.com/) | 677981 | v1 ☐☑ | [LORE v1,0/11](https://lore.kernel.org/r/20220918204755.3135720-1-yuzhao@google.com) |
 | 2022/09/20 | zhaoyang.huang <zhaoyang.huang@unisoc.com> | [[RFC] mm: track bad page via kmemleak](https://patchwork.kernel.org/project/linux-mm/patch/1663679468-16757-1-git-send-email-zhaoyang.huang@unisoc.com/) | 678650 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/1663679468-16757-1-git-send-email-zhaoyang.huang@unisoc.com) |
+| 2022/12/01 | Yu Zhao <yuzhao@google.com> | [mm: multi-gen LRU: memcg LRU](https://lore.kernel.org/all/20221201223923.873696-1-yuzhao@google.com) | [New MGLRU Linux Patches Look To Improve The Scalability Of Global Reclaim](https://www.phoronix.com/news/Linux-MGLRU-memcg-LRU) | v1 ☐☑✓ | [LORE v1,0/8](https://lore.kernel.org/all/20221201223923.873696-1-yuzhao@google.com) |
 
 
 
@@ -3887,27 +3892,37 @@ v2.5 的时候引入了 shrink 机制, 并提供了 API 统一了各个模块的
 
 [Facebook Developing THP Shrinker To Avoid Linux Memory Waste](https://www.phoronix.com/news/Linux-THP-Shrinker)
 
+| 日期 | LWN | 翻译 |
+|:---:|:----:|:---:|
+| 2022/09/08 | [The transparent huge page shrinker](https://lwn.net/Articles/906511) | [LWN：针对透明巨页的shrinker！](https://blog.csdn.net/Linux_Everything/article/details/127020244) |
+
+
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/08/05 | alexlzhu@fb.com <alexlzhu@fb.com> | [mm: add thp_utilization metrics to /proc/thp_utilization](https://lore.kernel.org/all/20220805184016.2926168-1-alexlzhu@fb.com) | 由于性能的提高或降低取决于特定应用程序如何使用物理内存, THP 在历史上一直是针对每个应用程序启用的. 当 THP 被大量利用时, 由于 TLB 缓存失败的减少, 应用程序性能会得到改善. 长期以来, 人们一直怀疑启用 THP 时的性能下降是由于大量未充分利用的匿名 THP 造成的. 以前, 没有办法跟踪到底有多少 THP 被实际使用. 通过这个补丁, 帮助开发者了解 THP 的使用情况, 以便在分页方面做出更智能的决策. 这个更改引入了一个工具, 该工具扫描匿名 THP 的所有物理内存, 并根据使用率将它们分组到桶中. 它还包括一个位于 `/sys/kernel/debug/thp_utilization` 下的接口. THP 的利用率定义为 THP 中非零页面的百分比. 工作线程将扫描所有物理内存, 并获得所有匿名 THP 的利用率. 它将通过定期扫描所有物理内存来收集这些信息, 寻找匿名 THP, 根据利用率将它们分组到桶中, 并通过 `/sys/kernel/debug/thp_utilization` 下的 debugfs 报告利用率信息. | v3 ☐☑✓ | [LORE v2](https://lore.kernel.org/lkml/20220809014950.3616464-1-alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3](https://lore.kernel.org/all/20220805184016.2926168-1-alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/1](https://lore.kernel.org/r/20220818000112.2722201-1-alexlzhu@fb.com) |
-| 2022/10/12 | alexlzhu@fb.com <alexlzhu@fb.com> | [THP Shrinker](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com) | TODO | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/3](https://lore.kernel.org/r/cover.1661461643.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/3](https://lore.kernel.org/r/cover.1664347167.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/3](https://lore.kernel.org/r/cover.1665600372.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/3](https://lore.kernel.org/r/cover.1665614216.git.alexlzhu@fb.com) |
+| 2022/10/12 | alexlzhu@fb.com <alexlzhu@fb.com> | [THP Shrinker](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com) | TODO | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/cover.1661461643.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/3](https://lore.kernel.org/r/cover.1661461643.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/3](https://lore.kernel.org/r/cover.1664347167.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/3](https://lore.kernel.org/r/cover.1665600372.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/3](https://lore.kernel.org/r/cover.1665614216.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/3](https://lore.kernel.org/r/cover.1666150565.git.alexlzhu@fb.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/5](https://lore.kernel.org/r/cover.1666743422.git.alexlzhu@fb.com) |
 
 
 ## 4.4 主动的页面回收(Proactive Reclaim)
 -------
+
+### 4.4.X WSS(Working Set Size Estimation)
+-------
+
+[系统软件工程师必备技能-进程内存的working set size(WSS)测量](https://blog.csdn.net/juS3Ve/article/details/85333717)
 
 
 1.  冷热页区分:  为了能识别那些可以回收的页面, 必须对那些不常用的页面有效地进行跟踪, 即 idle page tracking.
 
 2.  进程内存的 working set size(WSS) 估计: 为了在回收了内存之后还能满足业务的需求, 保障业务性能不下降, 需要能预测出业务运行所需要的实际最小内存. brendangregg 大神对此也有描述, [Working Set Size Estimation](https://www.brendangregg.com/wss.html), 并设计了 wss 工具 [Working Set Size (WSS) Tools for Linux](https://github.com/brendangregg/wss).
 
-Meta(原 Facebook) 开发了 [Senpai](https://github.com/facebookincubator/senpai)
+3.  Meta(原 Facebook) 开发了 [Senpai](https://github.com/facebookincubator/senpai)
+
+4. 2022 International Conference on Service Science (ICSS) 的论文 [eBPF-based Working Set Size Estimation in Memory Management](https://ieeexplore.ieee.org/abstract/document/9860164) 提出了一种基于 eBPF 程序来估计 WSS 的方法.
+
 
 ### 4.4.1 Idle and stale page tracking
 -------
-
-
-[系统软件工程师必备技能-进程内存的working set size(WSS)测量](https://blog.csdn.net/juS3Ve/article/details/85333717)
 
 [Idle and stale page tracking](https://lwn.net/Articles/461461)
 
@@ -3996,7 +4011,8 @@ Google 的 Yosry Ahmed 设计的 [memcg: introduce per-memcg proactive reclaim](
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/04/07 | Yosry Ahmed <yosryahmed@google.com> | [memcg: introduce per-memcg proactive reclaim](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=eae3cb2e87ff84547e66211b81301a8f9122840f) | MEMCG 中引入 memory.reclaim 使得用户空间可以通过持续探测 MEMCG 并触发主动回收以回收少量内存. 随着 LRU 不断排序, 这将提供更准确和最新的工作集估计, 并可能提供更具确定性的内存过度使用行为. 内存超分配控制器可以对正在运行的应用程序不断变化的行为提供更主动的响应, 而不是被动响应. 在这种情况下, 用户空间回收器的目的不是完全替代 KSWAPD 或直接回收, 而是主动识别内存节约机会, 回收策略设置的一些冷页, 以释放内存, 用于要求更高的作业或安排新作业.<br>谷歌数据中心使用了此用户空间主动回收器. | v2 ☑ 5.19-rc1 | [LORE v1,0/1](https://lore.kernel.org/all/20220331084151.2600229-1-yosryahmed@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/4](https://lore.kernel.org/r/20220407224244.1374102-1-yosryahmed@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/4](https://lore.kernel.org/r/20220408045743.1432968-1-yosryahmed@google.com))<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/4](https://lore.kernel.org/r/20220421234426.3494842-1-yosryahmed@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/4](https://lore.kernel.org/r/20220425190040.2475377-1-yosryahmed@google.com) |
 | 2022/04/16 | Davidlohr Bueso <dave@stgolabs.net> | [Mechanism to induce memory reclaim](https://lore.kernel.org/all/5df21376-7dd1-bf81-8414-32a73cea45dd@google.com) |  LSFMM 2022 | v1 ☐☑ | [LORE RFC v1,0/6](https://lore.kernel.org/all/5df21376-7dd1-bf81-8414-32a73cea45dd@google.com) |
-| 2022/05/18 | Vaibhav Jain <vaibhav@linux.ibm.com> | [memcg: provide reclaim stats via 'memory.reclaim'](https://patchwork.kernel.org/project/linux-mm/patch/20220518223815.809858-1-vaibhav@linux.ibm.com/) | 642903 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20220518223815.809858-1-vaibhav@linux.ibm.com) |
+| 2022/05/18 | Vaibhav Jain <vaibhav@linux.ibm.com> | [memcg: provide reclaim stats via 'memory.reclaim'](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=eae3cb2e87ff84547e66211b81301a8f9122840f) | 之前引入的 memcg 文件 memory.reclaim 是只写的, 为用户空间提供了一种触发主动回收的方法. 然而, 像扫描和回收的页面数量这样的回收统计仍然不能直接提供给用户空间. 这个补丁将 memory.reclaim 扩展为可读, 它从与每个 memcg 相关的 'struct vmpressure' 回收过程中返回扫描/回收的页面数量. 这将让用户空间评估如何成功地从 memcg 的内存中触发主动回收. | v1 ☐☑ 5.19-rc1 | [LORE v1,0/1](https://lore.kernel.org/r/20220518223815.809858-1-vaibhav@linux.ibm.com) |
+| 2022/12/02 | Mina Almasry <almasrymina@google.com> | [mm: Add nodes= arg to memory.reclaim](https://lore.kernel.org/all/20221202223533.1785418-1-almasrymina@google.com) | nodes=arg 指示内核仅扫描给定节点以进行主动回收.<br>"nodes"参数用于允许用户空间根据其策略独立控制降级和回收: 如果内存. 在具有降级目标的节点上调用回收, 它将首先尝试降级;<br>如果在没有降级目标的节点上调用它, 它将只尝试回收. | v3 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221202223533.1785418-1-almasrymina@google.com) |
 
 
 ### 4.4.4 主动回收与内存分级
@@ -4743,6 +4759,32 @@ Google 的工程师 Mina Almasry 提出了一种新的思路, 通过 [mremap 的
 | 2022/06/28 | Muchun Song <songmuchun@bytedance.com> | [Simplify hugetlb vmemmap and improve its readability](https://lore.kernel.org/all/20220628092235.91270-1-songmuchun@bytedance.com) | TODO | v2 ☐☑✓ | [LORE 0/6](https://lore.kernel.org/lkml/20220613063512.17540-1-songmuchun@bytedance.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/8](https://lore.kernel.org/all/20220628092235.91270-1-songmuchun@bytedance.com) |
 | 2022/08/02 | Joao Martins <joao.m.martins@oracle.com> | [[v1] mm/hugetlb_vmemmap: remap head page to newly allocated page](https://patchwork.kernel.org/project/linux-mm/patch/20220802180309.19340-1-joao.m.martins@oracle.com/) | 664896 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20220802180309.19340-1-joao.m.martins@oracle.com) |
 
+
+### 7.1.11 HugeTLB High-Granularity Mapping
+-------
+
+HugeTLB 高粒度映射 (HugeTLB High-Granularity Mapping, HGM)(早期也叫 HugeTLB Double Mapping) 的概念. 从广义上讲, 本系列将教 HugeTLB 如何以不同粒度映射 HugeTLB 页面, 更重要的是, 如何部分映射 HugeTLB 页面. 高粒度映射不会分解大页面本身; 它只影响它们的映射方式.
+
+
+对于复制后的热迁移, 使用 userfaultfd, 一直以来必须安装一个完整的大页面, 才能允许客户访问该页面. 这是因为, 现在, 要么整个大页要么被映射, 要么没有映射. 所以 Guest 要么可以访问整个页面, 要么一个都不能访问. 这使得 1G HugeTLB 支持的虚拟机复制后热迁移完全不可行的.
+
+因此能够将 HugeTLB 内存按照 PAGE_SIZE pte 进行映射, 在复制后热迁移和内存故障处理中具有重要意义.
+
+
+通过使用 HugeTLB 高粒度映射, 我们可以映射一个大页中的 PAGE_SIZE 大小的页面, 从而允许客户机只访问 PAGE_SIZE 块, 并在访问其他页面块时触发 Page Fault. 这使用户空间可以灵活地将 PAGE_SIZE 内存块安装到一个巨大的页面中, 使得迁移 1G 支持的虚拟机完全可行, 并且极大地减少了 2M 支持的虚拟机在复制后的 vCPU 暂停时间.
+
+1. 在通过网络完全复制一个巨大的页面后, 我们将希望将映射分解为正常情况下的样子 (例如, 一个 PUD 对应一个 1G 页面). 我们没有让内核自动完成这一工作, 而是让用户空间来告诉我们折叠一个范围 (通过 [MADV_COLLAPSE](https://lore.kernel.org/linux-mm/20220604004004.954674-10-zokeefe@google.com)).
+
+2. 当在 HugeTLB 页面中发现内存错误时, 如果我们可以只映射包含错误的 PAGE_SIZE 部分, 这将是理想的. 这就是 THPs 能够做到的. 使用高粒度映射, 我们可以做到这一点, 但在本补丁系列中没有解决这个问题.
+
+3. Userspace API 层次, 提供了两种利用高粒度映射的方法: 用户空间与高粒度映射交互的方式主要有两种:① 在适当配置的 userfaultfd VMA 中使用 UFFDIO_CONTINUE 创建它们.② 使用 MADV_COLLAPSE 分解高粒度映射.
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:-----:|:----:|:----:|:----:|:------------:|:----:|
+| 2022/10/21 | James Houghton <jthoughton@google.com> | [hugetlb: introduce HugeTLB high-granularity mapping](https://patchwork.kernel.org/project/linux-mm/cover/20221021163703.3218176-1-jthoughton@google.com/) | 687585 | v2 ☐☑ | [LORE RFC,00/26](https://lore.kernel.org/linux-mm/20220624173656.2033256-1-jthoughton@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,00/47](https://lore.kernel.org/r/20221021163703.3218176-1-jthoughton@google.com) |
+
+
 ### 7.1.x More HugeTLB Patchset
 -------
 
@@ -4762,6 +4804,7 @@ Google 的工程师 Mina Almasry 提出了一种新的思路, 通过 [mremap 的
 | 2022/09/16 | Mike Kravetz <mike.kravetz@oracle.com> | [hugetlb: freeze allocated pages before creating hugetlb pages](https://patchwork.kernel.org/project/linux-mm/patch/20220916214638.155744-1-mike.kravetz@oracle.com/) | 677766 | v2 ☐☑ | [LORE v2,0/1](https://lore.kernel.org/r/20220916214638.155744-1-mike.kravetz@oracle.com)<br>*-*-*-*-*-*-*-*<br>[LORE v3,0/1](https://lore.kernel.org/r/20220921202702.106069-1-mike.kravetz@oracle.com) |
 | 2022/09/21 | Doug Berger <opendmb@gmail.com> | [mm/hugetlb: hugepage migration enhancements](https://patchwork.kernel.org/project/linux-mm/cover/20220921223639.1152392-1-opendmb@gmail.com/) | 679187 | v1 ☐☑ | [LORE v1,0/3](https://lore.kernel.org/r/20220921223639.1152392-1-opendmb@gmail.com) |
 | 2022/09/01 | Muchun Song <songmuchun@bytedance.com> | [mm: hugetlb: eliminate memory-less nodes handling](https://patchwork.kernel.org/project/linux-mm/patch/20220901083023.42319-1-songmuchun@bytedance.com/) | 673136 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20220901083023.42319-1-songmuchun@bytedance.com) |
+| 2022/10/19 | 黄杰 <huangjie.albert@bytedance.com> | [mm: hugetlb: support for shared memory policy](https://patchwork.kernel.org/project/linux-mm/patch/20221019092928.44146-1-huangjie.albert@bytedance.com/) | 为 hugetlb_vm_ops 实现 get/set_policy() 确保所有共享这个大页面文件的进程的 mempolicy 一致.<br> 在一些共享巨大页面的场景中: 如果我们需要限制 node0 内 vm 的内存使用, 那么我将 qemu 的 mempilciy 绑定设置为 node0, 但如果有一个进程 (如 virtiofsd) 与 vm 共享内存, 在这种情况下. 如果页面错误是由 virtiofsd 触发的, 分配的内存可能会到 node1, 而 node1 取决于 virtiofsd. 虽然我们可以使用 qemu 提供的内存预分配来避免这个问题, 但这种方法将显著增加 vm 的创建时间 (几秒钟, 取决于内存大小). 在我们连接 hugetlb_vm_ops(set/get_policy) 之后: 由 shmget() 创建的带有 SHM_HUGETLB 标志的共享内存段和 mmap(MAP_SHARED|MAP_HUGETLB) 也支持共享策略. | v2 ☐☑ | [LORE](https://lore.kernel.org/all/20221012081526.73067-1-huangjie.albert@bytedance.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2](https://lore.kernel.org/all/20221019092928.44146-1-huangjie.albert@bytedance.com) |
 
 
 ## 7.2 透明大页的支持
@@ -4782,7 +4825,7 @@ hugetlb 的使用依赖于用户主动预留并使用, 适用于用户明确需�
 
 [卢钧轶: Huge Page 是否是拯救性能的万能良药？](https://www.cnblogs.com/cenalulu/p/4394695.html)
 
-### 7.2.1 THP(Transparent Hugepage Support)Huge Page(THP) SWAP
+### 7.2.1 THP(Transparent Hugepage Support)
 -------
 
 2011 年 v2.6.38 期间 Andrea Arcangeli 为 linux 引入了 THP(Transparent huge page), 在应用需要 huge page 的时候, 可通过内存规整等操作, 为当前 VMA 分配一个 huge page, 因为该过程不会被应用感知到, 所以被称为 "transparent". 参见 [Transparent huge pages in 2.6.38](https://lwn.net/Articles/423584).
@@ -5244,6 +5287,7 @@ khugepaged 处理流程
 | 2013/07/03 | Suren Baghdasaryan <surenb@google.com> | [mm: add sys_madvise2 and MADV_NAME to name vmas](https://lore.kernel.org/linux-mm/1372901537-31033-1-git-send-email-ccross@android.com) | 这组通过添加新的 MADVESE2 系统调用, 可以使用 MADV_NAME 来将名称附加到现有的 VMA 上.<br>1. 向每个 vma 添加一个包含名称字符串的 vma_name 结构, 系统中每个具有相同名称的 vma 都保证指向相同的 vma_name 结构. 可以直接通过比较指针进行名称相等比较.<br>2. 匿名 VMA 的名称在 `/proc/pid/maps` 中显示为 `[anon:<name>]`. 所有命名 VMA 的名称显示在 `/proc/pid/smap` 中的 Name 字段中用于命名 VMA.<br>3. 此修补程序添加的未命名 vma 的唯一成本是检查 vm_name 指针. 对于命名 vma, 它会将 refcount 更新添加到拆分/合并/复制 vma 中, 如果命名 vma 是具有该名称的最后一个vma, 则取消映射可能需要使用全局锁. | v2 ☐ | [PatchWork RFC](https://lore.kernel.org/linux-mm/1372901537-31033-1-git-send-email-ccross@android.com) |
 | 2020/09/01 | Sumit Semwal <sumit.semwal@linaro.org> | [Anonymous VMA naming patches](https://lore.kernel.org/linux-mm/20200901161459.11772-1-sumit.semwal@linaro.org) | NA | v7 ☐ 5.9-rc3 | [PatchWork v7,0/3](https://lore.kernel.org/linux-mm/20200901161459.11772-1-sumit.semwal@linaro.org) |
 | 2021/10/19 | Suren Baghdasaryan <surenb@google.com> | [Anonymous VMA naming patches](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=78db3412833dc9c479cd17412035f216cfd01a29) | NA | v11 ☑✓ 5.17-rc1 | [2021/08/27 PatchWork v8,0/3](https://patchwork.kernel.org/project/linux-mm/cover/20210827191858.2037087-1-surenb@google.com)<br>*-*-*-*-*-*-*-* <br>[2021/10/19 PatchWork v11,1/3](https://patchwork.kernel.org/project/linux-mm/patch/20211019215511.3771969-1-surenb@google.com) |
+| 2022/11/05 | Pasha Tatashin <pasha.tatashin@soleen.com> | [mm: anonymous shared memory naming](https://lore.kernel.org/all/20221105025342.3130038-1-pasha.tatashin@soleen.com) | commit 9a10064f5625("mm: add a field to store names for private anonymous memory"), 可以设置私有匿名内存的名称, 但不能设置共享匿名. 但是, 命名共享匿名内存对于跟踪目的同样有用.<br>扩展功能, 使其能够为共享匿名者设置名称. | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221105025342.3130038-1-pasha.tatashin@soleen.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2](https://lore.kernel.org/all/20221107184715.3950621-1-pasha.tatashin@soleen.com) |
 
 
 ### 8.1.2 其他
@@ -5930,9 +5974,9 @@ zone->lru_锁是一个竞争激烈的锁, 因此 2012 年左右 Konstantin Khleb
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
 | 2020/06/23 | Roman Gushchin <guro@fb.com> | [The new cgroup slab memory controller](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=fbc1ac9d09d70859eee24131d667e01e3986e368) | 引入了 obj_cgroup, 接管了 slab memory 的 charge/uncharge 操作. | v7 ☑✓ 5.9-rc1 | [LORE v7,0/19](https://lore.kernel.org/all/20200623174037.3951353-1-guro@fb.com) |
-| 2021/03/20 | Muchun Song <songmuchun@bytedance.com> | [Use obj_cgroup APIs to charge kmem pages](hhttps://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=bd290e1e75d8a8b2d87031b63db56) | TODO | v5 ☑✓ 5.13-rc1 | [LORE v5,0/7](https://lore.kernel.org/all/20210319163821.20704-1-songmuchun@bytedance.com) |
+| 2021/03/20 | Muchun Song <songmuchun@bytedance.com> | [Use obj_cgroup APIs to charge kmem pages](hhttps://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=bd290e1e75d8a8b2d87031b63db56) | 使用 obj_cgroup 接管 kmem 的 charge/uncharge 操作. | v5 ☑✓ 5.13-rc1 | [LORE v5,0/7](https://lore.kernel.org/all/20210319163821.20704-1-songmuchun@bytedance.com) |
 | 2022/04/21 | Waiman Long <longman@redhat.com> | [mm/memcg: Free percpu stats memory of dying memcg's](https://lore.kernel.org/all/20220421145845.1044652-1-longman@redhat.com) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20220421145845.1044652-1-longman@redhat.com) |
-| 2022/06/21 | Muchun Song <songmuchun@bytedance.com> | [Use obj_cgroup APIs to charge the LRU pages](https://lore.kernel.org/all/20220621125658.64935-1-songmuchun@bytedance.com) | TODO | v6 ☐☑✓ | [LORE v6,0/11](https://lore.kernel.org/all/20220621125658.64935-1-songmuchun@bytedance.com) |
+| 2022/06/21 | Muchun Song <songmuchun@bytedance.com> | [Use obj_cgroup APIs to charge the LRU pages](https://lore.kernel.org/all/20220621125658.64935-1-songmuchun@bytedance.com) | 使用 obj_cgroup 接管 LRU 页面的 charge/uncharge. | v6 ☐☑✓ | [LORE v6,0/11](https://lore.kernel.org/all/20220621125658.64935-1-songmuchun@bytedance.com) |
 
 
 
@@ -6323,6 +6367,7 @@ Intel 的吴峰光 [PMEM NUMA node and hotness accounting/migration](https://lor
 | 2022/06/07 | Johannes Weiner <hannes@cmpxchg.org> | [mm: mempolicy: N:M interleave policy for tiered memory nodes](https://patchwork.kernel.org/project/linux-mm/patch/20220607171949.85796-1-hannes@cmpxchg.org/) | 648110 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20220607171949.85796-1-hannes@cmpxchg.org) |
 | 2022/06/14 | Tim Chen <tim.c.chen@linux.intel.com> | [Cgroup accounting of memory tier usage](https://patchwork.kernel.org/project/linux-mm/cover/cover.1655242024.git.tim.c.chen@linux.intel.com/) | 650358 | v1 ☐☑ | [LORE v1,0/3](https://lore.kernel.org/r/cover.1655242024.git.tim.c.chen@linux.intel.com) |
 | 2022/08/29 | Aneesh Kumar K V <aneesh.kumar@linux.ibm.com> | [[v2] mm/demotion: Expose memory tier details via sysfs](https://patchwork.kernel.org/project/linux-mm/patch/20220829060745.287468-1-aneesh.kumar@linux.ibm.com/) | 671886 | v2 ☐☑ | [LORE v2,0/1](https://lore.kernel.org/r/20220829060745.287468-1-aneesh.kumar@linux.ibm.com) |
+| 2022/10/20 | Huang, Ying <ying.huang@intel.com> | [memory tier, sysfs: rename attribute "nodes" to "nodelist"](https://patchwork.kernel.org/project/linux-mm/patch/20221020015122.290097-1-ying.huang@intel.com/) | 686946 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20221020015122.290097-1-ying.huang@intel.com) |
 
 
 
@@ -6841,6 +6886,7 @@ DAMON 利用两个核心机制 : **基于区域的采样**和**自适应区域�
 | 2022/01/14 | Baolin Wang <baolin.wang@linux.alibaba.com> | [mm/damon: add access checking for hugetlb pages](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=49f4203aae06ba9d67b500c90339b262b0a52637) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/6afcbd1fda5f9c7c24f320d26a98188c727ceec3.1639623751.git.baolin.wang@linux.alibaba.com), [COMMIT](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=49f4203aae06ba9d67b500c90339b262b0a52637) |
 | 2022/04/29 | SeongJae Park <sj@kernel.org> | [mm/damon: Support online tuning](https://patchwork.kernel.org/project/linux-mm/cover/20220429160606.127307-1-sj@kernel.org/) | 637059 | v1 ☐☑ | [LORE v1,0/14](https://lore.kernel.org/r/20220429160606.127307-1-sj@kernel.org) |
 | 2022/05/07 | Gautam Menghani <gautammenghani201@gmail.com> | [Add documentation for Enum value 'NR_DAMON_OPS' in](https://patchwork.kernel.org/project/linux-mm/patch/20220507165620.110706-1-gautammenghani201@gmail.com/) | 639422 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20220507165620.110706-1-gautammenghani201@gmail.com) |
+| 2022/10/19 | SeongJae Park <sj@kernel.org> | [efficiently expose damos action tried regions information](https://patchwork.kernel.org/project/linux-mm/cover/20221019001317.104270-1-sj@kernel.org/) | 686501 | v1 ☐☑ | [LORE v1,0/18](https://lore.kernel.org/r/20221019001317.104270-1-sj@kernel.org) |
 
 
 ### 13.6.3 DAMON Interface
@@ -6906,6 +6952,7 @@ PLRUS 这一机制旨在解决与 MGLRU 工作类似的问题, MGLRU 也试图�
 | 2022/02/04 | Jonghyeon Kim <tome01@ajou.ac.kr> | [mm/damon: Rebase DAMON_RECALIM watermarks for NUMA nodes](https://patchwork.kernel.org/project/linux-mm/patch/20220204064059.6244-1-tome01@ajou.ac.kr/) | 611199 | v1 ☐☑ | [PatchWork v1,0/1](https://lore.kernel.org/r/20220204064059.6244-1-tome01@ajou.ac.kr) |
 | 2022/02/18 | Jonghyeon Kim <tome01@ajou.ac.kr> | [Rebase DAMON_RECALIM for NUMA system](https://lore.kernel.org/all/20220218102611.31895-1-tome01@ajou.ac.kr) | 615730 | v1 ☐☑ | [LORE v1,0/3](https://lore.kernel.org/r/20220218102611.31895-1-tome01@ajou.ac.kr) |
 | 2022/06/13 | SeongJae Park <sj@kernel.org> | [Extend DAMOS for Proactive LRU-lists Sorting](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=6acfcd0d75244178a4a101fe0da888fa3bff29fb) | [LRU-list manipulation with DAMON](https://lwn.net/Articles/905370) | v1 ☑✓ 6.0-rc1 | [2022/05/13 LORE RFC,0/3](https://lore.kernel.org/damon/20220513150000.25797-1-sj@kernel.org)<br>*-*-*-*-*-*-*-* <br>[2022/06/13 LORE v1,0/8](https://lore.kernel.org/all/20220613192301.8817-1-sj@kernel.org) |
+| 2022/10/25 | SeongJae Park <sj@kernel.org> | [mm/damon/reclaim,lru_sort: enable/disable synchronously](https://patchwork.kernel.org/project/linux-mm/cover/20221025173650.90624-1-sj@kernel.org/) | 688752 | v1 ☐☑ | [LORE v1,0/4](https://lore.kernel.org/r/20221025173650.90624-1-sj@kernel.org) |
 
 
 ### 13.6.5 业界的使用
