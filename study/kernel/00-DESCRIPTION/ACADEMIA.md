@@ -1,6 +1,6 @@
 ---
 
-title: Linux 内核历史的 Git 记录
+title: 学术界信息汇总
 date: 2021-02-15 00:32
 author: gatieme
 tags:
@@ -9,7 +9,7 @@ tags:
 categories:
         - 技术积累
 thumbnail:
-blogexcerpt: FZF 是目前最快的模糊搜索工具. 使用golang编写. 结合其他工具(比如 ag 和 fasd)可以完成非常多的工作. 前段时间, 有同事给鄙人推荐了 FZF, 通过简单的配置, 配合 VIM/GIT 等工具食用, 简直事半功倍, 效率指数级提升, 因此推荐给大家.
+blogexcerpt: 学术界信息汇总
 
 ---
 
@@ -32,7 +32,7 @@ blogexcerpt: FZF 是目前最快的模糊搜索工具. 使用golang编写. 结�
 
 <br>
 
-2   **调测子系统**
+   **学术界信息汇总**
 =====================
 
 
@@ -52,30 +52,21 @@ blogexcerpt: FZF 是目前最快的模糊搜索工具. 使用golang编写. 结�
 **-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 正文 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-***
 
 
-
-# 1 CPU
+# 1 IEEE
 -------
 
-| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2021/10/09 | "Pratik R. Sampat" <psampat@linux.ibm.com> | [kernel: Introduce CPU Namespace](https://www.phoronix.com/scan.php?page=news_item&px=Linux-CPU-Namespace) | CPU namespace | RFC ☐ | [LWN RFC, 0/5]](https://lwn.net/Articles/872507) |
-| 2022/1/7 |  Josh Don | [cgroup: add cpu.stat_percpu](https://lkml.org/lkml/2022/1/7/833) | CPU namespace | RFC ☐ | [LORE 1/2]](https://lkml.org/lkml/2022/1/7/833) |
-
-# 2 DEBUG
--------
-
-| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:---:|:----:|:---:|:----:|:---------:|:----:|
-| 2020/02/27 | Johannes Weiner <hannes@cmpxchg.org> | [mm: memcontrol: recursive memory.low protection](https://lore.kernel.org/all/20200227195606.46212-1-hannes@cmpxchg.org) | TODO | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/20200227195606.46212-1-hannes@cmpxchg.org) |
-| 2022/08/26 | Lu Jialin <lujialin4@huawei.com> | [Introduce cgroup.top interface](https://lore.kernel.org/all/20220@huawei.com) | Cgroup 用于组织和管理资源可用的流程. 目前, 没有方便的工具来为每个子 CGroup 收集 Reuserce 使用信息, 这使得很难检测资源中断和调试资源问题. 为了克服这个问题, 我们提出了 cgroup. 顶部界面. 就像 top 命令一样, 用户能够轻松地收集资源使用信息, 允许用户检测和响应子 cgroup 中的资源中断. | v1 ☐☑✓ | [LORE v1,0/2](https://lore.kernel.org/all/20220826011503.103894-1-lujialin4@huawei.com) |
-
-# 3 DRM
--------
-
-| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:---:|:----:|:---:|:----:|:---------:|:----:|
-| 2022/11/11 | Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com> | [DRM scheduling cgroup controller](https://lore.kernel.org/all/20221111104435.3152347-1-tvrtko.ursulin@linux.intel.com) | TODO | v2 ☐☑✓ | [LORE v2,0/13](https://lore.kernel.org/all/20221111104435.3152347-1-tvrtko.ursulin@linux.intel.com) |
-
+| 组织 | 描述 |
+|:---:|:---:|
+| [Technical Committee on Microprocessors and Microcomputers (TCMM)](https://hotchips.org/archives) | NA |
+| [Technical Committee on Computer Architecture (TCCA)](http://ieeetcca.org) | NA |
+| [Technical Community on Cloud Computing (TCCLD)](https://tc.computer.org/tccld) | NA |
+| [Technical Committee on Real-Time Systems (TCRTS)](https://cmte.ieee.org/tcrts) | NA |
+| [Technical Committee on the Internet (TCI)](https://tc.computer.org/tci) | NA |
+| [Technical Committee on Distributed Processing (TCDP)](https://tc.computer.org/tcdp) | NA |
+| [Technical Committee on Scalable Computing (TCSC)](http://www.ieee-tcsc.org) | NA |
+| [Technical Committee on Dependable Computing and Fault Tolerance (TCFT)](https://www.dependability.org) | NA |
+| [Technical Committee on Parallel Processing (TCPP)](https://tc.computer.org/tcpp) | NA |
+| [Technical Committee on Learning Technology (TCLT)](https://tc.computer.org/tclt) | NA |
 
 <br>
 

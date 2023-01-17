@@ -535,12 +535,26 @@ linux 调度器定义了多个调度类, 不同调度类的调度优先级不同
 ### 1.5.4 SMT
 -------
 
+| 资料 | 描述 |
+|:---:|:----:|
+| [同时多线程](https://zh.alegsaonline.com/art/90586) | 一句话介绍 交错式多线程 (IMT), 同步多线程 (SMT), 芯片级多处理 (CMP 或多核处理器) |
+| [超能课堂 (104)-- 超线程 / SMT 多线程技术有什么用？](https://www.expreview.com/56674.html) | 简单介绍了 SMT 的工作原理 |
+| [说一说超线程 / 同步多线程（HT/SMT）技术那些事儿](https://zhuanlan.zhihu.com/p/352676442) | SMT 一些疑惑解答 |
+| [被误解的 CPU 利用率、超线程、动态调频 —— CPU 性能之迷 Part 1](https://zhuanlan.zhihu.com/p/534119705) | 介绍了 ITMT 3.0 以及 SMT 技术 |
+| [曲速未来 揭露：新的 PortSmash 超线程 CPU Vuln 可以窃取解密密钥](https://zhuanlan.zhihu.com/p/48625343) | PortSmash 漏洞 (CVE-2018-5407), 该漏洞使用定时攻击来窃取来自同一 CPU 核心中运行 SMT / 超线程的其他进程的信息 |
+| [超线程技术究竟好不好？](https://www.zhihu.com/question/290385913) | NA |
+| [超威半导体（AMD）的超线程技术和英特尔（Intel）的超线程技术有差别吗？](https://www.zhihu.com/question/350083255) | NA |
+| [CPU的超线程技术提升IPC吗?](https://www.zhihu.com/question/404826890), [关于SMT的性能收益](https://zhuanlan.zhihu.com/p/164603076) | NA |
+| [超线程的两个线程资源是动态分配的还是固定一半一半的？](https://www.zhihu.com/question/59721493) | NA |
+| [英特尔超线程技术](https://baike.baidu.com/item/英特尔超线程技术/10233952) | NA |
+| [为什么cinebench r15和r20在CPU满载渲染时超线程可以显著提高跑分？](https://www.zhihu.com/question/319200765/answer/646240231) | 介绍了 TOPDOWN 以及 Intel Vtune 工具 |
+
 #### 1.5.4.1 SMT aware
 -------
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2011/12/15 | Peter Zijlstra <peterz@infradead.org> | [sched: Avoid SMT siblings in select_idle_sibling() if possible](https://lore.kernel.org/patchwork/cover/274702) | 如果有共享缓存的空闲核心, 避免 select_idle_sibling() 选择兄弟线程. | v1 ☐ | [PatchWork v1](https://lore.kernel.org/patchwork/cover/274702) |
+| 2011/12/15 | Peter Zijlstra <peterz@infradead.org> | [sched: Avoid SMT siblings in select_idle_sibling() if possible](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4dcfe1025b513c2c1da5bf5586adb0e80148f612) | 如果有共享缓存的空闲核心, 避免 select_idle_sibling() 选择兄弟线程. | v1 ☑✓ 3.2-rc5 | [PatchWork v1](https://lore.kernel.org/lkml/1321350377.1421.55.camel@twins) |
 | 2020/10/23 | Josh Don <joshdon@google.com> | [sched: better handling for busy polling loops](https://lore.kernel.org/all/20201023032944.399861-1-joshdon@google.com) | 20201023032944.399861-1-joshdon@google.com | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/20201023032944.399861-1-joshdon@google.com) |
 | 2021/11/16 | Peng Wang <rocking@linux.alibaba.com> | [Add busy loop polling for idle SMT](https://lore.kernel.org/all/cover.1637062971.git.rocking@linux.alibaba.com) | SMT 级别的忙轮询等待. 当启用硬件 SMT 时, 在一个 CPU 的空闲和忙碌状态之间切换将导致同一核心上的同级 CPU 的性能波动. 在一个 SMT CPU 上需要稳定的性能时, 无论同一核心上的同级 CPU 是否空闲, 都需要一致的反馈, 而不期望有噪音. 原始 cpu_idle_force_poll 使用 cpu_relax() 等待被 IPI 唤醒, 而此 smt_idle_force_poll 使用忙循环来提供一致的 SMT 管道干扰. 可以使用 cgroup 的 cpu.smt_idle_poll 为特定任务配置启用忙循环轮询. | v1 ☐ | [PatchWork v1](https://lore.kernel.org/all/cover.1637062971.git.rocking@linux.alibaba.com) |
 
@@ -1934,7 +1948,7 @@ update_blocked_averages() 在多个场景都被发现成为非常严重的性能
 |:----:|:----:|:---:|:---:|:----------:|:----:|
 | 2021/06/02 | Valentin Schneider <valentin.schneider@arm.com> | [sched/fair: Active balancer RT/DL preemption fix](https://lore.kernel.org/patchwork/patch/1115663) | NA | v2 ☐ | [PatchWork v1](https://lore.kernel.org/patchwork/patch/1115663) |
 | 2021/06/02 | Yafang Shao <laoar.shao@gmail.com> | [sched, fair: try to prevent migration thread from preempting non-cfs task](https://lore.kernel.org/patchwork/patch/1440172) | 规避问题 [a race between active_load_balance and sched_switch](https://lkml.org/lkml/2021/6/14/204) | v1 ☐ | [PatchWork v1 old](https://lore.kernel.org/patchwork/patch/1440172), [PatchWork v1](https://lore.kernel.org/patchwork/patch/1446860) |
-| 2021/06/02 | Yafang Shao <laoar.shao@gmail.com> | [sched: Introduce cfs_migration](https://lore.kernel.org/all/20211104145713.4419-1-laoar.shao@gmail.com) | 实现了 per-cpu 的 FIFO 进程 cfs_migration 替代原来的 migration stopper 进程, 在 CFS active load balance 迁移当前进程时使用, 这样如果当前进程已经切换到 RT 进程就不会进行抢占. 从而解决该问题. | RFC ☐ | [LORE 0/4](https://lore.kernel.org/all/20211104145713.4419-1-laoar.shao@gmail.com) |
+| 2021/11/04 | Yafang Shao <laoar.shao@gmail.com> | [sched: Introduce cfs_migration](https://lore.kernel.org/all/20211104145713.4419-1-laoar.shao@gmail.com) | 实现了 per-cpu 的 FIFO 进程 cfs_migration 替代原来的 migration stopper 进程, 在 CFS active load balance 迁移当前进程时使用, 这样如果当前进程已经切换到 RT 进程就不会进行抢占. 从而解决该问题. | RFC ☐ | [LORE 0/4](https://lore.kernel.org/all/20211104145713.4419-1-laoar.shao@gmail.com) |
 
 
 
@@ -4112,6 +4126,8 @@ ARM EAS 支持的主页: [Energy Aware Scheduling (EAS)](https://developer.arm.c
 #### 7.2.3.1 Energy-aware wake-up task placement
 -------
 
+[[scheduler]九. EAS如何根据能效为进程选择目标CPU](https://blog.csdn.net/wukongmingjing/article/details/82698446)
+
 
 AOSP 4.4 版本, 唤醒路径使用 select_energy_cpu_brute()/find_best_target()/energy_diff(). 其中 energy_diff() 用于计算定量的 utilization 变化 util_delta 对系统整体的功耗影响. 通过比较前后的能效变化, select_energy_cpu_brute() 很容易为一个指定负载的 task 选择能效最优的 CPU.
 
@@ -4749,6 +4765,7 @@ v5.0 [EAS(Energy Aware Scheduling)](https://git.kernel.org/pub/scm/linux/kernel/
 | 2018/12/03 | Quentin Perret <quentin.perret@arm.com> | [PM: Introduce an Energy Model management framework](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=27871f7a8a341ef5c636a337856369acf8013e4e) | [Energy Aware Scheduling](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=732cd75b8c920d3727e69957b14faa7c2d7c3b75) 能效感知的调度器 EAS 的其中一个补丁, 实现了 Energy Model Management Framework. | v10 ☑ 5.0-rc1 | [LORE v10,00/15](https://lore.kernel.org/lkml/20181203095628.11858-1-quentin.perret@arm.com) |
 | 2020/05/27 | Lukasz Luba <lukasz.luba@arm.com> | [PM / EM: update callback structure and add device pointer](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d0351cc3b0f57214d157e4d589564730af2aedae) | [Add support for devices in the Energy Model](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=0e0ffa855d1590e54ec0033404a49e2e57e294fe) 能效模型支持各类其他设备时的其中几个补丁. 由于不再只是支持 CPU, 因此各类 API 中添加了对 struct device 的支持. | v8 ☑✓ 5.9-rc1 | [LORE v8,0/8](https://lore.kernel.org/all/20200527095854.21714-1-lukasz.luba@arm.com), [关注 commit](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d0351cc3b0f57214d157e4d589564730af2aedae) |
 | 2020/11/03 | Lukasz Luba <lukasz.luba@arm.com> | [Clarify abstract scale usage for power values in Energy Model, EAS and IPA](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=b56a352c0d3ca4640c3c6364e592be360ac0d6d4) | 能效模型开始使用一个统一抽象的 scale 值来表示功耗的值.<br> 不同的平台和设备之间计算功耗可能使用不同的 scale. 内核子系统可能需要检查所有能量模型 (EM) 设备是否使用相同的规模. 解决该问题并将每个设备的信息存储在 EM 中.<br> 通过 em_dev_register_perf_domain() 最后一个参数"milliwatts"(毫瓦) 设置为功耗单位的标记, EAS、IPA 和 DTPM(新的混合 PowerCap 框架) 等核心子系统将使用新的标志来捕获设备注册时是否使用了不同功率等级. 任何使用 EM 的内核 子系统可能会依赖这个标志来检查所有的 EM 设备是否使用相同的刻度. 如果有不同的刻度, 这些子系统可能决定: 返回警告 / 错误, 停止工作或崩溃 (panic). | v4 ☑✓ 5.11-rc1 | [LORE 1/2](https://lore.kernel.org/linux-doc/20200929121610.16060-1-lukasz.luba@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/3]https://lore.kernel.org/all/20201002114426.31277-1-lukasz.luba@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/4](https://lore.kernel.org/all/20201019140601.3047-1-lukasz.luba@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/4](https://lore.kernel.org/all/20201103090600.29053-1-lukasz.luba@arm.com), [关键 COMMIT](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c250d50fe2ce627ca9805d9c8ac11cbbf922a4a6) |
+| 2022/03/02 | Lukasz Luba <lukasz.luba@arm.com> | [Introduce"opp-microwatt"and Energy Model from DT](https://lore.kernel.org/all/20220302112917.27270-1-lukasz.luba@arm.com) | TODO | v5 ☐☑✓ | [LORE v5,0/5](https://lore.kernel.org/all/20220302112917.27270-1-lukasz.luba@arm.com) |
 | 2021/06/25 | Lukasz Luba <lukasz.luba@arm.com> | [Improve EAS energy estimation and increase precision](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7fcc17d0cb12938d2b3507973a6f93fc9ed2c7a1) | 增加能耗的计算精度, 防止因为四舍五入等造成的误差. | v1 ☑✓ 5.15-rc1 | [LORE v1,0/3](https://lore.kernel.org/all/20210625152603.25960-1-lukasz.luba@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/1](https://lore.kernel.org/all/20210720094153.31097-1-lukasz.luba@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3](https://lore.kernel.org/all/20210803102744.23654-1-lukasz.luba@arm.com) |
 | 2022/07/07 | Lukasz Luba <lukasz.luba@arm.com> | [Energy Model power in micro-Watts and SCMI v3.1 alignment](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=f3ac888fc5fbdeeec1e084327de06a2765542d56) | TODO | v3 ☑✓ 6.0-rc1 | [LORE 0/4](https://lore.kernel.org/all/20220622145802.13032-1-lukasz.luba@arm.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/4](https://lore.kernel.org/all/20220707071555.10085-1-lukasz.luba@arm.com) |
 
@@ -5062,7 +5079,8 @@ schedtune 与 uclamp 都是由 ARM 公司的 Patrick Bellasi 主导开发.
 
 | 时间  | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:------:|:---:|
-| 2016/02/23 | Steve Muckle 等 | [freezer,sched: Rewrite core freezer logic](https://lore.kernel.org/patchwork/cover/1444882) | 重写冻结的核心逻辑, 从而使得 WRT 解冻的表现更加合理. 通过将 PF_FROZEN 替换为 TASK_FROZEN (一种特殊的块状态), 可以确保冻结的任务保持冻结状态, 直到明确解冻, 并且不会像目前可能的那样过早随机唤醒. | v2 | [2021/06/01 RFC](https://lore.kernel.org/patchwork/cover/1439538)<br>*-*-*-*-*-*-*-* <br>[2021/06/01 RFC](https://lore.kernel.org/patchwork/cover/1444882) |
+| 2021/06/24 | Peter Zijlstra <peterz@infradead.org> | [freezer,sched: Rewrite core freezer logic](https://lore.kernel.org/all/YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net) | 重写冻结的核心逻辑, 从而使得 WRT 解冻的表现更加合理. 通过将 PF_FROZEN 替换为 TASK_FROZEN (一种特殊的块状态), 可以确保冻结的任务保持冻结状态, 直到明确解冻, 并且不会像目前可能的那样过早随机唤醒. | v1 ☐☑✓ | [2021/06/01 LORE RFC](https://lore.kernel.org/all/YLXt+%2FWr5%2FKWymPC@hirez.programming.kicks-ass.net)<br>*-*-*-*-*-*-*-* <br>[2021/06/11 LORE v1](https://lore.kernel.org/all/YMMijNqaLDbS3sIv@hirez.programming.kicks-ass.net)<br>*-*-*-*-*-*-*-* <br>[2021/06/24 LORE v2,0/4](https://lore.kernel.org/all/20210624092156.332208049@infradead.org) |
+| 2022/05/05 | Peter Zijlstra <peterz@infradead.org> | [ptrace-vs-PREEMPT_RT and freezer rewrite](https://lore.kernel.org/all/20220421150248.667412396@infradead.org) | TODO | v4 ☐☑✓ | [LORE v2,0/5](https://lore.kernel.org/all/20220421150248.667412396@infradead.org)<br>*-*-*-*-*-*-*-* <br>[2022/08/22 LORE v3,0/6](https://lore.kernel.org/all/20220822111816.760285417@infradead.org)<br>*-*-*-*-*-*-*-* <br>[2022/10/08 LORE v3,0/6](https://lore.kernel.org/all/20211009100754.690769957@infradead.org) |
 
 ## 7.7 异构
 -------
@@ -5439,6 +5457,7 @@ PREEMPT-RT PATCH 的核心思想是最小化内核中不可抢占部分的代码
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2019/07/17 | Thomas Gleixner <tglx@linutronix.de> | [Kconfig: Introduce CONFIG_PREEMPT_RT](https://lore.kernel.org/all/alpine.DEB.2.21.1907172200190.1778@nanos.tec.linutronix.de) | 在抢占菜单中添加一个新条目 PREEMPT_RT, 以支持内核的实时支持. 该选项仅在体系结构支持时启用. 它选择抢占, 因为 RT 特性依赖于它. 为了实现将现有的 PREEMPT 选项重命名为 `PREEMPT_LL`, 该选项也会选择 PREEMPT. 没有功能上的改变. | v2 ☐☑✓ | [LORE v2,0/1](https://lore.kernel.org/all/alpine.DEB.2.21.1907172200190.1778@nanos.tec.linutronix.de) |
 | 2019/7/15 | Thomas Gleixner <tglx@linutronix.de> | [locking, sched: The PREEMPT-RT locking infrastructure](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=026659b9774e4c586baeb457557fcfc4e0ad144b) | PREEMPT_RT 的基础支持, 完成了锁语义的转换. 在支持 PREEMPT-RT 的内核中, 以下锁被基于 RT Mutex 的变体替换: mutex, ww_mutex, rw_semaphore, spinlock, rwlock. 但是 semaphores 没有被修改, 因为它并不严格提供 owner 的语义. raw_spinlocks 也没有被修改, 因为它被用在保护调度器、定时器和硬件访问中的低级别操作中. | v1 ☑ 5.3-rc1 | [LORE v5,00/72](https://lore.kernel.org/all/20210815203225.710392609@linutronix.de)<br>*-*-*-*-*-*-*-* <br>[LKML](https://lkml.org/lkml/2019/7/15/1386) |
+| 2022/12/19 | Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> | [PM: Fixes for Realtime systems](https://lore.kernel.org/all/20221219151503.385816-1-krzysztof.kozlowski@linaro.org) | TODO | v2 ☐☑✓ | [LORE v2,0/5](https://lore.kernel.org/all/20221219151503.385816-1-krzysztof.kozlowski@linaro.org) |
 
 
 ### 8.7.1  Migrate disable support && kmap_local
