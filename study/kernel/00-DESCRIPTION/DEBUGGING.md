@@ -278,6 +278,7 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 
 [Printbuf rebuffed for now](https://lwn.net/Articles/892611)
 
+[Linux 6.3 printk Changes Prepare For Threaded/Atomic Consoles](https://www.phoronix.com/news/Linux-6.3-printk)
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
@@ -753,6 +754,10 @@ OSNOISE & TimerLat Tracer 用于跟踪系统内部活动的噪音, 分析那些�
 
 参见作者 [Daniel's 关于 RTLA 的 Blog](https://bristot.me/and-now-linux-has-a-real-time-linux-analysis-rtla-tool), RTLA 可以理解为 OSNOISE & TimerLat TRACER 的用户界面, 提供了一个直观的界面来使用和处理数据. 对于那些不熟悉 PREEMPT_RT, 但是必须却想要评估内核实时性的开发人员来说, 这也是很有帮助的.
 
+
+#### 14.5.2.1 timerlat tool
+-------
+
 比如通过如下命令:
 
 ```cpp
@@ -771,6 +776,14 @@ rtla timerlat top-p f: 95-t 150-t trace_output.txt
 https://patchwork.kernel.org/project/linux-trace-devel/list/?submitter=200911&state=*&archive=both&param=1&page=2
 
 [[for-next,01/14] tracing/OSNOISE: Do not follow tracing_cpumask](https://patchwork.kernel.org/project/linux-trace-devel/patch/20211102201156.678148671@goodmis.org/)
+
+#### 14.5.2.2 hwnoise tool
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2023/01/10 | Daniel Bristot de Oliveira <bristot@kernel.org> | [rtla: Add hwnoise tool](https://lore.kernel.org/all/cover.1673380089.git.bristot@kernel.org) | 参见 phoronix 报道 [Linux 6.3 Introducing Hardware Noise "hwnoise" Tool](https://www.phoronix.com/news/Linux-6.3-hwnoise). | v1 ☐☑✓ | [LORE v1,0/6](https://lore.kernel.org/all/cover.1673380089.git.bristot@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/6](https://lore.kernel.org/lkml/cover.1675181734.git.bristot@kernel.org) |
+
 
 
 ## 14.6 MMIO register read/write tracing
@@ -856,7 +869,7 @@ LWN 上也对此进行了[汇总报道](https://lwn.net/Kernel/Index/#Android-Ge
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/03/21 | Rasmus Villemoes <linux@rasmusvillemoes.dk> | [background initramfs unpacking, and CONFIG_MODPROBE_PATH](https://lore.kernel.org/patchwork/patch/1394812) | 启动阶段异步解压 initramfs. 可以加速系统启动. | v1 ☑ [5.13-rc1](https://kernelnewbies.org/Linux_5.13) | [Patchwork](https://lore.kernel.org/patchwork/patch/1394812) |
-| 2021/11/21 | David Woodhouse <dwmw2@infradead.org> | [Parallel CPU bringup for x86_64](https://lkml.org/lkml/2021/12/9/664) | 随着核数的增多, 内核的启动速度越来越慢. 这组补丁能够并行启动辅助 (x86_64) CPU 内核. | v1 ☐ | [LWN ](https://lwn.net/Articles/878161), [LKML](https://lkml.org/lkml/2021/12/9/664), [LORE 00/11](https://lkml.kernel.org/lkml/20211209150938.3518-1-dwmw2@infradead.org),  [Phoronix 报道 v1](https://www.phoronix.com/scan.php?page=news_item&px=Linux-x86_64-Parallel-CPU-Boot)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/9](https://lore.kernel.org/lkml/20211215145633.5238-1-dwmw2@infradead.org), [Phoronix 报道 v3](https://www.phoronix.com/scan.php?page=news_item&px=Parallel-CPU-Bringup-AMD-Snag) |
+| 2021/11/21 | David Woodhouse <dwmw2@infradead.org> | [Parallel CPU bringup for x86_64](https://lkml.org/lkml/2021/12/9/664) | 随着核数的增多, 内核的启动速度越来越慢. 这组补丁能够并行启动辅助 (x86_64) CPU 内核. 对 v6 测hi发现可以显著改善 Sapphire Rapids CPU 系统的启动时间, 从 71s 降低到 14s. 随后 v7 增加了对 AMD CPU 的支持. | v1 ☐ | [LWN ](https://lwn.net/Articles/878161), [LKML](https://lkml.org/lkml/2021/12/9/664), [LORE 00/11](https://lkml.kernel.org/lkml/20211209150938.3518-1-dwmw2@infradead.org),  [Phoronix 报道 v1](https://www.phoronix.com/news/Linux-x86_64-Parallel-CPU-Boot)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/9](https://lore.kernel.org/lkml/20211215145633.5238-1-dwmw2@infradead.org), [Phoronix 报道 v3](https://www.phoronix.com/news/Parallel-CPU-Bringup-AMD-Snag)<br>*-*-*-*-*-*-*-* <br>[LORE v6](https://lore.kernel.org/lkml/20230202215625.3248306-1-usama.arif@bytedance.com), [Phoronix 报道 v6](https://www.phoronix.com/news/Linux-CPU-Parallel-Bringup-2023)<br>*-*-*-*-*-*-*-* <br>[LORE v7](20230207230436.2690891-1-usama.arif@bytedance.com) |
 | 2022/11/02 | Stuart Hayes <stuart.w.hayes@gmail.com> | [cpufreq: acpi: Defer setting boost MSRs](https://lore.kernel.org/all/20221102195957.82871-1-stuart.w.hayes@gmail.com) | [Deferred Enabling Of ACPI CPUFreq Boost Support Can Help Boot Times For Large Servers](https://www.phoronix.com/news/CPUFreq-Defer-Boost-MSRs) | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221102195957.82871-1-stuart.w.hayes@gmail.com) |
 
 Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 [Fedora 38 Wants To Make Sure Shutdowns & Reboots Are Faster](https://www.phoronix.com/news/Fedora-38-Faster-Reboots) 以及 [Fedora wiki--Changes/Shorter Shutdown Timer](https://fedoraproject.org/wiki/Changes/Shorter_Shutdown_Timer).
@@ -891,6 +904,13 @@ Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 
 
 # 20 形式化验证
 -------
+
+[Runtime Verification-技术调查](https://zhuanlan.zhihu.com/p/434664665)
+
+[Runtime Verification-技术调查2](https://zhuanlan.zhihu.com/p/468369055)
+
+[Runtime Verification-Linux内核验证(调查3)](https://zhuanlan.zhihu.com/p/439660334)
+
 
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|

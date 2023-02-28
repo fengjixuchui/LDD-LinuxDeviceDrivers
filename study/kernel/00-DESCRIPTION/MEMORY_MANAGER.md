@@ -678,6 +678,14 @@ MTE 实现了锁和密钥访问内存. 这样在内存访问期间, 可以在内
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/02/05 | "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> | [Linear Address Masking enabling](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com) | [线性地址屏蔽(LAM)](https://software.intel.com/content/dam/develop/external/us/en/documents-tps/architecture-instruction-set-extensions-programming-reference.pdf) 修改应用于 64 位线性地址的检查, 允许软件将未翻译的地址位用于元数据. 手册参见 [ISE, Chapter 14](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com). 代码参见 [kas/linux.git](https://git.kernel.org/pub/scm/linux/kernel/git/kas/linux.git/log/?h=lam). | RFC ☐ | [PatchWork RFC,0/9](https://patchwork.kernel.org/project/linux-mm/cover/20210205151631.43511-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/8](https://lore.kernel.org/r/20220610143527.22974-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/11](https://lore.kernel.org/r/20220815041803.17954-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/08/30 LORE v1,0/11](https://lore.kernel.org/r/20220830010104.1282-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/09/30 LORE v1,0/14](https://lore.kernel.org/r/20220930144758.30232-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/11/09 LORE v1,0/16](https://lore.kernel.org/r/20221109165140.9137-1-kirill.shutemov@linux.intel.com)<br>*-*-*-*-*-*-*-* <br>[2022/12/27 LORE v1,0/16](https://lore.kernel.org/r/20221227030829.12508-1-kirill.shutemov@linux.intel.com) |
 
+### 1.8.4 Mitigations
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2023/02/02 | Breno Leitao <leitao@debian.org> | [cpu/bugs: Disable CPU mitigations at compilation time](https://lore.kernel.org/all/20230202180858.1539234-1-leitao@debian.org) | 目前, 无法在构建时禁用 CPU 漏洞缓解措施. 需要通过内核参数禁用缓解, 例如 "mitigations=off".  此补丁创建了一种在编译期间禁用缓解的简单方法(CONFIG_DEFAULT_CPU_MITIGATIONS_OFF), 因此, 不安全的内核用户在启动不安全内核时不需要处理内核参数. 参见 phoronix 报道 [Proposed Linux Patch Would Allow Disabling CPU Security Mitigations At Build-Time](https://www.phoronix.com/news/Linux-Default-Mitigations-Off). | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20230202180858.1539234-1-leitao@debian.org) |
+
+
 
 ## 1.9 page attributes
 -------
@@ -7216,6 +7224,7 @@ OS 判断如果是在用户态触发这个硬件内存错误时, 处理方式是
 | 2017/09/03 | Ard Biesheuvel <ard.biesheuvel@linaro.org> | [implement KASLR for ARM](https://lwn.net/Articles/732891) | ARM 支持 KASLR. | v1 ☐ | [LWN](https://lwn.net/Articles/732891)<br>*-*-*-*-*-*-*-* <br>[PatchWork v2,0/6](https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=arm-kaslr-latest) |
 | 2016/01/26 | Ard Biesheuvel <ard.biesheuvel@linaro.org> | [arm64: implement support for KASLR](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=2b5fe07a78a09a32002642b8a823428ade611f16) | 支持 ARM64 KASLR | v4 ☐☑✓ 4.6-rc1 | [LORE v4,0/22](https://lore.kernel.org/all/1453828249-14467-1-git-send-email-ard.biesheuvel@linaro.org) |
 | 2022/12/27 | Liu Shixin <liushixin2@huawei.com> | [[RFC] arm64/vmalloc: use module region only for module_alloc() if CONFIG_RANDOMIZE_BASE is set](https://patchwork.kernel.org/project/linux-mm/patch/20221227092634.445212-1-liushixin2@huawei.com/) | 添加 10GB 设备后, 插入模块时 module_alloc 会失败. 如果设置了 CONFIG_RANDOMIZE_BASE, 则模块区域可以完全位于 vmalloc 区域中. 尽管如果设置了 ARM64_module_PLTS, module_alloc() 可以回退到 2GB 窗口, 但模块区域仍然很容易耗尽, 因为模块区域位于 vmalloc 区域的底部, 并且 vmalloc 区是从下到上分配的. 如果不是从 module_alloc() 调用, 则跳过模块区域. | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20221227092634.445212-1-liushixin2@huawei.com) |
+| 2023/02/15 | Alexandre Ghiti <alexghiti@rivosinc.com> | [riscv: Introduce KASLR](https://lore.kernel.org/all/20230215145113.465558-1-alexghiti@rivosinc.com) | [Linux Kernel Address Space Layout Randomization "KASLR" For RISC-V](https://www.phoronix.com/news/Linux-RISC-V-KASLR-Patches) | v1 ☐☑✓ | [LORE v1,0/4](https://lore.kernel.org/all/20230215145113.465558-1-alexghiti@rivosinc.com) |
 
 
 *   随机函数偏移(FGKASLR)

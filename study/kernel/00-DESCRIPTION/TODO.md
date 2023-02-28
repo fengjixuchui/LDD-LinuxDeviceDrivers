@@ -230,8 +230,7 @@ MGLRU 合入后, 引起了不少场景的性能劣化, 参见 phoronix 报道 [A
 
 
 
-[调度器 34—RT 负载均衡](https://www.cnblogs.com/hellokitty2/p/15974333.html)
-[实时调度负载均衡](https://github.com/freelancer-leon/notes/blob/master/kernel/sched/sched_rt_load_balance.md)
+
 
 
 [Latencies, schedulers, interrupts oh my! The epic story of a Linux Kernel upgrade](https://www.nutanix.dev/2021/12/09/latencies-schedulers-interrupts-oh-my-the-epic-story-of-a-linux-kernel-upgrade)
@@ -329,3 +328,31 @@ MGLRU 合入后, 引起了不少场景的性能劣化, 参见 phoronix 报道 [A
 | 2023/01/13 | Mel Gorman <mgorman@techsingularity.net> | [Discard `__GFP_ATOMIC`](https://lore.kernel.org/all/20230113111217.14134-1-mgorman@techsingularity.net) | TODO | v3 ☐☑✓ | [LORE v2,0/6](https://lore.kernel.org/all/20230109151631.24923-1-mgorman@techsingularity.net)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/6](https://lore.kernel.org/all/20230113111217.14134-1-mgorman@techsingularity.net) |
 
 [Linux Developers Evaluating New"DOITM"Security Mitigation For Latest Intel CPUs](https://www.phoronix.com/review/intel-doitm-linux)
+
+
+| 2023/01/31 | Xi Wang <xii@google.com> | [sched: Consider capacity for certain load balancing decisions](https://lore.kernel.org/all/20230201012032.2874481-1-xii@google.com) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20230201012032.2874481-1-xii@google.com) |
+
+
+
+在 CORE 之间平衡负载时, 目标 CPU 的所有 SMT 同级 (如果有的话) 必须处于空闲状态. 否则, 拉新任务会降低繁忙 SMT 同级的吞吐量. 系统的总吞吐量保持不变.
+当在 SMT 核心内平衡负载时, 则遵循硬件指示的优先级.
+
+
+
+
+
+
+
+
+
+
+[[LSF/MM/BPF TOPIC] Using hardware counters to determine hot/cold pages](https://lore.kernel.org/all/6bbf2c47-05ab-b78c-3165-2eff18962d6d@linux.ibm.com)
+
+
+
+
+### 4.7.5 sync wakeup
+-------
+
+
+[Linux 6.3 Scheduler Updates Bring Fixes & Minor Optimizations](https://www.phoronix.com/news/Linux-6.3-Scheduler)
