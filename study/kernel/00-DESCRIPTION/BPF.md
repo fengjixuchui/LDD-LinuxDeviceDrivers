@@ -107,6 +107,9 @@ GCC 的支持 eBPF 经过了 3 个阶段.
 ## 2.2 加载器
 -------
 
+### 2.2.1 mini eBPF library
+-------
+
 Alexei Starovoitov 在 v3.18 [BPF syscall, maps, verifier, samples, llvm](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=3c731eba48e1b0650decfc91a839b80f0e05ce8f) 实现最早的 BPF 支持的时候, 引入了一个 [mini eBPF library](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c731eba48e1b0650decfc91a839b80f0e05ce8f).
 
 紧接着 v3.19 就基于 mini eBPF library 为 `samples/bpf` 样例实现了一个简单的 BPF 加载器 bpf_load. 参见 [samples: bpf: elf_bpf file loader](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=249b812d8005ec38e351ee763ceb85d56b155064). 随后 [Add eBPF hooks for cgroups](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=d8c5b17f2bc0de09fbbfa14d90e8168163a579e7) 为 mini eBPF library 实现了 bpf_prog_attach 和 bpf_prog_detach.
@@ -117,12 +120,32 @@ git log --oneline -- samples/bpf/libbpf.c samples/bpf/libbpf.h
 git log --oneline -- samples/bpf/bpf_load.c samples/bpf/bpf_load.h
 ```
 
-
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
 | 2014/08/13 | Alexei Starovoitov <ast@plumgrid.com> | [bpf: mini eBPF library, test stubs and verifier testsuite](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c731eba48e1b0650decfc91a839b80f0e05ce8f) | [BPF syscall, maps, verifier, samples, llvm](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=3c731eba48e1b0650decfc91a839b80f0e05ce8f) 的其中一个补丁, 引入了 [mini eBPF library](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c731eba48e1b0650decfc91a839b80f0e05ce8f). | v1 ☑✓ 3.18-rc1 | [LORE v4,00/26](https://lore.kernel.org/netdev/1407916658-8731-1-git-send-email-ast@plumgrid.com)<br>*-*-*-*-*-*-*-* <br>[LORE v11,00/12](https://lkml.kernel.org/netdev/1410325808-3657-1-git-send-email-ast@plumgrid.com) |
 | 2014/11/26 | Alexei Starovoitov <ast@plumgrid.com> | [samples: bpf: elf_bpf file loader](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=249b812d8005ec38e351ee763ceb85d56b155064) | [allow eBPF programs to be attached to sockets](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=fbe3310840c65f3cf97dd90d23e177d061c376f2) 的其中一个补丁. 基于 mini bpf library, 实现了一个简易的加载器 bpf_load, 其主要接口为 `load_bpf_file() -=> load_and_attach()`. | v1 ☑✓ 3.19-rc1 | [LORE v1,0/6](https://lore.kernel.org/all/1417066951-1999-1-git-send-email-ast@plumgrid.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/6](https://lore.kernel.org/lkml/1417475199-15950-1-git-send-email-ast@plumgrid.com) |
-| 2015/07/01 | Wang Nan <wangnan0@huawei.com> | [perf tools: filtering events using eBPF programs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=9a208effd1832e50e1f7ea002f400f8b9ca8b1ed) | perf 支持 eBPF, 其中引入了一个 libbpf 的用户态工具. | v10 ☑✓ 4.3-rc1 | [LORE v10,0/50](https://lore.kernel.org/all/1435716878-189507-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PULL, 00/31](https://lore.kernel.org/all/1444826502-49291-1-git-send-email-wangnan0@huawei.com) |
+
+
+### 2.2.2 libbpf
+-------
+
+v4.3 的时候, 王楠为 perf 提供了加载和执行 eBPF 程序的能力, 引入了 `perf bpf` 命令和 `perf-bpf-record` 等子命令. 为了架构更解耦, 将常见的 eBPF 和 eBPF 对象操作放入工具 libbpf 中, 而不是 perf 本身. 其他程序, 如 iproute2, 也可以直接借助 libbpf 来完成自己的工作. libbpf 封装和隐藏了所有对 eBPF 的操作和数据结构, 而 `perf bpf` 则通过调用 libbpf 的 API 来处理 eBPF 程序和访问对象文件的数据.
+
+libbpf 将被编译为 libbpf.a 和 libbpf.so. 它可以分为两部分:
+
+1. 用户内核接口. API 由 `bpf_xxx.h` 定义, 封装映射和程序加载操作. 在 bpf_load_program() 中, 为了提高性能, 它在第一次尝试时不使用日志缓冲区, 并在失败时启用日志缓冲区重试.
+
+2. ELF操作. 此处定义了 eBPF 对象文件的结构. 此部分的 API 可以在 `libbpf_xxx.h` 中找到.
+
+struct bpf_object 是整个对象文件的处理程序.
+structbpf_prog_handler 是程序的处理程序和迭代器. 一些访问者被定义为使调用者能够检索程序的节名和文件描述符. 可以附加更多的访问器.
+
+libpf 明确地将整个过程分为打开和加载阶段. 数据是在"打开"阶段收集的. 在"加载"阶段调用BPF系统调用.
+
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2015/07/01 | Wang Nan <wangnan0@huawei.com> | [bpf tools: Introduce 'bpf' library and add bpf feature check](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=9a208effd1832e50e1f7ea002f400f8b9ca8b1ed) | perf 支持 eBPF 系列 [perf tools: filtering events using eBPF programs](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=9a208effd1832e50e1f7ea002f400f8b9ca8b1ed) 的[部分补丁](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=9a208effd1832e50e1f7ea002f400f8b9ca8b1ed), 引入了一个 libbpf 的用户态工具, 可用于加载 eBPF 程序. | v10 ☑✓ 4.3-rc1 | [LORE RFC,v1,00/22](https://lkml.org/lkml/2015/4/30/264)<br>*-*-*-*-*-*-*-* <br>[LORE v2,00/37](https://lore.kernel.org/all/1431676290-1230-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,00/37](https://lore.kernel.org/all/1431860222-61636-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v4,00/29](https://lore.kernel.org/all/1432704004-171454-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,00/30](https://lore.kernel.org/all/1433144296-74992-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v6,00/32](https://lore.kernel.org/all/1433829036-23687-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v7,00/37](https://lore.kernel.org/all/1434087345-127225-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v8,00/49](https://lore.kernel.org/all/1435149113-51142-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v10,0/50](https://lore.kernel.org/all/1435716878-189507-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v11,00/39](https://lore.kernel.org/all/1436361268-234530-1-git-send-email-wangnan0@huawei.com)<br>*-*-*-*-*-*-*-* <br>[PULL, 00/31](https://lore.kernel.org/all/1444826502-49291-1-git-send-email-wangnan0@huawei.com) |
 | 2016/12/14 | Joe Stringer <joe@ovn.org> | [Reuse libbpf from samples/bpf](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=9899694a7f67714216665b87318eb367e2c5c901) | 内核主线中同时实现了两套 libbpf 的用户态库 libbpf(位于 `tools/lib/bpf`) 和 mini bpf lib(用于 samples 样例, 位于 `samples/bpf/libbpf.c`), 这是非常冗余的, 因此为 `tools/lib/bpf` 下的 libbpf 实现了 `samples/bpf` 所需的 bpf wrapper function, 从而使 samples 可以直接使用 libbpf. | v1 ☑✓ 4.10-rc1 | [LORE v1,0/5](https://lore.kernel.org/all/20161214224342.12858-1-joe@ovn.org) |
 | 2018/05/14 | Jakub Kicinski <jakub.kicinski@netronome.com> | [samples: bpf: fix build after move to full libbpf](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=787360f8c2b87d4ae4858bb8736a19c289904885) | mini bpf lib 最终寿终正寝, 只包含了一个 `filter.h` 的 instruction helpers, 因此被重命名为 `bpf_insn.h`. | v2 ☐☑✓ | [LORE v2,0/5](https://lore.kernel.org/all/20180515053506.4345-1-jakub.kicinski@netronome.com) |
 | 2020/11/24 | Daniel T. Lee <danieltimlee@gmail.com> | [bpf: remove bpf_load loader completely](https://lore.kernel.org/all/20201124090310.24374-1-danieltimlee@gmail.com) | 将使用 bpf_load 编写的BPF程序重写为使用 libbpf 加载器. 使用 libbpf 重构剩余的 bpf 程序, 并完全删除 bpf_load 这个过时的 bpf 加载器, 它已经很难跟上最新的内核 bpf. | v3 ☐☑✓ | [LORE v3,0/7](https://lore.kernel.org/all/20201124090310.24374-1-danieltimlee@gmail.com) |
@@ -540,7 +563,10 @@ Wasmtime 完全开源, 使用 Rust 编程语言, 是的, 并且符合 WASI 标�
 | 工具 | 描述 |
 |:---:|:----:|
 | [nyrahul/ebpf-guidee](https://github.com/nyrahul/ebpf-guide) | eBPF 常见问题, 样例以及工具汇总 |
-| [](https://github.com/apache/skywalking-rover) | |
+| [apache/skywalking-rover](https://github.com/apache/skywalking-rover) | |
+| [GroundCover](https://github.com/groundcover-com) | [GroundCover](https://www.groundcover.com) 轻松、大规模地监控 K8s 应用 |
+| [Exein-io/pulsar](https://github.com/Exein-io/pulsar) | [Tracing the Linux kernel using Exein Pulsar: a 5 Minute Tutorial](https://blog.exein.io/pulsar-tutorial)
+
 
 ## X.2 业界博客
 -------
