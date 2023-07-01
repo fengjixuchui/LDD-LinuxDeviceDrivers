@@ -104,6 +104,8 @@ Intel 发布的 ControlFlag 用机器学习来发现代码中的错误, 支持 C
 
 在内核态尝试 dump 用户态的栈对调试是非常有帮助的.
 
+[Dumping User and Kernel Stacks on Kernel Events](https://blog.csdn.net/devwang_com/article/details/93633488)
+
 [how to print stack trace in-your-user](http://kungjohan.blogspot.com/2012/06/how-to-print-stack-trace-in-your-user.html)
 
 [how-to-dump-user-space-stack-in-kernel-space](https://stackoverflow.com/questions/38384259/how-to-dump-user-space-stack-in-kernel-space)
@@ -114,6 +116,7 @@ Intel 发布的 ControlFlag 用机器学习来发现代码中的错误, 支持 C
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2019/06/23 | 胡俊鹏 and <dongzhiyan_linux@163.com> | [dongzhiyan-stack/user_stack_backstrace-in-kernel](https://github.com/dongzhiyan-stack/user_stack_backstrace-in-kernel) | 海康 CLK 2019 的一个 slides, 内核态回溯用户态栈. 对于一些比较难解析符号的场景也有对策 | v1 ☐ | [github](https://github.com/dongzhiyan-stack/user_stack_backstrace-in-kernel) |
 | 2012/4/11 | "Tu, Xiaobing" <xiaobing.tu@intel.com> | [kernel patch for dump user space stack tool](https://lkml.org/lkml/2012/4/11/49) | 内核态回溯用户态栈. | v1 ☐ | [LKML RFC 1/2](https://lkml.org/lkml/2012/4/11/49) |
+| 2023/05/01 | Indu Bhagat <indu.bhagat@oracle.com> | [SFrame based stack tracer for user space in the kernel](https://lore.kernel.org/all/20230501200410.3973453-1-indu.bhagat@oracle.com) | [Reliable user-space stack traces with SFrame](https://lwn.net/Articles/932209) | v1 ☐☑✓ | [LORE v1,0/5](https://lore.kernel.org/all/20230501200410.3973453-1-indu.bhagat@oracle.com) |
 
 
 ## 2.4 patchwork
@@ -209,8 +212,8 @@ Arch Linux 在 2022 年 5 月份开始了也提供了他们的 [debuginfod 调�
 
 | 工具 | 主页 | 描述 |
 |:---:|:---:|:----:|
-| [kmon](https://github.com/orhun/kmon) | | NA | 用于管理 Linux 内核模块和监视内核活动的终端工具, 使用 Rust 编写. |
-
+| [kmon](https://github.com/orhun/kmon) | NA | 用于管理 Linux 内核模块和监视内核活动的终端工具, 使用 Rust 编写. |
+| [Sysinternals/ProcDump-for-Linux](https://github.com/Sysinternals/ProcDump-for-Linux) | [sysinternals](https://www.sysinternals.com) | ProcDump 是 windows 下一个实用维测工具, 其主要用途是监视应用程序的 CPU 峰值, 并在出现峰值期间生成故障转储. 这个为官方 LINUX 移植版本. |
 
 
 

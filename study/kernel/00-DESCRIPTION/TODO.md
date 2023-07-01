@@ -18,8 +18,6 @@ https://lore.kernel.org/patchwork/project/lkml/list/?submitter=13305
 
 
 
-
-
 | 2022/08/19 | Alexei Starovoitov <alexei.starovoitov@gmail.com> | [bpf: BPF specific memory allocator.](https://patchwork.kernel.org/project/linux-mm/cover/20220819214232.18784-1-alexei.starovoitov@gmail.com/) | 669364 | v3 ☐☑ | [LORE v3,0/15](https://lore.kernel.org/r/20220819214232.18784-1-alexei.starovoitov@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/15](https://lore.kernel.org/r/20220826024430.84565-1-alexei.starovoitov@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/15](https://lore.kernel.org/r/20220901161547.57722-1-alexei.starovoitov@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/16](https://lore.kernel.org/r/20220902211058.60789-1-alexei.starovoitov@gmail.com) |
 | 2022/09/02 | Yafang Shao <laoar.shao@gmail.com> | [bpf: Introduce selectable memcg for bpf map](https://patchwork.kernel.org/project/linux-mm/cover/20220902023003.47124-1-laoar.shao@gmail.com/) | 673444 | v3 ☐☑ | [LORE v3,0/13](https://lore.kernel.org/r/20220902023003.47124-1-laoar.shao@gmail.com) |
 | 2022/11/07 | Song Liu <song@kernel.org> | [execmem_alloc for BPF programs](https://patchwork.kernel.org/project/linux-mm/cover/20221107223921.3451913-1-song@kernel.org/) | 692973 | v2 ☐☑ | [LORE v2,0/5](https://lore.kernel.org/r/20221107223921.3451913-1-song@kernel.org)[LORE v4,0/6](https://lore.kernel.org/r/20221117202322.944661-1-song@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/6](https://lore.kernel.org/r/20221128190245.2337461-1-song@kernel.org) |
@@ -144,8 +142,9 @@ khugepage_code 将选择命中率最高的节点作为首选节点, 并尝试在
 | 2022/12/23 | Zach O'Keefe <zokeefe@google.com> | [mm/shmem: restore SHMEM_HUGE_DENY precedence over MADV_COLLAPSE](https://patchwork.kernel.org/project/linux-mm/patch/20221223003833.2793963-1-zokeefe@google.com/) | 706614 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20221223003833.2793963-1-zokeefe@google.com) |
 | 2022/12/23 | Zach O'Keefe <zokeefe@google.com> | [mm/MADV_COLLAPSE: don't expand collapse when vm_end is past requested end](https://patchwork.kernel.org/project/linux-mm/patch/20221223003953.2795313-1-zokeefe@google.com/) | 706615 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20221223003953.2795313-1-zokeefe@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/2](https://lore.kernel.org/r/20221224081203.3193960-1-zokeefe@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/2](https://lore.kernel.org/r/20221224082035.3197140-1-zokeefe@google.com) |
 | 2022/12/23 | Soichiro Ueda <the.latticeheart@gmail.com> | [virtio_balloon: high order allocation](https://patchwork.kernel.org/project/linux-mm/patch/20221223093527.12424-1-the.latticeheart@gmail.com/) | 706715 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20221223093527.12424-1-the.latticeheart@gmail.com) |
-| 2023/03/22 | Liu Shixin <liushixin2@huawei.com> | [Delay the initialization of zswap](https://patchwork.kernel.org/project/linux-mm/cover/20230322102006.780624-1-liushixin2@huawei.com/) | 732661 | v6 ☐☑ | [LORE v6,0/2](https://lore.kernel.org/r/20230322102006.780624-1-liushixin2@huawei.com))<br>*-*-*-*-*-*-*-* <br>[LORE v7,0/4](https://lore.kernel.org/r/20230325071420.2246461-1-liushixin2@huawei.com) |
+| 2023/03/22 | Liu Shixin <liushixin2@huawei.com> | [Delay the initialization of zswap](https://patchwork.kernel.org/project/linux-mm/cover/20230322102006.780624-1-liushixin2@huawei.com/) | 732661 | v6 ☐☑ | [LORE v6,0/2](https://lore.kernel.org/r/20230322102006.780624-1-liushixin2@huawei.com))<br>*-*-*-*-*-*-*-* <br>[LORE v7,0/4](https://lore.kernel.org/r/20230325071420.2246461-1-liushixin2@huawei.com)<br>*-*-*-*-*-*-*-* <br>[LORE v9,0/3](https://lore.kernel.org/r/20230411093632.822290-1-liushixin2@huawei.com) |
 | 2023/03/22 | Florian Schmidt <flosch@nutanix.com> | [[RFC] memcg v1: provide read access to memory.pressure_level](https://patchwork.kernel.org/project/linux-mm/patch/20230322142525.162469-1-flosch@nutanix.com/) | 732770 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20230322142525.162469-1-flosch@nutanix.com) |
+| 2023/04/11 | Wen Yang <wenyang.linux@foxmail.com> | [mm: compaction: optimize compact_memory to comply with the admin-guide](https://patchwork.kernel.org/project/linux-mm/patch/tencent_FD958236269FD3A7996FFCF29E9BAA4EA809@qq.com/) | 738878 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/tencent_FD958236269FD3A7996FFCF29E9BAA4EA809@qq.com) |
 
 
 | 2022/10/24 | Nick Terrell <nickrterrell@gmail.com> | [zstd: Update to upstream v1.5.2](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=2aa14b1ab2c41a4fe41efae80d58bb77da91f19f) | [Updated Zstd Implementation Merged For Linux 6.2](https://www.phoronix.com/news/Linux-6.2-Zstd) | v1 ☐☑✓ | [LORE v1,0/2](https://lore.kernel.org/all/20221024202606.404049-1-nickrterrell@gmail.com) |
@@ -347,7 +346,6 @@ https://www.latexlive.com
 
 
 
-| 2023/04/01 | Xi Wang <xii@google.com> | [Morphing CFS into FDL, The Fair Deadline Scheduling Class](https://lore.kernel.org/all/20230401230556.2781604-1-xii@google.com) | TODO | v1 ☐☑✓ | [LORE v1,0/1](https://lore.kernel.org/all/20230401230556.2781604-1-xii@google.com) |
 | 2023/03/30 | David Dai <davidai@google.com> | [Improve VM CPUfreq and task placement behavior](https://lore.kernel.org/all/20230331014356.1033759-1-davidai@google.com) | [CPUfreq/sched and VM guest workload problems](https://lpc.events/event/16/contributions/1195) | v2 ☐☑✓ | [LORE v2,0/6](https://lore.kernel.org/all/20230331014356.1033759-1-davidai@google.com) |
 
 
@@ -365,5 +363,132 @@ https://www.latexlive.com
 
 
 
-为解析 ascii 跟踪输出的流行方法提供一种更高效、更强大的替代方法, 以便从中提取有用的信息. 为了避免所有这些的开销和复杂性, 这个补丁集提供了一个直接到脚本的解释器路径来做同样的事情, 但以一种更规则化的方式, 它利用了跟踪基础结构提供的所有事件元信息, 例如为此目的设计的 "格式文件" 中包含的事件 / 字段信息. 它允许将通用脚本语言的全部功能应用于跟踪流, 以进行非琐碎的分析, 并突然提供了大量有用的工具和模块库(例如, 用于 Perl 的 CPAN), 以应用于创建新的、有趣的跟踪应用程序的问题. 当前只实现了一个 Perl 接口, 但其目的是使添加对其他语言(如 Python、Ruby 等)的支持相对容易——他们所需要做的就是以 Perl 实现为例, 提供自己的 trace_scripting_ops 实现和支持函数.
 
+
+
+使用 numa 扫描增强功能 [LORE v3,0/4](https://lore.kernel.org/all/cover.1677672277.git.raghavendra.kt@amd.com), 只允许以前访问过 vma 的线程进行扫描. 虽然这改善了显著的系统时间开销, 但也存在一些角落情况, 这确实需要一些放松, 例如 PeterZ 提出的担忧, 即属于不相交的 VMS 集合的线程之间的不公平可能会放大属于未扫描的一些任务的 vma 区域的副作用. 目前, 这是通过无条件地允许 mm 级别 (mm->numa_scan_seq) 的前两次扫描来处理的.<br> 其中一个具有类似副作用的测试是 numa01_THREAD_ALLOC, 其中通过主线程进行分配, 并将其划分为 24MB 的内存块以连续地归零.
+
+
+
+(这是 LKP 测试默认运行的, 而 numa01 是 mmtests 默认运行的 (mmtests 由每个线程在整个 3GB 区域上操作)
+
+因此, 为了解决这个问题, 这里的建议是：
+
+
+
+1) 每个 vma 扫描计数器, 每次成功扫描 (可能扫描 256MB 或 sysctl_scan_size) 都会递增 2) 前几次进行无条件扫描 (准确地说, 正常扫描时会计算出一半的窗口)3) 在 vma 级别扫描整个 mm 时重置计数器 (这需要记住 mm->numa_scan_sequece)
+
+有了这个补丁, 我看到 numa01_THREAD_ALLOC 情况有了很好的改善, 但请注意, 在 [1] 中, 当基准测试运行时, 系统时间大幅减少, 这个补丁增加了一些系统时间.
+
+
+
+
+
+
+这是将根 cfg_rq runnable_avg 作为一种考虑 CPU 频率和 "migrate_util" 类型负载平衡最繁忙 CPU 选择的 CPU 争用的方法的想法的实现.
+
+
+
+https://lkml.kernel.org/r/424e2c81-987d-f10e-106d-8b4c611768bc@arm.com 网站
+
+| 2023/05/12 | Dietmar Eggemann <dietmar.eggemann@arm.com> | [sched: Consider CPU contention in frequency, EAS max util & load-balance busiest CPU selection](https://lore.kernel.org/all/20230512101029.342823-1-dietmar.eggemann@arm.com) | TODO | v2 ☐☑✓ | [LORE v1,0/1](https://lore.kernel.org/all/20230406155030.1989554-1-dietmar.eggemann@arm.com)[LORE v2,0/2](https://lore.kernel.org/all/20230512101029.342823-1-dietmar.eggemann@arm.com) |
+
+
+
+
+[Discussion](https://lkml.kernel.org/r/424e2c81-987d-f10e-106d-8b4c611768bc@arm.com)
+
+
+| 2023/03/07 | Jens Axboe <axboe@kernel.dk> | [Add FMODE_NOWAIT support to pipes](https://lore.kernel.org/all/20230308031033.155717-1-axboe@kernel.dk) | [Pipe FMODE_NOWAIT Support Sent In For Linux 6.4 As A 10~23x Performance Improvement](https://www.phoronix.com/news/Pipe-FMODE_NOWAIT-Linux-6.4). | v1 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/20230308031033.155717-1-axboe@kernel.dk) |
+| 2023/04/03 | Lorenzo Stoakes <lstoakes@gmail.com> | [permit write-sealed memfd read-only shared mappings](https://patchwork.kernel.org/project/linux-mm/cover/cover.1680560277.git.lstoakes@gmail.com/) | 736579 | v1 ☐☑ | [LORE v1,0/3](https://lore.kernel.org/r/cover.1680560277.git.lstoakes@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/3](https://lore.kernel.org/r/cover.1682890156.git.lstoakes@gmail.com) |
+| 2023/04/04 | Shaun Tancheff <shaun.tancheff@gmail.com> | [memcg-v1: Enable setting memory min, low, high](https://patchwork.kernel.org/project/linux-mm/patch/20230404205013.31520-1-shaun.tancheff@gmail.com/) | 736981 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20230404205013.31520-1-shaun.tancheff@gmail.com)[LORE v1,0/1](https://lore.kernel.org/r/20230405110107.127156-1-shaun.tancheff@gmail.com) |
+| 2023/04/05 | Ankit Agrawal <ankita@nvidia.com> | [Expose GPU memory as coherently CPU accessible](https://patchwork.kernel.org/project/linux-mm/cover/20230405180134.16932-1-ankita@nvidia.com/) | 737297 | v3 ☐☑ | [LORE v3,0/6](https://lore.kernel.org/r/20230405180134.16932-1-ankita@nvidia.com) |
+| 2023/04/05 | Luis Chamberlain <mcgrof@kernel.org> | [kmod: simplify with a semaphore](https://patchwork.kernel.org/project/linux-mm/cover/20230405203505.1343562-1-mcgrof@kernel.org/) | 737345 | v2 ☐☑ | [LORE v2,0/2](https://lore.kernel.org/r/20230405203505.1343562-1-mcgrof@kernel.org) |
+| 2023/04/06 | Jaewon Kim <jaewon31.kim@samsung.com> | [[v2] dma-buf/heaps: system_heap: Avoid DoS by limiting single allocations to half of all memory](https://patchwork.kernel.org/project/linux-mm/patch/20230406000854.25764-1-jaewon31.kim@samsung.com/) | 737382 | v2 ☐☑ | [LORE v2,0/1](https://lore.kernel.org/r/20230406000854.25764-1-jaewon31.kim@samsung.com) |
+| 2023/04/06 | Shaun Tancheff <shaun.tancheff@gmail.com> | [memcg: Default value setting in memcg-v1](https://patchwork.kernel.org/project/linux-mm/patch/20230406091450.167779-1-shaun.tancheff@gmail.com/) | 737508 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20230406091450.167779-1-shaun.tancheff@gmail.com) |
+
+| 2023/04/08 | Yang Yang <yang.yang29@zte.com.cn> | [[linux-next] delayacct: track delays from IRQ/SOFTIRQ](https://patchwork.kernel.org/project/linux-mm/patch/202304081728353557233@zte.com.cn/) | 738160 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/202304081728353557233@zte.com.cn) |
+| 2023/04/10 | Gang Li <ligang.bdlg@bytedance.com> | [[v3] mm: oom: introduce cpuset oom](https://patchwork.kernel.org/project/linux-mm/patch/20230410025056.22103-1-ligang.bdlg@bytedance.com/) | 738331 | v3 ☐☑ | [LORE v3,0/1](https://lore.kernel.org/r/20230410025056.22103-1-ligang.bdlg@bytedance.com) |
+| 2023/04/10 | Jaewon Kim <jaewon31.kim@samsung.com> | [[v3] dma-buf/heaps: system_heap: avoid too much allocation](https://patchwork.kernel.org/project/linux-mm/patch/20230410073228.23043-1-jaewon31.kim@samsung.com/) | 738348 | v3 ☐☑ | [LORE v3,0/1](https://lore.kernel.org/r/20230410073228.23043-1-jaewon31.kim@samsung.com) |
+| 2023/04/17 | Vishal Moola <vishal.moola@gmail.com> | [Split ptdesc from struct page](https://patchwork.kernel.org/project/linux-mm/cover/20230417205048.15870-1-vishal.moola@gmail.com/) | 740662 | v1 ☐☑ | [LORE v1,0/33](https://lore.kernel.org/r/20230417205048.15870-1-vishal.moola@gmail.com) |
+| 2023/04/18 | Романов Алексей Васильевич <avromanov@sberdevices.ru> | [Introduce objects folding mechanism](https://patchwork.kernel.org/project/linux-mm/cover/20230418062503.62121-1-avromanov@sberdevices.ru/) | 740774 | v1 ☐☑ | [LORE v1,0/5](https://lore.kernel.org/r/20230418062503.62121-1-avromanov@sberdevices.ru) |
+| 2023/04/18 | Luis Chamberlain <mcgrof@kernel.org> | [[v4] module: add debug stats to help identify memory pressure](https://patchwork.kernel.org/project/linux-mm/patch/ZD7jaL8s+pPolwU1@bombadil.infradead.org/) | 741080 | v4 ☐☑ | [LORE v4,0/1](https://lore.kernel.org/r/ZD7jaL8s+pPolwU1@bombadil.infradead.org) |
+| 2023/04/18 | Johannes Weiner <hannes@cmpxchg.org> | [mm: reliable huge page allocator](https://patchwork.kernel.org/project/linux-mm/cover/20230418191313.268131-1-hannes@cmpxchg.org/) | 741091 | v1 ☐☑ | [LORE v1,0/26](https://lore.kernel.org/r/20230418191313.268131-1-hannes@cmpxchg.org) |
+| 2023/04/18 | Waiman Long <longman@redhat.com> | [mm/mmap: Map MAP_STACK to VM_STACK](https://patchwork.kernel.org/project/linux-mm/patch/20230418210230.3495922-1-longman@redhat.com/) | 741110 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20230418210230.3495922-1-longman@redhat.com) |
+| 2023/04/18 | Luis Chamberlain <mcgrof@kernel.org> | [module: add debugging auto-load duplicate module support](https://patchwork.kernel.org/project/linux-mm/patch/20230418204636.791699-1-mcgrof@kernel.org/) | 741107 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20230418204636.791699-1-mcgrof@kernel.org) |
+| 2023/04/18 | Waiman Long <longman@redhat.com> | [mm/mmap: Map MAP_STACK to VM_STACK](https://patchwork.kernel.org/project/linux-mm/patch/20230418210230.3495922-1-longman@redhat.com/) | 741110 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20230418210230.3495922-1-longman@redhat.com) |
+| 2023/04/19 | Suren Baghdasaryan <surenb@google.com> | [[v3,1/1] mm: do not increment pgfault stats when page fault handler retries](https://patchwork.kernel.org/project/linux-mm/patch/20230419175836.3857458-1-surenb@google.com/) | 741439 | v3 ☐☑ | [LORE v3,0/1](https://lore.kernel.org/r/20230419175836.3857458-1-surenb@google.com) |
+| 2023/04/19 | Atish Kumar Patra <atishp@rivosinc.com> | [RISC-V CoVE support](https://patchwork.kernel.org/project/linux-mm/cover/20230419222350.3604274-1-atishp@rivosinc.com/) | 741490 | v1 ☐☑ | [LORE v1,0/10](https://lore.kernel.org/r/20230419222350.3604274-1-atishp@rivosinc.com) |
+| 2023/04/21 | Oscar Salvador <osalvador@suse.de> | [page_owner: print stacks and their counter](https://patchwork.kernel.org/project/linux-mm/cover/20230421101415.5734-1-osalvador@suse.de/) | 742055 | v4 ☐☑ | [LORE v4,0/3](https://lore.kernel.org/r/20230421101415.5734-1-osalvador@suse.de) |
+| 2023/04/21 | Yosry Ahmed <yosryahmed@google.com> | [cgroup: eliminate atomic rstat flushing](https://patchwork.kernel.org/project/linux-mm/cover/20230421174020.2994750-1-yosryahmed@google.com/) | 742246 | v5 ☐☑ | [LORE v5,0/5](https://lore.kernel.org/r/20230421174020.2994750-1-yosryahmed@google.com) |
+| 2023/04/21 | Luis Chamberlain <mcgrof@kernel.org> | [shmem: add support for blocksize> PAGE_SIZE](https://patchwork.kernel.org/project/linux-mm/cover/20230421214400.2836131-1-mcgrof@kernel.org/) | 742301 | v1 ☐☑ | [LORE v1,0/8](https://lore.kernel.org/r/20230421214400.2836131-1-mcgrof@kernel.org) |
+| 2023/04/24 | Jeff Layton <jlayton@kernel.org> | [fs: multigrain timestamps](https://patchwork.kernel.org/project/linux-mm/cover/20230424151104.175456-1-jlayton@kernel.org/) | 742778 | v2 ☐☑ | [LORE v2,0/3](https://lore.kernel.org/r/20230424151104.175456-1-jlayton@kernel.org) |
+
+
+Web Pilot 根据 URL 生成文章摘要, 总结, 翻译.
+AskYourPDF 从 PDF 文件内容生成摘要, 分析内容等.
+Chat with PDF
+kagi.com/summarizer
+
+
+[A kernel without buffer heads](https://lwn.net/Articles/930173)
+[Sunsetting buffer heads](https://lwn.net/Articles/931809)
+
+[Unprivileged BPF and authoritative security hooks](https://lwn.net/Articles/929746)
+[Designated movable (memory) blocks](https://lwn.net/Articles/928795)
+[The ongoing trouble with get_user_pages()](https://lwn.net/Articles/930667)
+[A storage standards update at LSFMM+BPF](https://lwn.net/Articles/931282)
+[Memory overcommit in containerized environments](https://lwn.net/Articles/931662)
+
+[Live migration of virtual machines over CXL](https://lwn.net/Articles/931528)
+[Memory-management changes for CXL](https://lwn.net/Articles/931416)
+
+[The future of memory tiering](https://lwn.net/Articles/931421)
+[Peer-to-peer DMA](https://lwn.net/Articles/931668)
+[Computational storage](https://lwn.net/Articles/931949)
+[The state of the page in 2023](https://lwn.net/Articles/931794)
+
+
+[Fighting the zombie-memcg invasion](https://lwn.net/Articles/932070)
+
+[[LSF/MM/BPF TOPIC] userspace control of memory management](https://lore.kernel.org/linux-mm/CAPTztWYAiroY3E8pwB+rnPGA1K9HLhkpQp1Gy9C1dEuS1FhWGg@mail.gmail.com)
+
+[The 2023 LSFMM+BPF Summit](https://lwn.net/Articles/lsfmmbpf2023)
+[An LSFMM development-process discussion](https://lwn.net/Articles/932215)
+
+
+[Memory passthrough for virtual machines](https://lwn.net/Articles/931933)
+[Memory-management documentation and development process](https://lwn.net/Articles/932398)
+
+BPF verifiery 已经做了很多工作来尽量确保加载进 kernel 的 BPF program 是不会导致安全问题的. 包括检查 memory 的访问, 以及模拟执行流程来确保 program 会在有限时间内结束, 等等. 其中很多检查都有助于确保 program 是安全的, 能避免某些类型的 bug, 其他的检查都是专门为了排查恶意 program 的, 如果 kernel 允许接受非特权用户的 BPF program 的话, 这些检查都是必须的.
+
+大多数这类恶意 program 的检查工作都是在 2015 年的 4.4 kernel 里实现的. 尤其是其中很多工作是为了阻止 BPF program 把 kernel 指针值泄露给 user space. 这些指针对攻击者会很有用, 因为他们可以被用来推算出某些特定的数据结构或者代码的位置. 所以我们一定要避免被非特权的进程拿到这些指针数据. 在 kernel 4.7 里面
+
+其他还有一些 patch 是用来避免 BPF program 里的预测执行 (speculative-execution) 类型的攻击.
+
+
+
+
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2014/10/17 | Paul Gortmaker <paul.gortmaker@windriver.com> | [simple wait queue support (from -rt)](https://lore.kernel.org/all/1413591782-23453-1-git-send-email-paul.gortmaker@windriver.com) | Simple wait queues 支持在 preempt-rt 内核中已经存在了相当长的一段时间 (至少从 3.4 开始). 在今年的 RT 峰会上, 我们一致认为, 对其进行最终清理并将其纳入主流是有意义的. 它类似于普通的等待队列支持, 但没有一些使用较少的功能, 与普通的等待排队相比, 占用空间更小. 对于非 RT, 我们仍然可以从足迹减少系数中受益. 在本系列中, 我们将简单的等待队列部署在两个位置：(1) 用于完成量, (2) 用于 RCU 处理. 参考 LWN 报道 [Simple wait queues](https://lwn.net/Articles/577370). | v2 ☐☑✓ | [LORE v1,0/3](https://lore.kernel.org/all/1386810399-8973-1-git-send-email-paul.gortmaker@windriver.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/7](https://lore.kernel.org/all/1413591782-23453-1-git-send-email-paul.gortmaker@windriver.com) |
+| 2016/02/19 | Daniel Wagner <wagi@monom.org> | [Simple wait queue support](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=abedf8e2419fb873d919dd74de2e84b510259339) | Simple wait queues 支持. | v8 ☐☑✓ 4.6-rc1 | [LORE v8,0/5](https://lore.kernel.org/all/1455871601-27484-1-git-send-email-wagi@monom.org) |
+
+| 2023/05/18 | Tejun Heo <tj@kernel.org> | [workqueue: Improve unbound workqueue execution locality](https://lore.kernel.org/all/20230519001709.2563-1-tj@kernel.org) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20230519001709.2563-1-tj@kernel.org) |
+
+
+| 2023/06/14 | Liupu Wang <wangliupu@loongson.cn> | [LoongArch: Add SMT (Simultaneous Multi-Threading) support](https://lore.kernel.org/all/20230614093755.88881-1-wangliupu@loongson.cn) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20230614093755.88881-1-wangliupu@loongson.cn) |
+
+
+
+
+
+
+
+
+
+[Understand and review klp-convert patchset](https://hackweek.opensuse.org/22/projects/understand-and-review-klp-convert-patchset), [klp-convert and livepatch relocations, LPC-2019](https://lpc.events/event/4/contributions/507/attachments/316/533/LPC2019.pdf)
+
+
+Livepatches 可能会使用不包含在其自身作用域中的符号, 并且, 正因为如此, 最终可能会编译为只在模块加载期间解决的重定位. 然而, 当引用的符号没有导出时, 解决这个重定位问题需要关于保存符号的对象 (vmlinux 或模块) 及其在对象中的位置的信息, 因为一个对象可能包含多个具有相同名称的符号. 提供这些信息必须根据 `Documentation/livepatch/module-self-format.txt` 中指定的内容进行. 目前, 还没有一种简单的方法可以在最终的 livepatch elf 对象中嵌入所需的信息. klp-convert 以两种不同的形式解决了这个问题: 1. 依靠在内核编译期间构建的符号映射来自动推断重定位目标符号, 并且, 当这种推断不可能时.<br>2. 通过使用 elf 对象中的注释将重定位相应地转换为规范, 使其能够由 livepatch 加载器处理. 鉴于以上所述, 添加对符号形式的符号映射的支持 `.klp` 文件; 添加 klp 转换工具; 将 klp 转换工具集成到 kbuild 中; 使 livepatch 模块在内核编译管道中可识别; 添加数据结构和宏, 使用户能够注释 livepatch 源代码; 使 modpost stage 与 livepatches 兼容;
