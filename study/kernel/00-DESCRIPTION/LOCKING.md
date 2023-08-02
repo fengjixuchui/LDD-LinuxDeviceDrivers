@@ -316,6 +316,8 @@ Google 的 Joel Fernandes 等发现 RCU 并没有很好的节能, 在 Android �
 
 [NUMA Interface For FUTEX2 Still Being Tackled For Linux](https://www.phoronix.com/news/FUTEX2-NUMA-Still-Coming-2022)
 
+[内核工匠-futex问答](https://blog.csdn.net/feelabclihu/article/details/127020166)
+
 # 7 Semaphores
 -------
 
@@ -409,7 +411,7 @@ Lockdep 跟踪锁的获取顺序, 以检测死锁, 以及 IRQ 和 IRQ 启用/禁
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2022/05/04 | Byungchul Park <byungchul.park@lge.com> | [DEPT(Dependency Tracker)](https://lore.kernel.org/all/1651652269-15342-1-git-send-email-byungchul.park@lge.com) | 一种死锁检测工具, 通过跟踪等待/事件而不是锁的获取顺序来检测死锁的可能性, 试图覆盖所有锁(spinlock, mutex, rwlock, seqlock, rwsem)以及同步机制(包括 wait_for_completion, PG_locked,  PG_writeback, swait/wakeup 等). | v6 ☐☑✓ | [RFC 00/14](https://lore.kernel.org/lkml/1643078204-12663-1-git-send-email-byungchul.park@lge.com)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/21](https://lore.kernel.org/all/1651652269-15342-1-git-send-email-byungchul.park@lge.com)<br>*-*-*-*-*-*-*-* <br>[LORE v7,0/23](https://lore.kernel.org/r/1673235231-30302-1-git-send-email-byungchul.park@lge.com)<br>*-*-*-*-*-*-*-* <br>[LORE v8,0/25](https://lore.kernel.org/r/1674782358-25542-1-git-send-email-max.byungchul.park@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v9,0/25](https://lore.kernel.org/r/1675154394-25598-1-git-send-email-max.byungchul.park@gmail.com) |
+| 2022/05/04 | Byungchul Park <byungchul.park@lge.com> | [DEPT(Dependency Tracker)](https://lore.kernel.org/all/1651652269-15342-1-git-send-email-byungchul.park@lge.com) | 一种死锁检测工具, 通过跟踪等待/事件而不是锁的获取顺序来检测死锁的可能性, 试图覆盖所有锁(spinlock, mutex, rwlock, seqlock, rwsem)以及同步机制(包括 wait_for_completion, PG_locked,  PG_writeback, swait/wakeup 等). | v6 ☐☑✓ | [RFC 00/14](https://lore.kernel.org/lkml/1643078204-12663-1-git-send-email-byungchul.park@lge.com)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/21](https://lore.kernel.org/all/1651652269-15342-1-git-send-email-byungchul.park@lge.com)<br>*-*-*-*-*-*-*-* <br>[LORE v7,0/23](https://lore.kernel.org/r/1673235231-30302-1-git-send-email-byungchul.park@lge.com)<br>*-*-*-*-*-*-*-* <br>[LORE v8,0/25](https://lore.kernel.org/r/1674782358-25542-1-git-send-email-max.byungchul.park@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v9,0/25](https://lore.kernel.org/r/1675154394-25598-1-git-send-email-max.byungchul.park@gmail.com)<br>*-*-*-*-*-*-*-* <br>[LORE v10,0/25](https://lore.kernel.org/r/20230626115700.13873-1-byungchul@sk.com)<br>*-*-*-*-*-*-*-* <br>[LORE v10,0/25](https://lore.kernel.org/r/20230703094752.79269-1-byungchul@sk.com) |
 | 2022/09/15 | 刘顺 | [OSPP 2022: Add lite-lockdep as a lightweight lock validator](https://gitee.com/openeuler/kernel/issues/I5R8DS) | openEuler 开源之夏轻量级死锁检测特性. 参考了 [Low-overhead deadlock prediction](https://dl.acm.org/doi/10.1145/3377811.3380367), [PDF](https://web.cs.ucla.edu/~palsberg/paper/icse20.pdf) | ☐☑✓ | [gitee, PR](https://gitee.com/openeuler/kernel/pulls/112) |
 
 
