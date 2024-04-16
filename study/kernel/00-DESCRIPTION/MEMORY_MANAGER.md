@@ -620,6 +620,7 @@ github 地址: [Mitosis Project](https://github.com/mitosis-project), [linux 内
 | 2020 | [Mitosis: Transparently Self-Replicating Page-Tables for Large-Memory Machines; March, 2020; aspl0359a-achermanna.pdf](https://research.vmware.com/files/attachments/0/0/0/0/1/0/3/aspl0359a-achermanna.pdf) |
 | 2021 | [Fast Local Page-Tables for Virtualized NUMA Servers with vMitosis; April, 2021; asplos21_vmitosis.pdf](https://research.vmware.com/files/attachments/0/0/0/0/1/3/8/asplos21_vmitosis.pdf)<br>[Fast Local Page-Tables for Virtualized NUMA Servers with vMitosis; April, 2021; vmitosis_ext_abstract.pdf](https://research.vmware.com/files/attachments/0/0/0/0/1/3/1/vmitosis_ext_abstract.pdf) |
 
+[Kernel-text replication on NUMA systems](https://lwn.net/Articles/956900)
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
@@ -735,6 +736,14 @@ MTE 实现了锁和密钥访问内存. 这样在内存访问期间, 可以在内
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
 | 2023/02/02 | Breno Leitao <leitao@debian.org> | [cpu/bugs: Disable CPU mitigations at compilation time](https://lore.kernel.org/all/20230202180858.1539234-1-leitao@debian.org) | 目前, 无法在构建时禁用 CPU 漏洞缓解措施. 需要通过内核参数禁用缓解, 例如 "mitigations=off".  此补丁创建了一种在编译期间禁用缓解的简单方法(CONFIG_DEFAULT_CPU_MITIGATIONS_OFF), 因此, 不安全的内核用户在启动不安全内核时不需要处理内核参数. 参见 phoronix 报道 [Proposed Linux Patch Would Allow Disabling CPU Security Mitigations At Build-Time](https://www.phoronix.com/news/Linux-Default-Mitigations-Off). | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20230202180858.1539234-1-leitao@debian.org) |
+
+
+### 1.8.5 SandBox Mode
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2024/02/14 | Petr Tesarik <petrtesarik@huaweicloud.com> | [Introduce SandBox Mode (SBM)](https://lore.kernel.org/all/20240214113035.2117-1-petrtesarik@huaweicloud.com) | 沙盒函数将使用一组单独的页表运行, 这些页表将其地址空间限制为相关代码、输入缓冲区(映射的只读)和输出缓冲区. 因此, 该函数将无法访问系统中的任何其他内存. 这一变化具有一些深远的影响; 例如, 如果中断到达, 则必须撤消它, 以便中断处理程序可以在内核的地址空间内运行. [A sandbox mode for the kernel](https://lwn.net/Articles/963734) | v1 ☐☑✓ | [LORE v1,0/5](https://lore.kernel.org/all/20240214113035.2117-1-petrtesarik@huaweicloud.com) |
 
 
 
@@ -1657,6 +1666,8 @@ Date:   Wed Sep 11 14:20:35 2013 -0700
 ### 2.2.10 其他
 -------
 
+[The trouble with MAX_ORDER](https://lwn.net/Articles/956321)
+
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/08/05 | Zi Yan <zi.yan@sent.com> | [Make MAX_ORDER adjustable as a kernel boot time parameter.](https://lore.kernel.org/patchwork/patch/1472787) | 这个补丁集增加了启动参数添加可调的 MAX_ORDER 的支持, 以便用户可以更改从伙伴系统获得的页面的最大大小.<br> 它还消除了基于 SECTION_SIZE_BITS 对 MAX_ORDER 的限制, 这样当设置了 SPARSEMEM_VMEMMAP 时, 伙伴系统分配器可以跨内存段合并 pfn. | RFC ☐ v5.14-rc4-mmotm-2021-08-02-18-51 | [PatchWork RFC,00/15](https://patchwork.kernel.org/project/linux-mm/cover/20210805190253.2795604-1-zi.yan@sent.com) |
@@ -1692,9 +1703,6 @@ https://lore.kernel.org/patchwork/patch/46671/
 
 https://lore.kernel.org/patchwork/patch/408914
 
-| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
-|:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2023/04/01 | Vlastimil Babka <vbabka@suse.cz> | [mm: remove all the slab allocators](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=eb07c4f39c3e858a7d0cc4bb15b8a304f83f0497) | 由于 SLOB 的拆除正在进行中, SLAB 的拆除也在计划中, 我意识到——为什么我们应该停止拆除 SLUB? 在 2023 年, 板坯分配器的作用是什么? [RAM 尺寸越来越大, 模块越来越便宜](https://www.theregister.com/2023/03/29/dram_prices_crash). 对象构造函数的技巧在 1994 年可能很有趣, 但对当代 CPU 来说却不是. 因此, slab 分配器现在所做的只是在页面分配器上添加一层不必要的复杂性. 因此, 这组补丁尝试删除所有三个 slab 分配器, 并且 slab.h 和 mm/slab_common.c 文件中只保留一个将所有内容传递给页面分配器的层. 这将允许用户逐渐转移并直接使用页面分配器. 总结优势:<br>1. 需要维护的代码更少: 这个补丁删除了超过 13k 行, 如果我在这方面花了更多的时间, 以及以后随着用户从遗留层过渡, 可以删除更多的代码.<br>2. 简化的 MEMCG_KMEM 记帐: 虽然我很懒, 只是在这个补丁中将其标记为 BROKEN, 但既然我们使用了页面分配器, 那么使用页面 MEMCG 记帐应该是微不足道的. 每个对象的核算在过去经历了几次迭代, 而且总是很复杂, 增加了开销. 相比之下, 页面会计要简单得多.<br>3. 简化了 KASAN 和朋友: 在这个补丁中也很懒, 所以不能启用它们, 但应该很容易修复, 只在页面级别工作.<br>4. 更简单的调试: 只需使用 debug_pagealloc=on, 无需查找复杂得离谱的 slub_debug 参数的确切语法.<br>5. 速度: 没有测量, 但对于页面分配器, 我们有 pcplist, 所以它应该可以很好地扩展. 不需要疯狂的 SLUB 的 cmpxchg_double()疯狂. 也许那个东西现在也可以移除. 参见 phoronix 报道 [Linux's SLAB Allocator Next On Deck For Deprecation & Removal](https://www.phoronix.com/news/Linux-Deprecating-Removing-SLAB), [[LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB improvements](https://lwn.net/ml/linux-mm/4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz) 以及 LWN 报道 [A slab allocator (removal) update](https://lwn.net/Articles/932201). 参见 [Linux's SLAB Allocator Is Officially Deprecated](https://www.phoronix.com/news/SLAB-Officially-Deprecated). | v1 ☐☑ 6.5-rc1 | [LORE v1,0/1](https://lore.kernel.org/r/20230401094658.11146-1-vbabka@suse.cz) |
 
 
 ### 2.3.1 SLAB
@@ -1734,6 +1742,10 @@ Linux slab 分配器使用了这种思想和其他一些思想来构建一个在
 与传统的内存管理模式相比,  slab 缓存分配器提供了很多优点. 首先, 内核通常依赖于对小对象的分配, 它们会在系统生命周期内进行无数次分配. slab 缓存分配器通过对类似大小的对象进行缓存而提供这种功能, 从而避免了常见的碎片问题. slab 分配器还支持通用对象的初始化, 从而避免了为同一目而对一个对象重复进行初始化. 最后, slab 分配器还可以支持硬件缓存对齐和着色, 这允许不同缓存中的对象占用相同的缓存行, 从而提高缓存的利用率并获得更好的性能.
 
 
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2023/04/01 | Vlastimil Babka <vbabka@suse.cz> | [mm: remove all the slab allocators](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=eb07c4f39c3e858a7d0cc4bb15b8a304f83f0497) | 由于 SLOB 的拆除正在进行中, SLAB 的拆除也在计划中, 我意识到——为什么我们应该停止拆除 SLUB? 在 2023 年, 板坯分配器的作用是什么? [RAM 尺寸越来越大, 模块越来越便宜](https://www.theregister.com/2023/03/29/dram_prices_crash). 对象构造函数的技巧在 1994 年可能很有趣, 但对当代 CPU 来说却不是. 因此, slab 分配器现在所做的只是在页面分配器上添加一层不必要的复杂性. 因此, 这组补丁尝试删除所有三个 slab 分配器, 并且 slab.h 和 mm/slab_common.c 文件中只保留一个将所有内容传递给页面分配器的层. 这将允许用户逐渐转移并直接使用页面分配器. 总结优势:<br>1. 需要维护的代码更少: 这个补丁删除了超过 13k 行, 如果我在这方面花了更多的时间, 以及以后随着用户从遗留层过渡, 可以删除更多的代码.<br>2. 简化的 MEMCG_KMEM 记帐: 虽然我很懒, 只是在这个补丁中将其标记为 BROKEN, 但既然我们使用了页面分配器, 那么使用页面 MEMCG 记帐应该是微不足道的. 每个对象的核算在过去经历了几次迭代, 而且总是很复杂, 增加了开销. 相比之下, 页面会计要简单得多.<br>3. 简化了 KASAN 和朋友: 在这个补丁中也很懒, 所以不能启用它们, 但应该很容易修复, 只在页面级别工作.<br>4. 更简单的调试: 只需使用 debug_pagealloc=on, 无需查找复杂得离谱的 slub_debug 参数的确切语法.<br>5. 速度: 没有测量, 但对于页面分配器, 我们有 pcplist, 所以它应该可以很好地扩展. 不需要疯狂的 SLUB 的 cmpxchg_double()疯狂. 也许那个东西现在也可以移除. 参见 phoronix 报道 [Linux's SLAB Allocator Next On Deck For Deprecation & Removal](https://www.phoronix.com/news/Linux-Deprecating-Removing-SLAB), [[LSF/MM/BPF TOPIC] SLOB+SLAB allocators removal and future SLUB improvements](https://lwn.net/ml/linux-mm/4b9fc9c6-b48c-198f-5f80-811a44737e5f@suse.cz) 以及 LWN 报道 [A slab allocator (removal) update](https://lwn.net/Articles/932201). 参见 [Linux's SLAB Allocator Is Officially Deprecated](https://www.phoronix.com/news/SLAB-Officially-Deprecated). | v1 ☐☑ 6.5-rc1 | [LORE v1,0/1](https://lore.kernel.org/r/20230401094658.11146-1-vbabka@suse.cz) |
+| 2023/11/20 | Vlastimil Babka <vbabka@suse.cz> | [remove the SLAB allocator](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=ecf9a253ce120082ce0a8aff806c4de4865cfcc5) | TODO | v2 ☐☑✓ | [LORE v1](https://lore.kernel.org/all/20231113191340.17482-22-vbabka@suse.cz)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/21](https://lore.kernel.org/all/20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz) |
 
 
 
@@ -5121,6 +5133,28 @@ Andrea 建议将工作放入工作队列中.
 | 2015/07/02 | Vlastimil Babka <vbabka@suse.cz> | [Outsourcing compaction for THP allocations to kcompactd](https://lwn.net/Articles/650051) | 本 RFC 系列是处理 THP 分配延迟尝试的另一个演进. 与前一个版本 [Outsourcing page fault THP allocations to khugepaged](https://lwn.net/Articles/643891) 的主要区别是借用了每个节点的 kcompactd. 试着把所有东西都放进 khugepaged 太笨拙了, 而 kcompactd 可以有更多的好处. 作者用 mmtests/thpscale 对它进行了简单的测试, 但是目前效果并不明显. | RFC ☐ | [PatchWork RFC v2,0/4](https://lore.kernel.org/lkml/1435826795-13777-1-git-send-email-vbabka@suse.cz) |
 
 
+#### 7.2.3.3 TAO: THP Allocator Optimizations
+-------
+
+
+[[LSF/MM/BPF TOPIC] TAO: THP Allocator Optimizations](https://lore.kernel.org/all/20240229183436.4110845-1-yuzhao@google.com) 致力于使透明大页面的分配尽可能高效. 参见 LWN 相关报道 [Formalizing policy zones for memory](https://lwn.net/Articles/964239).
+
+ZONE_NOSPLIT 将防止大页面的拆分, 其中连续的页面块不能拆分到给定大小以下, 它的存在是为了帮助系统维护大块内存(用于透明的大页面等), 这将使内核不必在以后重新组装它们, 而不必经历持续的压缩过程.
+
+ZONE_NOMERGE 具有最小块大小属性, 但也不允许将页面块合并为更大的组; 因此, 它只能容纳单一大小的块. 为内核创建接近第二个本机页面大小的内容, 使较大的页面在有意义的情况下可用, 同时仍保持较小的页面可用.
+
+从某种意义上说, 这项工作可以看作是那些希望看到 Linux 整体使用更大页面大小的人和那些担心相关的内部碎片成本的人之间的一种妥协.
+
+但是, 对于透明大页, 内部碎片仍然是一个问题; 进程可能分配了这样的页面, 但只使用其中的一小部分内存. 当前的内核将尝试通过将大页面拆分回基本页面来应对这种情况, 从而允许将未使用的部分重新分配到其他地方.
+
+位于 (或更高) ZONE_NOSPLIT 的页面显然不会发生拆分; 这正是 Zone 存在要强制执行的策略. 取而代之的是, 赵的补丁集引入了 "粉碎(shattering)" 大页面的概念. 如果页面被破坏, 其内容将被迁移(复制) 到位于合适区域的较小页面; 一旦该过程完成, 可以将保持完整的原始大页面分配给其他用途. 粉碎比分割(splitting)更昂贵; Yu Zhao 认为, 对于未正确使用其内存的进程来说, 这是一个适当的成本; "在零售术语中, 购买的退货需要支付进货费, 原始商品可以转售".
+
+另一个声称的 ZONE_NOMERGE 优点是它促进了巨大的 vmemmap 优化 (HVO), 这在 2020 年已经介绍过了. 简而言之, 这个技巧允许内核恢复用于保存 page 大页面中许多页面结构的内存. 在使用大量大页面的系统中, 这种优化可以节省大量内存. 在当前的内核中, HVO 只能与 hugetlbfs 机制一起使用, 该机制不透明, 通常只在特殊情况下使用.  ZONE_NOMERGE 但是, 页面被组织在固定块中, 就像 hugetlbfs 页面一样, 因此很容易将 HVO 与它们一起使用.
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2024/02/29 | Yu Zhao <yuzhao@google.com> | [TAO: THP Allocator Optimizations](https://lore.kernel.org/all/20240229183436.4110845-1-yuzhao@google.com) | TODO | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20240229183436.4110845-1-yuzhao@google.com) |
+
 
 ### 7.2.4 improve THP collapse rate
 -------
@@ -5444,6 +5478,7 @@ khugepaged 处理流程
 | 2022/11/25 | Jann Horn <jannh@google.com> | [[v3,1/3] mm/khugepaged: Take the right locks for page table retraction](https://patchwork.kernel.org/project/linux-mm/patch/20221125213714.4115729-1-jannh@google.com/) | 可以在 mmap 锁、附加到 vma 的 anon_vm 的锁或 vma 的 address_space 的锁下对 vma 映射的地址范围进行分页表遍历. 只需要持有其中一个, 并且不需要以独占模式持有. | v3 ☐☑ | [LORE v3,0/3](https://lore.kernel.org/r/20221125213714.4115729-1-jannh@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/3](https://lore.kernel.org/r/20221128180252.1684965-1-jannh@google.com) |[LORE v4,0/3](https://lore.kernel.org/r/20221128180252.1684965-1-jannh@google.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/3](https://lore.kernel.org/r/20221129154730.2274278-1-jannh@google.com) |
 
 
+
 ## 7.3 复合页 Compound Page
 -------
 
@@ -5484,6 +5519,16 @@ mcpage 有成本. 除了 THP 没有带来 TLB 的好处之外, 与 4K 基本页�
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/06/06 | Ankur Arora <ankur.a.arora@oracle.com> | [huge page clearing optimizations](https://lore.kernel.org/all/20220606202109.1306034-1-ankur.a.arora@oracle.com) | 本系列在巨大的页面清除路径中引入了两个优化: <br>1. 扩展 clear_page() 机制以处理大于单个页面的扩展数据块.<br>2. 支持对巨大页面和巨型页面进行非缓存页面清理.<br>第一个优化对于大页面故障处理很有用, 第二个优化对于预处理或巨大页面很有用.<br>直接的动机是加速创建由巨大页面支持的大型虚拟机. | v3 ☐☑✓ | [LORE v3,0/21](https://lore.kernel.org/all/20220606202109.1306034-1-ankur.a.arora@oracle.com) |
 | 2023/04/02 | Ankur Arora <ankur.a.arora@oracle.com> | [x86/clear_huge_page: multi-page clearing](https://lore.kernel.org/all/20230403052233.1880567-1-ankur.a.arora@oracle.com) | 本系列将介绍针对大页面的多页清除. [参见之前讨论](https://lore.kernel.org/lkml/CAHk-=wj9En-BC4t7J9xFZOws5ShwaR9yor7FxHZr8CTVyEP_+Q@mail.gmail.com). 在 x86 上, 页面清除通常是通过字符串指令完成的. 与 MOV 循环不同的是, 这些循环允许我们显式地向处理器通告区域大小, 这可以作为 uarch 省略 cacheline 分配的提示. 但是也存在一些问题, 延长的归零周期意味着由于缺少抢占点而增加的延迟. | v1 ☐☑✓ | [LORE v1,0/9](https://lore.kernel.org/all/20230403052233.1880567-1-ankur.a.arora@oracle.com)<br>*-*-*-*-*-*-*-* <br>[LORE v1,0/9](https://lore.kernel.org/r/20230403052233.1880567-1-ankur.a.arora@oracle.com) |
+
+
+### 7.4.2 使用场景
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2024/03/11 | Maíra Canal <mcanal@igalia.com> | [drm/v3d: Enable Super Pages](https://lore.kernel.org/all/20240311100959.205545-1-mcanal@igalia.com) | [Raspberry Pi V3D Graphics Driver Preps For Super Pages To Boost Performance](https://www.phoronix.com/news/Raspberry-Pi-V3D-Super-Pages) | v3 ☐☑✓ | [LORE v3,0/5](https://lore.kernel.org/all/20240311100959.205545-1-mcanal@igalia.com) |
+
+
 
 
 # 8 进程虚拟地址空间(VMA)
@@ -5980,6 +6025,15 @@ RMAP 反向映射是一种物理地址反向映射虚拟地址的方法.
 | 2006/08/10 | Haavard Skinnemoen <hskinnemoen@atmel.com> | [Generic ioremap_page_range: introduction](https://lore.kernel.org/patchwork/patch/62430) | 基于 i386 实现的 ioremap_page_range() 的通用实现, 将 I/O 地址空间映射到内核虚拟地址空间. | v1 ☑ 2.6.19-rc1 | [PatchWork 0/14](https://lore.kernel.org/patchwork/patch/62430) |
 | 2015/03/03 | Toshi Kani <toshi.kani@hp.com> | [Kernel huge I/O mapping support](https://lore.kernel.org/patchwork/patch/547056) | ioremap() 支持透明大页. 扩展了 ioremap() 接口, 尽可能透明地创建具有大页面的 I/O 映射. 当一个大页面不能满足请求范围时, ioremap() 继续使用 4KB 的普通页面映射. 使用 ioremap() 不需要改变驱动程序. 但是, 为了使用巨大的页面映射, 请求的物理地址必须以巨面大小 (x86 上为 2MB 或 1GB) 对齐. 内核巨页的 I/O 映射将提高 NVME 和其他具有大内存的设备的性能, 并减少创建它们映射的时间. | v3 ☑ 4.1-rc1 | [PatchWork v3,0/6](https://lore.kernel.org/patchwork/patch/547056) |
 | 2015/05/15 | Haavard Skinnemoen <hskinnemoen@atmel.com> | [mtrr, mm, x86: Enhance MTRR checks for huge I/O mapping](https://lore.kernel.org/patchwork/patch/943736) | 增强了对巨页 I/O 映射的 MTRR 检查.<br>1. 允许 pud_set_huge() 和 pmd_set_huge() 创建一个巨页映射, 当范围被任何内存类型的单个 MTRR 条目覆盖时. <br>2. 当指定的 PMD 映射范围超过一个 MTRR 条目时, 记录 pr_warn_once() 消息. 当这个范围被 MTRR 覆盖时, 驱动程序应该发出一个与单个 MTRR 条目对齐的映射请求. | v5 ☐ | [PatchWork v5,0/6](https://lore.kernel.org/patchwork/patch/943736) |
+
+
+## 8.6 内核栈
+-------
+
+
+| 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:----:|:----:|:---:|:----:|:---------:|:----:|
+| 2024/03/11 | Pasha Tatashin <pasha.tatashin@soleen.com> | [Dynamic Kernel Stacks](https://lore.kernel.org/all/20240311164638.2015063-1-pasha.tatashin@soleen.com) | 根据去年 LSF/MM 峰会的提议, Google 已经实现了对动态内核堆栈的支持. 在过去十年中, 上游 Linux 内核的默认堆栈大小从之前的 8K 增加到 16K. 谷歌一直在使用内核补丁来保留 8K 堆栈, 但随着时间的推移, 他们遇到了对更大堆栈大小的需求, 这反过来又增加了超大规模部署的内存使用量. 为了减少增加的内存使用, 谷歌一直在研究动态内核堆栈, 因为许多内核线程可以容纳 4K 或 8K 堆栈. [Dynamic Kernel Stacks Proposed For Linux With Big Memory Savings](https://www.phoronix.com/news/Linux-Dynamic-Kernel-Stacks-RFC) | v1 ☐☑✓ | [LORE v1,0/14](https://lore.kernel.org/all/20240311164638.2015063-1-pasha.tatashin@soleen.com) |
 
 
 
@@ -6630,7 +6684,8 @@ FRONTSWAP 对应的另一个后端叫 [ZSWAP](https://lwn.net/Articles/537422). 
 
 [LWN: LSFMM-2022/CXL 1: Management and tiering](https://lwn.net/Articles/894598)
 
-[](https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.18-NUMA-Regression-Fix)
+
+[CXL For Linux 6.9 Adds Error Injection, Native Memory Performance Enumeration](https://www.phoronix.com/news/Linux-6.9-CXL)
 
 ### 12.1.2 多级内存(Top-tier memory management)/ 内存分级(memory tiering) 支持
 -------
@@ -6993,6 +7048,12 @@ KFENCE 的灵感来自于 [GWP-ASan](http://llvm.org/docs/GwpAsan.html), 这是�
 | 2022/08/14 | Imran Khan <imran.f.khan@oracle.com> | [[v3] kfence: add sysfs interface to disable kfence for selected slabs.](https://patchwork.kernel.org/project/linux-mm/patch/20220814195353.2540848-1-imran.f.khan@oracle.com/) | 667448 | v3 ☐☑ | [LORE v3,0/1](https://lore.kernel.org/all/20220814195353.2540848-1-imran.f.khan@oracle.com) |
 | 2023/03/28 | Muchun Song <songmuchun@bytedance.com> | [Simplify kfence code](https://patchwork.kernel.org/project/linux-mm/cover/20230328095807.7014-1-songmuchun@bytedance.com/) | 734539 | v1 ☐☑ | [LORE v1,0/6](https://lore.kernel.org/r/20230328095807.7014-1-songmuchun@bytedance.com) |
 | 2023/04/03 | Peng Zhang <zhangpeng.00@bytedance.com> | [mm: kfence: Improve the performance of `__kfence_alloc() and __kfence_free()`](https://patchwork.kernel.org/project/linux-mm/patch/20230403062757.74057-1-zhangpeng.00@bytedance.com/) | 736236 | v1 ☐☑ | [LORE v1,0/1](https://lore.kernel.org/r/20230403062757.74057-1-zhangpeng.00@bytedance.com) |
+
+
+### 13.3.8 UBSAN
+-------
+
+[Better handling of integer wraparound in the kernel](https://lwn.net/Articles/959189)
 
 
 ## 13.4 Debugging
@@ -7565,6 +7626,7 @@ OS 判断如果是在用户态触发这个硬件内存错误时, 处理方式是
 |:-----:|:----:|:----:|:----:|:------------:|:----:|
 | 2022/01/30 | Edgecombe, Rick P <rick.p.edgecombe@intel.com> | [Shadow stacks for userspace](https://patchwork.kernel.org/project/linux-mm/cover/20220130211838.8382-1-rick.p.edgecombe@intel.com) | [User-space shadow stacks (maybe) for 6.4](https://lwn.net/Articles/926649), [Intel Shadow Stack Finally Merged For Linux 6.6](https://www.phoronix.com/news/Intel-Shadow-Stack-Linux-6.6). | v1 ☐☑ | [PatchWork v1,0/35](https://lore.kernel.org/r/20220130211838.8382-1-rick.p.edgecombe@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v2,0/39](https://lore.kernel.org/r/20220929222936.14584-1-rick.p.edgecombe@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/37](https://lore.kernel.org/r/20221104223604.29615-1-rick.p.edgecombe@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/39](https://lore.kernel.org/r/20221203003606.6838-1-rick.p.edgecombe@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v5,0/39](https://lore.kernel.org/r/20230119212317.8324-1-rick.p.edgecombe@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v6,0/41](https://lore.kernel.org/r/20230218211433.26859-1-rick.p.edgecombe@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v7,0/41](https://lore.kernel.org/r/20230227222957.24501-1-rick.p.edgecombe@intel.com)<br>*-*-*-*-*-*-*-* <br>[LORE v8,0/40](https://lore.kernel.org/r/20230319001535.23210-1-rick.p.edgecombe@intel.com) |
 | 2023/07/16 | Mark Brown <broonie@kernel.org> | [arm64/gcs: Provide support for GCS in userspace](https://lore.kernel.org/all/20230716-arm64-gcs-v1-0-bf567f93bba6@kernel.org) | 影子堆栈的 64 位 Arm 实现称为"受保护的控制堆栈"("guarded control stack/GCS), 参见 LWN 报道 [Shadow stacks for 64-bit Arm systems](https://lwn.net/Articles/940403). | v1 ☐☑✓ | [LORE v1,0/35](https://lore.kernel.org/all/20230716-arm64-gcs-v1-0-bf567f93bba6@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v3,0/36](https://lore.kernel.org/all/20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v4,0/36](https://lore.kernel.org/r/20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org) |
+| 2024/03/15 | H.J. Lu <hjl.tools@gmail.com> | [x86/shstk: Enable shadow stack for x32](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2883f01ec37dd8668e7222dfdb5980c86fdfe277) | [Linux Enabling Shadow Stack Support For x32](https://www.phoronix.com/news/Linux-x32-Shadow-Stacks) | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20240315140433.1966543-1-hjl.tools@gmail.com) |
 
 
 

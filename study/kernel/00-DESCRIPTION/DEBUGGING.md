@@ -134,6 +134,8 @@ https://lwn.net/Articles/422487/
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2009/08/05 | Arjan van de Ven <arjan@infradead.org> | [Implement crashkernel=auto](https://lore.kernel.org/patchwork/cover/166256) | 实现 crashkernel=auto . | v1 ☐ | [PatchWork](https://lore.kernel.org/patchwork/cover/166256) |
 | 2022/08/28 | Baoquan He <bhe@redhat.com> | [arm64, kdump: enforce to take 4G as the crashkernel low memory end](https://patchwork.kernel.org/project/linux-mm/cover/20220828005545.94389-1-bhe@redhat.com/) | 671768 | v1 ☐☑ | [LORE v1,0/2](https://lore.kernel.org/r/20220828005545.94389-1-bhe@redhat.com) |
+| 2024/03/05 | Steven Rostedt <rostedt@goodmis.org> | [tracing: Persistent traces across a reboot or crash](https://lore.kernel.org/all/20240306015910.766510873@goodmis.org) | [Experimental Linux Patches Allow Kernel Tracing To Work Past Reboots/Crashes](https://www.phoronix.com/news/Linux-Tracing-Post-Reboots). | v1 ☐☑✓ | [LORE v1,0/8](https://lore.kernel.org/all/20240306015910.766510873@goodmis.org) |
+
 
 [crash extension modules](https://crash-utility.github.io/extensions.html)
 
@@ -310,11 +312,17 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 
 [Printk Cleanups Ready For Linux 6.6 - Stepping Towards Threaded/Atomic Console Printing](https://www.phoronix.com/news/Linux-6.6-printk)
 
+[Linux 6.7 Continues Work On printk Threaded Printing](https://www.phoronix.com/news/Linux-6.7-printk)
+
+[Third Version Of Linux Atomic Console Support Posted](https://www.phoronix.com/news/Linux-Threaded-Atomic-Console-3)
+
+[Linux 6.9 Cleans Up Printk Code While Preparing For Atomic Consoles](https://www.phoronix.com/news/Linux-6.9-Printk-Cleanup)
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/02/07 | John Ogness <john.ogness@linutronix.de> | [implement threaded console printing](https://lore.kernel.org/all/20220207194323.273637-1-john.ogness@linutronix.de) | 参见 phoronix 报道 [Linux Gets Patches For Threaded Console Printing](https://www.phoronix.com/scan.php?page=news_item&px=Linux-Threaded-Console-Print) 和 [Patches Updated For Linux To Enjoy Consoles Running At Full-Speed](https://www.phoronix.com/scan.php?page=news_item&px=Printk-v3-Consoles-Full-Speed) | v1 ☐ | [LORE v1,0/13](https://lore.kernel.org/all/20220207194323.273637-1-john.ogness@linutronix.de) |
 | 2023/03/02 | John Ogness <john.ogness@linutronix.de> | [threaded/atomic console support](https://lore.kernel.org/all/87wn3zsz5x.fsf@jogness.linutronix.de) | TODO | v1 ☐☑✓ | [LORE v1,0/18](https://lore.kernel.org/all/87wn3zsz5x.fsf@jogness.linutronix.de) |
+| 2024/02/18 | John Ogness <john.ogness@linutronix.de> | [wire up write_atomic() printing](https://lore.kernel.org/all/20240218185726.1994771-1-john.ogness@linutronix.de) | TODO | v2 ☐☑✓ | [LORE v2,0/26](https://lore.kernel.org/all/20240218185726.1994771-1-john.ogness@linutronix.de) |
 
 
 ## 9.3 A new approach printk
@@ -369,7 +377,7 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
-| 2009/03/25 | Peter Zijlstra <a.p.zijlstra@chello.nl> | [perf_counter: Add event overlow handling](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=43a21ea81a2400992561146327c4785ce7f7be38) | 使用 mmap() 提供更好的溢出管理和更可靠的数据流. 之前方法没有任何 user-> 内核反馈, 并依赖于用户空间保持更新, 与之不同的是，此方法依赖于用户空间将其最后一次读位置写入到控件页. 它将确保新输出不会覆盖尚未读取的事件, 同时允许丢失没有剩余空间的新事件, 并增加溢出计数器, 提供确切的事件丢失数字. 丢失事件用 PERF_EVENT_LOST(后来被改名为 [PERF_RECORD_LOST](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cdd6c482c9ff9c55475ee7392ec8f672eddb7be6)) 标记. | v1 ☑✓ 2.6.31-rc1 | [LORE](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=43a21ea81a2400992561146327c4785ce7f7be38) |
+| 2009/03/25 | Peter Zijlstra <a.p.zijlstra@chello.nl> | [perf_counter: Add event overlow handling](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=43a21ea81a2400992561146327c4785ce7f7be38) | 使用 mmap() 提供更好的溢出管理和更可靠的数据流. 之前方法没有任何 user-> 内核反馈, 并依赖于用户空间保持更新, 与之不同的是, 此方法依赖于用户空间将其最后一次读位置写入到控件页. 它将确保新输出不会覆盖尚未读取的事件, 同时允许丢失没有剩余空间的新事件, 并增加溢出计数器, 提供确切的事件丢失数字. 丢失事件用 PERF_EVENT_LOST(后来被改名为 [PERF_RECORD_LOST](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cdd6c482c9ff9c55475ee7392ec8f672eddb7be6)) 标记. | v1 ☑✓ 2.6.31-rc1 | [LORE](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=43a21ea81a2400992561146327c4785ce7f7be38) |
 | 2015/05/10 | Kan Liang <kan.liang@intel.com> | [large PEBS interrupt threshold](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=c4937a91ea56b546234b0608a413ebad90536d26) | 其中 [perf/x86/intel: Introduce PERF_RECORD_LOST_SAMPLES](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f38b0dbb491a6987e198aa6b428db8692a6480f8) 引入 PERF_RECORD_LOST_SAMPLES. | v9 ☑✓ 4.2-rc1 | [LORE v9,0/8](https://lore.kernel.org/all/1431285195-14269-1-git-send-email-kan.liang@intel.com) |
 | 2011/01/29 | Arnaldo Carvalho de Melo <acme@redhat.com> | [perf top: Switch to non overwrite mode](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93fc64f14472ae24fd640bf3834a178f59142842) | perf top 发现 PERF_RECORD_LOST 丢失事件时上报 WARN. | v1 ☑✓ 2.6.39-rc1  | [LORE](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=93fc64f14472ae24fd640bf3834a178f59142842) |
 | 2011/10/29 | Arnaldo Carvalho de Melo <acme@redhat.com> | [perf hists browser: Warn about lost events](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b27509fc62686c53e9301560034e6b0b001174d) | 发现 PERF_RECORD_LOST 丢失事件时上报 WARN. | v1 ☑✓ 3.2-rc1 | [LORE](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b27509fc62686c53e9301560034e6b0b001174d) |
@@ -399,9 +407,9 @@ $reclaim = current\_mem \times reclaim\_ratio \times max(0,1 – \frac{psi_some}
 ## 11.3 Userspace counter access
 -------
 
-x86 和 arm64 都支持直接访问用户空间中的事件计数器. 访问序列并不简单，目前存在于 perf 测试代码(tools/perf/arch/x86/tests/rdpmc.c)中, 在 PAPI 和 libpfm4 等项目中有类似的用例程序.
+x86 和 arm64 都支持直接访问用户空间中的事件计数器. 访问序列并不简单, 目前存在于 perf 测试代码(tools/perf/arch/x86/tests/rdpmc.c)中, 在 PAPI 和 libpfm4 等项目中有类似的用例程序.
 
-为了支持 usersapce 访问，必须首先使用 perf_evsel__mmap() 映射事件. 然后, 对 perf_evsel__read() 对 PMU 进行读取.
+为了支持 usersapce 访问, 必须首先使用 perf_evsel__mmap() 映射事件. 然后, 对 perf_evsel__read() 对 PMU 进行读取.
 
 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
@@ -578,12 +586,15 @@ bperf 试图通过允许多个 "周期" 或 "指令" 的 perf_event (在不同�
 
 几年来, Facebook 的工程师们一直在研究 [BOLT](https://www.phoronix.com/scan.php?page=news_item&px=Facebook-BOLT-Optimize-Binaries), 以此加速 Linux/ELF 二进制文件.
 
-BOLT 是一个二进制优化和布局工具, 它是一个 Facebook 孵化器项目, 用于加速Linux x86-64/AArch64 ELF 二进制文件. 这个工具能够分析和重新排布的可执行程序, 以产生比编译器的 LTO 和 PGO 优化所能实现的更快的性能.
+BOLT 是一个二进制优化和布局工具, 它是一个 Facebook 孵化器项目, 用于加速Linux x86-64/AArch64 ELF 二进制文件. 这个工具能够分析和重新排布的可执行程序, 以产生比编译器的 LTO 和 PGO 优化所能实现的更快的性能. 2022 年 1 月, [BOLT Merged Into LLVM To Optimize Binaries For Faster Performance](https://www.phoronix.com/news/LLVM-Lands-BOLT). 允许优化二进制文件的布局, 作为链接后的步骤, 以提高性能. 与配置文件引导优化 (PGO) 一样, BOLT 首先需要分析步骤来生成性能记录以反馈优化过程, 但收益可能很大.
 
 facebook 在 LPC-2021 公布了其[最新基于 BOLT 优化 Linux 内核的进展](https://www.phoronix.com/scan.php?page=news_item&px=Facebook-BOLTing-The-Kernel), 这项工作与允许 Linux 内核的配置文件引导优化(PGO)的挑战类似, 与现有的 BOLT 专注于仅优化 ELF 应用程序可执行性相比, BOLT'ing 的 Linux 内核在正确分析/采样内核和相关优化工作负载、内核的大规模代码基数、模块与内核代码等方面面临着类似的复杂障碍. 从公布的信息上看效果不错, 在 PGO + LTO 编译器优化的基础之上仍然带来了两位数的提升(double digit speedups"). 这些提速是通过优化可执行工具的代码布局来实现更高效的硬件页面使用和指令缓存. 参见 [slides](https://linuxplumbersconf.org/event/11/contributions/974/attachments/923/1793/Optimizing%20Linux%20Kernel%20with%20BOLT.pdf).
 
 BOLT 之前代码在 [github 开源](https://github.com/facebookincubator/BOLT), 随后在 2022 合并到[主线 LLVM](https://github.com/llvm/llvm-project/tree/main/bolt), 参见 [BOLT Close To Merging Into LLVM For Optimizing Performance Of Binaries](https://www.phoronix.com/scan.php?page=news_item&px=BOLT-Inches-To-LLVM). 并默认情况下在 Linux x86_64 和 AArch64 测试版本中被打开, [LLVM's BOLT Flipped On By Default For Linux x86/AArch64 Test Releases](https://www.phoronix.com/news/LLVM-BOLT-Default-Test-Releases).
 
+Facebook 一直致力于 BOLT 的 Linux 内核以获得更高的性能, [Meta Continues Working On BOLT'ing The Linux Kernel For Greater Performance](https://www.phoronix.com/news/LLVM-BOLT-Linux-Kernel-2024), 经过 2 年的努力, 这项工作终于于 2024 年 2 合入 LLVM 主线. 参见 [BOLT: Add writing support for Linux kernel ORC #80950](https://github.com/llvm/llvm-project/pull/80950).
+
+LLVM BOLT 优化 GNOME 的 Pango 净改进 ~6%, 参见 phoronix 报道 [LLVM BOLT Optimizations Net ~6% Improvement For GNOME's Pango](https://www.phoronix.com/news/LLVM-BOLT-Faster-Pango).
 
 ## 13.3 Shrinking the kernel
 -------
@@ -685,9 +696,19 @@ v2: [Fast Kernel Headers v2 Posted - Speeds Up Clang-Built Linux Kernel Build By
 由于这组补丁如此庞大, 涉及的模块也如此多, 因此它不可能在短时间内合入, 因此 Ingo 决定先从调度入手, [Merge branch 'sched/fast-headers' into sched/core](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/sched?id=ccacfe56d7ecdd2922256b87e9ea46f13bb03b55), 先行合并到 TIP 分支, 这些补丁将构建内核的调度程序部分所需的 CPU 时间减少了 60.9%. 挂钟时间下降了3.9%. 参见 [Linux Scheduler Build Improvements From "Fast Kernel Headers" Queued, FKH v3 Posted](https://www.phoronix.com/scan.php?page=news_item&px=Sched-Core-Fast-Kernel-Headers). [补丁集](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=4ff8f2ca6ccd9e0cc5665d09f86d631b3ae3a14c) 于 v5.17-rc5 合入主线.
 
 
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2024/01/31 | Max Kellermann <max.kellermann@ionos.com> | [Fast kernel headers: reduce header dependencies](https://lore.kernel.org/all/20240131145008.1345531-1-max.kellermann@ionos.com) | [Fast Kernel Headers Work Restarted For Linux To Ultimately Speed Up Build Times](https://www.phoronix.com/news/Fast-Kernel-Headers-2024) | v1 ☐☑✓ | [LORE v1,0/28](https://lore.kernel.org/all/20240131145008.1345531-1-max.kellermann@ionos.com) |
+
+
+
 ## 13.8 LINK
 -------
 
+
+### 13.8.1 Mold
+-------
 
 Mold 是目前 Unix 链接器的现代替代品, 已经达到了 1.0 版本. 由 LLVM lld 连接器的原创者编写, 通过提高并行性, Mold 的目标是比它的前辈快几倍.
 
@@ -697,9 +718,18 @@ Mold 是目前 Unix 链接器的现代替代品, 已经达到了 1.0 版本. 由
 
 Mesa CI 开始使用 Mold 作为其 x86_64 和 AArch64 上的默认链接器, 从而提高其 CI 的工作效率, 最终也可能帮助他们解决以前不断膨胀的云 CI 成本. [Mesa CI Begins Making Use Of Mold Linker For "Substantial" Performance Improvement](https://www.phoronix.com/news/Mesa-CI-Begins-Mold).
 
-[Mold 1.6 High Speed Linker Adds PPC64 and s390x, Smaller Output Files](https://www.phoronix.com/news/Mold-1.6-Linker)
+[Mold 1.6 High Speed Linker Adds PPC64 and s390x, Smaller Output Files](https://www.phoronix.com/news/Mold-1.6-Linker).
 
-[Mold 2.0 High Speed Linker Released: Moves From AGPL To MIT License](https://www.phoronix.com/news/Mold-2.0-Linker)
+[Mold 2.0 High Speed Linker Released: Moves From AGPL To MIT License](https://www.phoronix.com/news/Mold-2.0-Linker).
+
+[Mold Linker Performance Remains Very Compelling In 2024 Over GNU Gold/ld, LLVM lld](https://www.phoronix.com/news/Mold-Linker-2024-Performance).
+
+
+### 13.8.2 dynamic linking
+-------
+
+[A look at dynamic linking](https://lwn.net/Articles/961117)
+
 
 ## 13.9 Compiler Optimization
 -------
@@ -766,6 +796,16 @@ Intel 编译器随后也切到 LLVM 框架, 参见 [Intel Fully Embracing LLVM F
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
 | 2023/06/12 | Peter Zijlstra <peterz@infradead.org> | [Scope-based Resource Management](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=7170509cadbb76e5fa7d7b090d2cbdb93d56a2de) | [Scope-based resource management for the kernel](https://lwn.net/Articles/934679) 以及 [Scope-Based Resource Management Infrastructure Merged For Linux 6.5](https://www.phoronix.com/news/Linux-6.5-Scope-Resource-Manage). | v3 ☐☑✓ 6.6-rc1 | [LORE v3,0/57](https://lore.kernel.org/all/20230612090713.652690195@infradead.org) |
+
+
+## 13.14 Compiler
+-------
+
+
+| 编号 | 应用 | 功能 |
+|:---:|:----:|:---:|
+| 1 | [Cling](https://github.com/vgvassilev/cling) | 用于这个基于 LLVM/Clang 构建的开源交互式 C++ 解释器. Cling 是作为 LLVM/Clang 的扩展实现的, 以用作利用读取-求值-打印循环 (REPL) 概念的中间人, 并依赖于实时 (JIT) 编译. [Cling 1.0 发布用于交互式 C++ 解释器](https://www.phoronix.com/news/Cling-1.0-Released) |
+
 
 
 # 14 FTRACE
@@ -908,7 +948,7 @@ User Events 于 [5.18-rc1](https://kernelnewbies.org/Linux_5.18#User_events) 合
 -------
 
 
-谷歌的Android因其移动操作系统以及各种供应商/设备内核树所携带的所有下游补丁而臭名昭著, 而近年来, 更多的代码已经上游. 谷歌也一直在转向Android通用内核映像（GKI）作为其所有产品内核的基础, 以进一步减少碎片化. 展望未来, 谷歌在 2021 年北美开源峰会展示了一种["上游优先"(Moving Google toward the mainline)](https://lwn.net/Articles/871195)的方法, 以推动新的内核功能. 追求"新功能的上游优先开发模型", 以确保新代码首先进入主线Linux内核, 而不是直接在Android源代码树中停留.
+谷歌的Android因其移动操作系统以及各种供应商/设备内核树所携带的所有下游补丁而臭名昭著, 而近年来, 更多的代码已经上游. 谷歌也一直在转向Android通用内核映像(GKI)作为其所有产品内核的基础, 以进一步减少碎片化. 展望未来, 谷歌在 2021 年北美开源峰会展示了一种["上游优先"(Moving Google toward the mainline)](https://lwn.net/Articles/871195)的方法, 以推动新的内核功能. 追求"新功能的上游优先开发模型", 以确保新代码首先进入主线Linux内核, 而不是直接在Android源代码树中停留.
 
 谷歌的 Todd Kjos 随后在 Linux Plumbers Conference(LPC2021) 上谈到了他们的[通用内核映像(Generic Kernel Image, GKI)计划](https://linuxplumbersconf.org/event/11/contributions/1046). 通过 Android 12 和他们基于 Linux 5.10 的 GKI 映像, 进一步减少了碎片化, 以至于"几乎被消除". 在 Android 12 GKI 中, 大多数供应商/OEM 内核功能现在要么被上游到 Linux 内核中, 要么被隔离到供应商模块或者钩子中, 要么合并到 Android Common Kernel 中.
 
@@ -950,6 +990,8 @@ Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/03/21 | Rasmus Villemoes <linux@rasmusvillemoes.dk> | [background initramfs unpacking, and CONFIG_MODPROBE_PATH](https://lore.kernel.org/patchwork/patch/1394812) | 启动阶段异步解压 initramfs. 可以加速系统启动. | v1 ☑ [5.13-rc1](https://kernelnewbies.org/Linux_5.13) | [Patchwork](https://lore.kernel.org/patchwork/patch/1394812) |
 | 2022/11/02 | Stuart Hayes <stuart.w.hayes@gmail.com> | [cpufreq: acpi: Defer setting boost MSRs](https://lore.kernel.org/all/20221102195957.82871-1-stuart.w.hayes@gmail.com) | [Deferred Enabling Of ACPI CPUFreq Boost Support Can Help Boot Times For Large Servers](https://www.phoronix.com/news/CPUFreq-Defer-Boost-MSRs) | v1 ☐☑✓ | [LORE](https://lore.kernel.org/all/20221102195957.82871-1-stuart.w.hayes@gmail.com) |
+| 2024/02/22 | Gang Li <gang.li@linux.dev> | [hugetlb: parallelize hugetlb page init on boot](https://lore.kernel.org/all/20240222140422.393911-1-gang.li@linux.dev) | 用于在启动时并行化 HugeTLB 页面初始化. 对于具有大量 HugeTLB 页面的系统, 这可以大大缩短启动时间. 参见 phoronix 报道 [Linux 6.9 Will Boot Much Faster For Systems With Large Amounts Of RAM](https://www.phoronix.com/news/Linux-6.9-RAM-HugeTLB-Boot-Fast). | v6 ☐☑✓ | [LORE v6,0/8](https://lore.kernel.org/all/20240222140422.393911-1-gang.li@linux.dev) |
+
 
 ### 17.1.2 并行 CPU BringUp
 -------
@@ -961,7 +1003,7 @@ Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 
 
 
 
-# 18 LIB
+# 18 LIB 与 数据结构
 -------
 
 ## 18.1 bitmap
@@ -973,6 +1015,7 @@ Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 
 | 2021/12/18 | David Woodhouse <dwmw2@infradead.org> | [lib/bitmap: optimize bitmap_weight() usage](https://patchwork.kernel.org/project/linux-mm/cover/20211218212014.1315894-1-yury.norov@gmail.com) | NA | v1 ☐ | [Patchwork v2,00/17](https://lkml.kernel.org/lkml/20211209150938.3518-1-dwmw2@infradead.org) |
 
 
+
 ## 18.2 CONFIG
 -------
 
@@ -980,6 +1023,16 @@ Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 
 | 时间  | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:----:|:----:|:---:|:----:|:---------:|:----:|
 | 2021/12/18 | David Woodhouse <dwmw2@infradead.org> | [configs: introduce debug.config for CI-like setup](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0aaa8977acbf3996d351f51b3b15295943092f63) | 参见 [Linux 5.17 Making It Easier To Build A Kernel With All The Shiny Debug Features](https://www.phoronix.com/scan.php?page=news_item&px=Linux-5.17-debug-config) | v5 ☑ 5.17-rc1 | [Patchwork v5](https://lore.kernel.org/all/20211115134754.7334-1-quic_qiancai@quicinc.com) |
+
+
+## 18.3 Rosebush
+-------
+
+| 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
+|:---:|:----:|:---:|:----:|:---------:|:----:|
+| 2024/02/22 | Matthew Wilcox (Oracle) <willy@infradead.org> | [Rosebush, a new hash table](https://lore.kernel.org/all/20240222203726.1101861-1-willy@infradead.org) | Rosebush 被描述为内核的调整大小、可扩展、缓存感知的 RCU 优化哈希表. Rosebush 适合替换哈希表, 同时开销低于枫树或哈希表. 但它不是枫树的替代品, 因为它不支持范围. Rosebush 的另一个优势是具有每个存储桶的锁, 因此它对于写入密集型工作负载更具可扩展性. [Rosebush Proposed As A New Data Structure For The Linux Kernel](https://www.phoronix.com/news/Rosebush-Linux-Proposal). | v1 ☐☑✓ | [LORE v1,0/1](https://lore.kernel.org/all/20240222203726.1101861-1-willy@infradead.org) |
+
+
 
 # 19 启动加速
 -------
@@ -1004,14 +1057,27 @@ Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 
 | 2022/11/11 | Daniel Bristot de Oliveira <bristot@kernel.org> | [verification/rv: Add rv tool](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?id=afc70ccb962861e068e04c6089827493f5160a0a) | (用户空间)运行时验证工具 rv. 该工具旨在成为内核 rv 监视器的接口, 以及用户空间控制监视器. 该工具接收命令作为第一个参数<br>1. list 列出所有可用的监视器<br>2. mon 运行给定的监视器<br>每个监视器都是工具内的一个独立软件, 可以有自己的参数. | v2 ☐☑✓ 6.2-rc1 | [LORE v2,0/3](https://lore.kernel.org/all/cover.1668180100.git.bristot@kernel.org) |
 
 
-# 21 RUST 支持
+# 21 新语言支持
+-------
+
+## 21.1 RUST 支持
 -------
 
 [Arm Helping With AArch64 Rust Linux Kernel Enablement](https://www.phoronix.com/news/AArch64-Rust-Linux-Kernel)
 
+
 | 时间 | 作者 | 特性 | 描述 | 是否合入主线 | 链接 |
 |:---:|:----:|:---:|:----:|:---------:|:----:|
 | 2022/09/27 | Miguel Ojeda <ojeda@kernel.org> | [Rust support](https://lore.kernel.org/all/20220927131518.30000-1-ojeda@kernel.org) | TODO| v10 ☐☑✓ | [LORE 00/13](https://lore.kernel.org/all/20210414184604.23473-1-ojeda@kernel.org)<br>*-*-*-*-*-*-*-* <br>[LORE v10,0/27](https://lore.kernel.org/all/20220927131518.30000-1-ojeda@kernel.org) |
+| 2024/02/27 | Daniel Almeida <daniel.almeida@collabora.com> | [Rewrite the VP9 codec library in Rust](https://lore.kernel.org/all/20240227215146.46487-1-daniel.almeida@collabora.com) | Collabora 的 Daniel Almeida 发布了 Linux 内核的 Video 4 Linux 2 (V4L2) 子系统中 VP9 编解码器库代码的重写. 在使用 Rust 而不是现有的 C 代码时, 这应该会产生更好的内存安全性, 并更好地抵御现有代码中的潜在问题. 参见 phoronix 报道 [Linux's V4L2 VP9 Codec Kernel Code Rewritten In Rust For Better Memory Safety](https://www.phoronix.com/news/VP9-Linux-Kernel-Rust-V4L2-RFC). | v1 ☐☑✓ | [LORE v1,0/1](https://lore.kernel.org/all/20240227215146.46487-1-daniel.almeida@collabora.com) |
+| 2024/03/27 | Wedson Almeida Filho <wedsonaf@gmail.com> | [In-place module initialisation](https://lore.kernel.org/all/20240327032337.188938-1-wedsonaf@gmail.com) | [Microsoft Engineer Sends Rust Linux Kernel Patches For In-Place Module Initialization](https://www.phoronix.com/news/Linux-Rust-In-Place-Module-Init) | v1 ☐☑✓ | [LORE v1,0/2](https://lore.kernel.org/all/20240327032337.188938-1-wedsonaf@gmail.com) |
+
+
+## 22.2 C++
+-------
+
+[A 2024 Discussion Whether To Convert The Linux Kernel From C To Modern C++](https://www.phoronix.com/news/CPP-Linux-Kernel-2024-Discuss)
+
 
 # 22 kallsyms
 -------
@@ -1027,6 +1093,13 @@ Fedora 尝试优化 systemd 开机以及重启的时间, 参见 phoronix 报道 
 | 2022/09/27 | Oracle | [bpftune For BPF-Based](https://lore.kernel.org/all/20220927131518.30000-1-ojeda@kernel.org) | [Oracle Developing "bpftune" For BPF-Based, Automatic Tuning Of Linux Systems](https://www.phoronix.com/news/Oracle-bpftune)<br>*-*-*-*-*-*-*-* <br>[https://blogs.oracle.com/linux/post/introducing-bpftune](https://blogs.oracle.com/linux/post/introducing-bpftune)<br>*-*-*-*-*-*-*-* <br>[]() | v10 ☐☑✓ | [GitHub](https://github.com/oracle-samples/bpftune) |
 | 2022/09/27 | Atune | NA | NA | NA | NA |
 | 2022/09/27 | Ktune | NA | NA | NA | NA |
+
+# 24 ELF
+-------
+
+[When ELF notes reveal too much](https://lwn.net/Articles/962782)
+
+[A look at dynamic linking](https://lwn.net/Articles/961117/)
 
 
 # X 学习参考
